@@ -22,14 +22,16 @@ DNS is set, HTTPS enforced. AdSense code is wired on a **new branch
 85d5743  Add Plan/NEXT-SESSION.md handoff
 43b2f64  Update handoff: record local build + run verification
 5a529f1  Merge PR #1 -> main   (site goes live)
-b1d306f  Add Plan/GO-LIVE.md               \  branch adsense-onboarding
-<next>   Wire AdSense verification + D2     /  (open, not merged)
+b1d306f  Add Plan/GO-LIVE.md               \
+9d8b512  Wire AdSense verification + D2     |  branch adsense-onboarding
+<next>   Second content import (D8)         /  (PR #2, open, not merged)
 ```
 
-**Content imported:** 15 flagship guides + 8 cheat sheets (SDET/SRE/SDE) +
-`docs/intro.md` + `cheatsheets/intro.md` + 6 info pages (About, Contact,
-Privacy, Terms, Cookie Policy, Disclaimer). The MBA/AI tracks, the blog, and
-the Learn tools (roadmap/skills/quiz/dashboard/start) were **not** imported.
+**Content imported:** two batches — the shortlist (15 guides + 8 cheat sheets)
+then a second batch — now **~42 guides + ~32 cheat sheets** across SDET/SRE/SDE/AI
++ the two landing pages + 6 info pages. Still **not** imported: MBA/leadership
+library, the `test-automation-tooling-landscape` sub-topic subtree, the blog,
+the Learn tools (roadmap/skills/quiz/dashboard/start).
 
 **Source site:** `../abhishekgupta1.github.io` — left untouched, will become a
 personal portfolio later. It still holds the full ~200-page catalogue; pull
@@ -102,18 +104,20 @@ Repo side is done on branch **`adsense-onboarding`**: loader emitted site-wide
 3. In AdSense: **Verify** / "I've placed the code", then **Submit for review**.
 4. On approval → flip `ADS_ENABLED = true` in `src/data/site.js` + add ad units.
 
-### PENDING-1 — Content volume (decision D8) — STILL OPEN
-The live site is ~23 pages. AdSense's most common rejection is "Low value /
-insufficient content." Decide:
-- (a) submit as-is (23 substantive pages, several 3k–19k words), or
-- (b) import a batch more guides from `../abhishekgupta1.github.io` first.
-If (b): guides live under `../abhishekgupta1.github.io/docs/{sdet,sre,sde,mba,ai}-skills/`
-and `.../cheatsheets/`. Copy the `.md` + each dir's `_category_.json`, then
-`npm run build` (it **throws** on broken cross-links — fix or de-link). Watch
-for custom MDX components (`<InterviewQuestions>` etc.) — the imported
-`src/theme/MDXComponents.js` only registers `AdSlot`, so add the component back
-or the build fails. If MBA/AI tracks are re-added, restore their
-`sidebars.js` categories too.
+### PENDING-1 — Content volume (decision D8) — ✅ DONE
+Second import batch on branch `adsense-onboarding`: ~27 guides + ~23 cheat
+sheets added (SDET tool guides — Selenium/Appium/JUnit/TestNG/JMeter/Robot
+Framework/Postman/Java/REST Assured/Cucumber; SRE — networking, chaos,
+cloud-infra, MCP & AI agents, AI-assisted workflows, the 10-page
+incident-response cluster; AI track — Kiro, Claude). `sidebars.js` AI category
+restored; `docs/intro.md` + `cheatsheets/intro.md` updated to four tracks.
+Site is now ~80 pages. `npm run build` clean, `onBrokenLinks: 'throw'` passed
+first try (no MDX components used in the batch; no broken cross-links).
+
+More still available in `../abhishekgupta1.github.io` if a reviewer still flags
+thin content: the MBA/leadership library, and the ~60-page
+`test-automation-tooling-landscape` sub-topic subtree (denser cross-linking —
+budget time for `throw` cleanup).
 
 ### Verification
 
@@ -154,9 +158,7 @@ quick click-through on an actual phone (not just a 390px viewport).
 2. `npm install` if needed, then `npm run build` — `[SUCCESS]`, no broken
    links; built HTML has the `adsbygoogle` loader and **no** `class="adsbygoogle"`
    ad units.
-3. Open question for the owner: **PENDING-1 / D8** (submit with 23 pages, or
-   import more first).
-4. Ship PENDING-6: merge `adsense-onboarding` → `main`, then owner clicks
-   Verify + Submit in AdSense.
-5. After that: PENDING-7 (external-link + content-policy read) and PENDING-8
-   (real-phone check on the live domain).
+3. Ship PENDING-6 + D8: merge `adsense-onboarding` (PR #2) → `main`, wait for
+   deploy, then owner clicks Verify + Submit in AdSense.
+4. After that: PENDING-7 (external-link + content-policy read — now ~80 pages,
+   heavier) and PENDING-8 (real-phone check on the live domain).

@@ -2,15 +2,13 @@
 
 **Project:** Rebrand and launch the existing Docusaurus consulting/documentation site as `docssheet.com`, on GitHub Pages, and submit for Google AdSense approval.
 
-**Where the code lives (updated 2026-09-09):** The docssheet site now lives in **this repo** (`github.com/abhishekgupta1/docssheet`), imported on branch `import-docssheet-site` (commit "Import docssheet site (shortlist scope)"). It is a **shortlist-scoped** copy of the source site at `../abhishekgupta1.github.io` — that sibling repo is now left alone and will be repurposed as a personal portfolio later. File paths below (`docusaurus.config.js`, `src/data/site.js`, `docs/intro.md`, `static/CNAME`, …) refer to this repo. `../abhishekgupta1.github.io` is read-only reference.
+**Where the code lives (updated 2026-09-09):** The docssheet site lives in **this repo** (`github.com/abhishekgupta1/docssheet`) and is **live at `https://docssheet.com`**. It was seeded by importing curated content from the source site `../abhishekgupta1.github.io` — that sibling repo is left alone for the personal portfolio. File paths below refer to this repo; `../abhishekgupta1.github.io` is read-only reference for further content imports.
 
-**Current state (2026-09-09):** The imported site is branded `docssheet`, `static/CNAME` is `docssheet.com`, `url`/`baseUrl` are set, all six legal/info pages exist and are footer-linked, Google Consent Mode v2 is wired, and AdSense is gated behind `ADS_ENABLED = false`. `npm run build` is clean and `onBrokenLinks` is now `'throw'`. **Content scope: 15 flagship guides + 8 companion cheat sheets** (SDET/SRE/SDE) + the two landing pages + the six info pages — see `adsense-content-shortlist.md`. The MBA/AI tracks, the blog, and the Learn tools (roadmap/skills/quiz/dashboard/start) were **not** imported.
+**Current state (2026-09-09):** Branded `docssheet`, live on the domain, all six legal/info pages footer-linked, Consent Mode v2 wired, AdSense loader on (verification) with `ADS_ENABLED = false`. `npm run build` clean, `onBrokenLinks: 'throw'`. **Content: ~42 guides + ~32 companion cheat sheets** across four tracks (SDET, SRE, SDE, AI) + the two landing pages + six info pages — two import batches (the shortlist, then a second batch — see `adsense-content-shortlist.md`). Still not imported: the MBA/leadership library, the `test-automation-tooling-landscape` sub-topic pages, the blog, and the Learn tools.
 
-> ⚠️ **Content-volume tradeoff:** the source site's ~200 pages were the shortlist doc's stated reason quantity "is not the risk." The imported site has ~23 substantive pages. That is still a real body of long-form original content (several guides 3k–19k words), but the "well past the sufficient-content bar" margin is gone. If AdSense pushes back on low-value/thin content, the fix is to import more of the existing guides from `../abhishekgupta1.github.io` — the content already exists.
+> **Content volume (D8) — resolved.** After the shortlist-only import left ~23 pages, a second batch brought it to ~80. Still smaller than the source site's ~200 but a solid original-content base (guides 2.5k–19k words). If AdSense still flags thin content, more guides remain in `../abhishekgupta1.github.io`.
 
-**Out of scope:** Rewriting content, redesigning the theme, adding new documentation sections. This is a *launch-readiness* pass — the minimum set of changes needed to go live on the new domain and pass AdSense review.
-
-**Out of scope:** Rewriting content, redesigning the theme, adding new documentation sections. This is a *launch-readiness* pass — the minimum set of changes needed to go live on the new domain and pass AdSense review.
+**Out of scope:** Rewriting content, redesigning the theme. This is a *launch-readiness* pass — go live on the domain and pass AdSense review.
 
 **Status legend:** ✅ done · ⚠️ partially done / needs a check · ❌ not started
 
@@ -47,7 +45,7 @@
 ### 2.4 AdSense prerequisites
 - **R15** ✅ A **Privacy Policy** page (`/privacy`) exists, discloses cookies/`localStorage` and third-party processing including future Google AdSense, and carries a "Last updated" date.
 - **R16** ✅ **About** (`/about`) and **Contact** (`/contact`) pages exist, name the real owner (Abhishek Gupta), describe the site's purpose and how content is made, and give GitHub + LinkedIn contact routes. Also present: Terms, Cookie Policy, Disclaimer — all footer-linked.
-- **R17** ⚠️ Original, substantive content: **23 pages** live (15 guides 3k–19k words + 8 dense cheat sheets), all original. Smaller than the source site — see the content-volume tradeoff note at the top and D8. Public + indexable (verified on `docssheet.com`).
+- **R17** ✅ Original, substantive content: **~80 pages** live (~42 guides 2.5k–19k words + ~32 dense cheat sheets) across SDET/SRE/SDE/AI, all original. Public + indexable on `docssheet.com`. (D8 resolved — second import batch.)
 - **R18** ⚠️ No "under construction" / Lorem Ipsum on the imported paths (front-matter + WIP-marker scan was clean on import; the only "TODO" hit was inside a `grep` code example). Still run the full per-page QA in `adsense-content-shortlist.md` §4 (mobile render, code highlighting, dead external links) before submitting.
 - **R19** ✅ `static/ads.txt` = `google.com, pub-1394375154476572, DIRECT, f08c47fec0942fa0` (branch `adsense-onboarding`). Clears the "ads.txt not found" warning once deployed. (`ADS_ENABLED` still false — no ads serve until approval.)
 - **R20** ✅ AdSense verification wired (branch `adsense-onboarding`): the adsbygoogle loader `<script>` is emitted site-wide via a new `ADSENSE_ON` flag in `docusaurus.config.js` (true whenever `ADSENSE_CLIENT` is real), `src/data/site.js` `ADSENSE_CLIENT = 'ca-pub-1394375154476572'`. `ADS_ENABLED` stays `false` so no `<AdSlot>` renders. Merge → deploy → click Verify in AdSense (D3).
@@ -66,7 +64,7 @@
 - **D5** ❌ Consent. When to replace the hand-rolled `ConsentBanner` with a Google-certified CMP / Funding Choices for EEA/UK — targeted post-approval, unscheduled (R21).
 - **D6** ❌ Analytics. GA4 property and/or `GOATCOUNTER_CODE` at launch, or stay dark (see §3).
 - **D7** ❌ Ownership. Who submits the AdSense application, and by when.
-- **D8** ❌ **Content volume.** Submit with 23 pages, or import more guides from `../abhishekgupta1.github.io` first. Cheapest hedge against a thin-content rejection (see top-of-doc note, R17).
+- **D8** ✅ **Resolved.** Second import batch added ~27 guides + ~23 cheat sheets (SDET tools, SRE guides incl. the incident-response cluster, AI track). Site is ~80 pages. Build clean.
 - **D9** ✅ **Resolved.** `import-docssheet-site` merged to `main` via PR #1; site auto-deployed.
 
 ## 3. Non-requirements / explicitly deferred
@@ -84,7 +82,8 @@
 - [x] Privacy Policy, About, Contact (+ Terms, Cookie Policy, Disclaimer) are present and linked from the footer.
 - [x] `sitemap.xml` builds, lists the shortlist URLs, and points at `docssheet.com`; `robots.txt` is correct.
 - [x] `npm run build` clean of broken-link warnings; `onBrokenLinks: 'throw'`.
-- [ ] Per-page QA (`adsense-content-shortlist.md` §4) passed on the 15 flagship docs + 8 cheat sheets.
+- [ ] Per-page QA (`adsense-content-shortlist.md` §4) passed on the flagship docs + cheat sheets.
 - [x] `import-docssheet-site` merged to `main`; GitHub Pages enabled for the `docssheet` repo.
+- [x] Content volume raised to ~80 pages (D8).
 - [ ] `adsense-onboarding` merged; AdSense "Verify" clicked and application submitted with `docssheet.com`.
-- [ ] Remaining open decisions (D5–D8, §2.6) each have a recorded answer before/around submission.
+- [ ] Remaining open decisions (D5–D7, §2.6) each have a recorded answer before/around submission.
