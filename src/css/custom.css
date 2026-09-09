@@ -1,0 +1,1122 @@
+/**
+ * Custom CSS for ABHISHEK-G-TECH Portfolio Site
+ * Primary brand color: #8000FF
+ * Overrides Infima defaults for consistent theming.
+ */
+
+/* ============================================
+   Light Mode Custom Properties
+   ============================================ */
+:root {
+  --ifm-color-primary: #8000FF;
+  --ifm-color-primary-dark: #7300e6;
+  --ifm-color-primary-darker: #6d00d9;
+  --ifm-color-primary-darkest: #5a00b3;
+  --ifm-color-primary-light: #8d1aff;
+  --ifm-color-primary-lighter: #9933ff;
+  --ifm-color-primary-lightest: #b366ff;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(128, 0, 255, 0.1);
+  --ifm-link-color: #8000FF;
+  --ifm-link-hover-color: #6d00d9;
+  --ifm-navbar-link-hover-color: #8000FF;
+}
+
+/* ============================================
+   Dark Mode Custom Properties
+   ============================================ */
+[data-theme='dark'] {
+  --ifm-color-primary: #a64dff;
+  --ifm-color-primary-dark: #9933ff;
+  --ifm-color-primary-darker: #8d1aff;
+  --ifm-color-primary-darkest: #8000FF;
+  --ifm-color-primary-light: #b366ff;
+  --ifm-color-primary-lighter: #c080ff;
+  --ifm-color-primary-lightest: #d9b3ff;
+  --docusaurus-highlighted-code-line-bg: rgba(128, 0, 255, 0.3);
+  --ifm-link-color: #a64dff;
+  --ifm-link-hover-color: #b366ff;
+  --ifm-navbar-link-hover-color: #a64dff;
+}
+
+/* ============================================
+   Button & Link Accent Color Overrides
+   ============================================ */
+.button--primary,
+.button--primary:hover {
+  background-color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+}
+
+.button--primary:hover {
+  background-color: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+}
+
+.button--outline {
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+}
+
+.button--outline:hover {
+  background-color: var(--ifm-color-primary);
+  color: #ffffff;
+}
+
+a:hover {
+  color: var(--ifm-link-hover-color);
+}
+
+/* ============================================
+   Navbar right cluster — wide search + theme toggle
+   Target layout:  [ ...left nav... ]      [ search bar (fills space) ] [ 🌓 ]
+   The search DOM node sits after the theme toggle, so it is reordered with
+   the CSS "order" property. Module-class hashes (navbarSearchContainer_*,
+   colorModeToggle_*) change across Docusaurus versions, so match by substring.
+
+   Only applied ≥997px — below that the left nav collapses to a hamburger and
+   the search theme collapses the field to an icon on small screens; let it.
+   ============================================ */
+.navbar__items--right > [class*='navbarSearchContainer'] {
+  order: 1;
+}
+
+.navbar__items--right > [class*='colorModeToggle'] {
+  order: 2;
+}
+
+@media (min-width: 997px) {
+  .navbar__items--right {
+    flex: 1 1 auto;
+    gap: 0.5rem;
+  }
+
+  .navbar__items--right > [class*='navbarSearchContainer'] {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+  }
+
+  .navbar__items--right > [class*='colorModeToggle'] {
+    flex: 0 0 auto;
+  }
+
+  /* Stretch the field across the whole strip — in BOTH states. Before first
+     focus the <input> is a direct child of .navbar__search; on first focus
+     autocomplete.js wraps it in an inline-block <span> that would otherwise
+     collapse the field back to its intrinsic ~210px width. */
+  .navbar__search {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .navbar__search > span {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .navbar__search-input {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ============================================
+   Page-bottom breathing room
+   No site footer — give every page's last section
+   soft, rounded closure instead of an abrupt cutoff.
+   ============================================ */
+.main-wrapper {
+  padding-bottom: 4rem;
+}
+
+/* ============================================
+   Hero Section Styles
+   ============================================ */
+.hero-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem;
+  min-height: 70vh;
+  background: linear-gradient(
+    135deg,
+    #0a0a2e 0%,
+    #1a0a3e 25%,
+    #2d1b69 50%,
+    #8000FF 100%
+  );
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(128, 0, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(128, 0, 255, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 60% 80%, rgba(100, 0, 200, 0.15) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.hero-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-section .hero-tagline {
+  font-size: 1.4rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  font-weight: 300;
+}
+
+.hero-section .hero-location {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  margin-bottom: 1.5rem;
+}
+
+.hero-section .hero-intro {
+  font-size: 1.1rem;
+  max-width: 600px;
+  opacity: 0.85;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.hero-section .hero-cta,
+.contact-cta .hero-cta {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: #ffffff;
+  color: #8000FF;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 2px solid #ffffff;
+}
+
+.hero-section .hero-cta:hover,
+.contact-cta .hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 0, 255, 0.4);
+  color: #8000FF;
+  text-decoration: none;
+}
+
+.hero-cta--outline {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.hero-cta--outline:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 4rem 1.5rem;
+    min-height: 60vh;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .hero-section .hero-tagline {
+    font-size: 1.1rem;
+  }
+
+  .hero-section .hero-intro {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================
+   Services / Engagement / Contact Section Styles
+   ============================================ */
+.services-section,
+.engagement-section,
+.contact-cta {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.services-section h2,
+.engagement-section h2,
+.contact-cta h2 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 2.5rem;
+  font-size: 1.05rem;
+}
+
+.services-grid,
+.engagement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.service-card,
+.engagement-card {
+  background: var(--ifm-card-background-color, #ffffff);
+  border: 1px solid var(--ifm-color-emphasis-200, #e3e3e3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.service-card:hover,
+.engagement-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(128, 0, 255, 0.15);
+}
+
+.service-card h3,
+.engagement-card h3 {
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.process-heading {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.process-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+  list-style: none;
+  padding: 0;
+  counter-reset: step;
+}
+
+.process-step {
+  counter-increment: step;
+  position: relative;
+  background: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 20px;
+  margin: 0.3rem;
+}
+
+[data-theme='dark'] .process-step {
+  background: rgba(128, 0, 255, 0.2);
+  color: var(--ifm-color-primary-lightest);
+}
+
+.process-step::before {
+  content: counter(step) '. ';
+}
+
+.contact-cta {
+  background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #8000FF 100%);
+  border-radius: 16px;
+  color: #ffffff;
+  padding: 4rem 2rem;
+}
+
+.contact-cta p {
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  opacity: 0.9;
+  line-height: 1.7;
+}
+
+.contact-cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .services-section,
+  .engagement-section,
+  .contact-cta {
+    padding: 3rem 1.5rem;
+  }
+
+  .services-section h2,
+  .engagement-section h2,
+  .contact-cta h2 {
+    font-size: 1.6rem;
+  }
+}
+
+/* ============================================
+   Project Card Styles
+   ============================================ */
+.project-card {
+  background: var(--ifm-card-background-color, #ffffff);
+  border: 1px solid var(--ifm-color-emphasis-200, #e3e3e3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(128, 0, 255, 0.2);
+}
+
+.project-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--ifm-heading-color);
+}
+
+.project-card .tech-badges,
+.service-card .tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.project-card .tech-badge,
+.service-card .tech-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .project-card .tech-badge,
+[data-theme='dark'] .service-card .tech-badge {
+  background-color: rgba(128, 0, 255, 0.2);
+  color: var(--ifm-color-primary-lightest);
+}
+
+.project-card .impact-metrics {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+}
+
+.project-card .impact-metrics li::before {
+  content: '📈 ';
+}
+
+.project-card .project-links {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.project-card .project-links a {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.project-card .project-links a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Certificate Grid Styles
+   ============================================ */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cert-grid .cert-item {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200, #e3e3e3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cert-grid .cert-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(128, 0, 255, 0.15);
+}
+
+.cert-grid .cert-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cert-grid .cert-item .cert-title {
+  padding: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+  background: var(--ifm-card-background-color, #ffffff);
+}
+
+@media (max-width: 768px) {
+  .cert-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Lightbox / Modal Overlay Styles
+   ============================================ */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: pointer;
+  animation: lightbox-fade-in 0.2s ease;
+}
+
+@keyframes lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-overlay img {
+  max-width: 90%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+.lightbox-overlay .lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox-overlay .lightbox-close:hover {
+  opacity: 1;
+}
+
+/* ============================================
+   Navbar Icon Styles (GitHub & LinkedIn)
+   ============================================ */
+.header-github-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12' fill='%23181717'/%3E%3C/svg%3E")
+    no-repeat;
+  background-size: contain;
+}
+
+[data-theme='dark'] .header-github-link::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12' fill='%23ffffff'/%3E%3C/svg%3E")
+    no-repeat;
+  background-size: contain;
+}
+
+.header-linkedin-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' fill='%230A66C2'/%3E%3C/svg%3E")
+    no-repeat;
+  background-size: contain;
+}
+
+.header-github-link:hover {
+  opacity: 0.7;
+}
+
+.header-linkedin-link:hover {
+  opacity: 0.7;
+}
+
+/* ============================================
+   Mental Model Diagram Styles
+   Theme-aware badge container + pastel node palette,
+   shared by every inline <div class="mental-model"> SVG.
+   ============================================ */
+:root {
+  --mm-bg: #faf8f4;
+  --mm-border: #ece4d8;
+  --mm-text: #2a2622;
+  --mm-text-muted: #746c60;
+  --mm-arrow: #a89c88;
+  --mm-label-bg: rgba(128, 0, 255, 0.1);
+  --mm-label-text: var(--ifm-color-primary-darkest);
+
+  --mm-n1-bg: #f6ddd2; --mm-n1-border: #e3bca8; /* terracotta */
+  --mm-n2-bg: #d7ecdf; --mm-n2-border: #a9d6bb; /* pine */
+  --mm-n3-bg: #dbe6f5; --mm-n3-border: #aec7e8; /* slate blue */
+  --mm-n4-bg: #f5e8cb; --mm-n4-border: #e3cd93; /* ochre */
+  --mm-n5-bg: #ebe0f0; --mm-n5-border: #cdb3dc; /* plum */
+  --mm-n6-bg: #d3edf1; --mm-n6-border: #9fd3da; /* teal */
+}
+
+[data-theme='dark'] {
+  --mm-bg: #201d19;
+  --mm-border: #35312b;
+  --mm-text: #ece7dd;
+  --mm-text-muted: #a49c8d;
+  --mm-arrow: #6f6a5f;
+  --mm-label-bg: rgba(166, 77, 255, 0.18);
+  --mm-label-text: var(--ifm-color-primary-lightest);
+
+  --mm-n1-bg: #4a2f26; --mm-n1-border: #6b4a3b;
+  --mm-n2-bg: #1f3c2e; --mm-n2-border: #35543f;
+  --mm-n3-bg: #263752; --mm-n3-border: #3c5170;
+  --mm-n4-bg: #4a3a1c; --mm-n4-border: #6b5730;
+  --mm-n5-bg: #3a2a46; --mm-n5-border: #543e63;
+  --mm-n6-bg: #1c3a3f; --mm-n6-border: #33565c;
+}
+
+.mental-model {
+  background: var(--mm-bg);
+  border: 1px solid var(--mm-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  margin: 2rem 0;
+}
+
+.mental-model__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  background: var(--mm-label-bg);
+  color: var(--mm-label-text);
+  margin-bottom: 0.85rem;
+}
+
+.mental-model svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mental-model__caption {
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  color: var(--mm-text-muted);
+  line-height: 1.5;
+}
+
+.mental-model text {
+  fill: var(--mm-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.mental-model .mm-arrow {
+  stroke: var(--mm-arrow);
+  stroke-width: 1.75;
+  fill: none;
+}
+
+.mental-model .mm-arrowhead {
+  fill: var(--mm-arrow);
+}
+
+.mental-model .mm-n1 { fill: var(--mm-n1-bg); stroke: var(--mm-n1-border); }
+.mental-model .mm-n2 { fill: var(--mm-n2-bg); stroke: var(--mm-n2-border); }
+.mental-model .mm-n3 { fill: var(--mm-n3-bg); stroke: var(--mm-n3-border); }
+.mental-model .mm-n4 { fill: var(--mm-n4-bg); stroke: var(--mm-n4-border); }
+.mental-model .mm-n5 { fill: var(--mm-n5-bg); stroke: var(--mm-n5-border); }
+.mental-model .mm-n6 { fill: var(--mm-n6-bg); stroke: var(--mm-n6-border); }
+
+.mental-model .mm-node-title {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.mental-model .mm-node-sub {
+  font-size: 10.5px;
+  fill: var(--mm-text-muted);
+}
+
+.mental-model .mm-flow-label {
+  font-size: 10.5px;
+  fill: var(--mm-text-muted);
+  font-style: italic;
+}
+
+.mental-model .mm-ring-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ============================================
+   Cheat Sheet Styles
+   Dense, masonry-style quick-reference pages
+   (devhints.io-inspired), plus the topic-tile
+   landing grid and the docs<->cheatsheet
+   cross-link pill.
+   ============================================ */
+/* One accent per Knowledge Base track (matches the sidebar categories) —
+   used by every cheat sheet and tile regardless of topic count, so adding
+   a new topic never needs a new color. */
+:root {
+  --cheat-sdet: #3f6fb0;   /* slate blue */
+  --cheat-sre: #2f8f92;    /* teal */
+  --cheat-sde: #b8860b;    /* ochre */
+  --cheat-mba: #8a4fae;    /* plum */
+  --cheat-ai: #3f8f5c;     /* pine */
+}
+
+[data-theme='dark'] {
+  --cheat-sdet: #6f9bd8;
+  --cheat-sre: #4bb3b6;
+  --cheat-sde: #e8c168;
+  --cheat-mba: #b37fd1;
+  --cheat-ai: #6fbf8a;
+}
+
+/* Landing page: colored topic tiles */
+.cheat-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.cheat-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  color: #ffffff;
+  background: var(--tile-accent, var(--ifm-color-primary));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cheat-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.cheat-tile--sdet { --tile-accent: var(--cheat-sdet); }
+.cheat-tile--sre { --tile-accent: var(--cheat-sre); }
+.cheat-tile--sde { --tile-accent: var(--cheat-sde); }
+.cheat-tile--mba { --tile-accent: var(--cheat-mba); }
+.cheat-tile--ai { --tile-accent: var(--cheat-ai); }
+
+/* Landing page: category group headers */
+.cheat-category-heading {
+  margin: 2.5rem 0 0.25rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--ifm-color-emphasis-200, #e3e3e3);
+}
+
+.cheat-category-heading:first-of-type {
+  margin-top: 1rem;
+}
+
+/* Cheat sheet page: masonry card layout */
+.cheat-sheet {
+  --sheet-accent: var(--ifm-color-primary);
+  column-count: 2;
+  column-gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.cheat-sheet--sdet { --sheet-accent: var(--cheat-sdet); }
+.cheat-sheet--sre { --sheet-accent: var(--cheat-sre); }
+.cheat-sheet--sde { --sheet-accent: var(--cheat-sde); }
+.cheat-sheet--mba { --sheet-accent: var(--cheat-mba); }
+.cheat-sheet--ai { --sheet-accent: var(--cheat-ai); }
+
+@media (max-width: 768px) {
+  .cheat-sheet { column-count: 1; }
+}
+
+.cheat-card {
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  background: var(--ifm-card-background-color, #ffffff);
+  border: 1px solid var(--ifm-color-emphasis-200, #e3e3e3);
+  border-top: 3px solid var(--sheet-accent);
+  border-radius: 8px;
+  padding: 1rem 1.1rem 1.1rem;
+  margin: 0 0 1.25rem;
+}
+
+.cheat-card h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sheet-accent);
+}
+
+.cheat-card pre {
+  margin-bottom: 0.5rem;
+  overflow-x: hidden;
+}
+
+.cheat-card pre code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cheat-card p:last-child {
+  margin-bottom: 0;
+}
+
+.cheat-see {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Cross-link pill: docs guide <-> cheat sheet */
+.topic-crosslink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin: 0 0 1.5rem;
+}
+
+[data-theme='dark'] .topic-crosslink {
+  background: rgba(128, 0, 255, 0.18);
+  color: var(--ifm-color-primary-lightest);
+}
+
+.topic-crosslink:hover {
+  opacity: 0.85;
+  text-decoration: none;
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .topic-crosslink:hover {
+  color: var(--ifm-color-primary-lightest);
+}
+
+/* Progress dashboard */
+.progress-dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.progress-summary {
+  margin: 1.5rem 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200, #e3e3e3);
+  border-radius: 10px;
+  background: var(--ifm-card-background-color, #ffffff);
+}
+
+.progress-summary-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 0.75rem;
+}
+
+.progress-summary-stats strong {
+  font-size: 1.2rem;
+  color: var(--ifm-font-color-base);
+}
+
+.progress-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-200, #e3e3e3);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--cheat-sre);
+  transition: width 0.2s ease;
+}
+
+.progress-clear-btn {
+  margin-top: 1rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--ifm-color-emphasis-300, #d3d3d3);
+  background: transparent;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.progress-clear-btn:hover {
+  border-color: var(--ifm-color-danger, #e03131);
+  color: var(--ifm-color-danger, #e03131);
+}
+
+.progress-clear-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.progress-clear-btn--danger {
+  border-color: var(--ifm-color-danger, #e03131);
+  color: var(--ifm-color-danger, #e03131);
+}
+
+.progress-tile {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.progress-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.progress-badge--none {
+  opacity: 0.65;
+}
+
+/* Start / focus picker */
+.start-picker {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.start-picker-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.start-picker-option {
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  border: 2px solid var(--ifm-color-emphasis-300, #d3d3d3);
+  background: var(--ifm-card-background-color, #ffffff);
+  color: var(--ifm-font-color-base);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.start-picker-option--sdet.start-picker-option--active { border-color: var(--cheat-sdet); color: var(--cheat-sdet); }
+.start-picker-option--sre.start-picker-option--active { border-color: var(--cheat-sre); color: var(--cheat-sre); }
+.start-picker-option--sde.start-picker-option--active { border-color: var(--cheat-sde); color: var(--cheat-sde); }
+.start-picker-option--mba.start-picker-option--active { border-color: var(--cheat-mba); color: var(--cheat-mba); }
+.start-picker-option--ai.start-picker-option--active { border-color: var(--cheat-ai); color: var(--cheat-ai); }
+
+.start-picker-result {
+  margin-top: 1rem;
+}
+
+/* ============================================
+   Content model — shared tokens
+   Per-component chrome lives in each component's
+   styles.module.css; only cross-component tokens
+   belong here.
+   ============================================ */
+:root {
+  --cm-beginner: #2e7d32;
+  --cm-intermediate: #b45309;
+  --cm-advanced: #8000ff;
+  --cm-radius: 10px;
+}
+
+[data-theme='dark'] {
+  --cm-beginner: #66bb6a;
+  --cm-intermediate: #fbbf24;
+  --cm-advanced: #b366ff;
+}
+
+.cm-level-beginner { color: var(--cm-beginner); }
+.cm-level-intermediate { color: var(--cm-intermediate); }
+.cm-level-advanced { color: var(--cm-advanced); }
+
+/* Dashboard export / import row */
+.progress-io {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.progress-io-msg {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Certificates — filter bar + card meta */
+.cert-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  justify-content: center;
+  margin: 0 0 1.75rem;
+  font-size: 0.85rem;
+}
+
+.cert-filters select {
+  margin-left: 0.3rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
+.cert-count {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.cert-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.4rem 0.6rem 0;
+}
+
+.cert-provider,
+.cert-skill {
+  font-size: 0.68rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cert-provider {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+}
+
+.cert-verify {
+  display: inline-block;
+  margin: 0.45rem 0.6rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* Resume — role variant tabs */
+.resume-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.resume-tab {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.resume-tab--active {
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: #fff;
+}

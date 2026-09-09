@@ -1,0 +1,28 @@
+{
+  "name": "docssheet — Docs & Cheat Sheets",
+  "short_name": "docssheet",
+  "description": "Reference guides, cheat sheets, and worked explanations for SDET, SRE, SDE, AI, and engineering leadership.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1B1F3B",
+  "theme_color": "#FFC933",
+  "icons": [
+    {
+      "src": "/img/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/apple-touch-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
