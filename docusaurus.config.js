@@ -1,14 +1,20 @@
 // @ts-check
 import {themes as prismThemes} from 'prism-react-renderer';
-import {GOATCOUNTER_CODE, ADS_ENABLED, ADSENSE_CLIENT} from './src/data/site.js';
+import {GOATCOUNTER_CODE, ADSENSE_CLIENT} from './src/data/site.js';
 
 const GITHUB_REPO = 'https://github.com/abhishekgupta1/docssheet';
 const EDIT_URL = `${GITHUB_REPO}/tree/main/`;
 
 /**
  * Analytics + ads are injected here only when switched on in src/data/site.js.
- * GoatCounter is cookieless; AdSense stays off until the site is approved.
+ * GoatCounter is cookieless. The AdSense loader script is emitted as soon as a
+ * real ADSENSE_CLIENT is set (needed for site verification / review); actual
+ * ad units (<AdSlot>) stay gated behind ADS_ENABLED and render nothing until
+ * the account is approved and that flag is flipped.
  */
+const ADSENSE_ON =
+  !!ADSENSE_CLIENT && !ADSENSE_CLIENT.endsWith('0000000000000000');
+
 const conditionalHeadTags = [
   // Google Consent Mode v2 — MUST run before any Google tag (AdSense / GA).
   // Everything starts denied; src/components/ConsentBanner flips these to
@@ -60,12 +66,12 @@ const conditionalHeadTags = [
         },
       ]
     : []),
-  ...(ADS_ENABLED
+  ...(ADSENSE_ON
     ? [
         {
           tagName: 'script',
           attributes: {
-            async: true,
+            async: 'true',
             src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`,
             crossorigin: 'anonymous',
           },
@@ -195,10 +201,9 @@ const config = {
       metadata: [
         {name: 'twitter:card', content: 'summary_large_image'},
         {property: 'og:type', content: 'website'},
-        // Google Search Console verification. Replace the content value with the
-        // token from Search Console (Settings -> Ownership verification -> HTML tag),
-        // or drop Google's verification HTML file into static/ instead.
-        {name: 'google-site-verification', content: 'REPLACE_WITH_SEARCH_CONSOLE_TOKEN'},
+        // Google Search Console verification: not set up yet. Add it later via a
+        // DNS TXT record at the registrar, or re-add a
+        // {name: 'google-site-verification', content: '<token>'} entry here.
       ],
       colorMode: {
         defaultMode: 'dark',

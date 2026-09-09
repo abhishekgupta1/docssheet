@@ -26,15 +26,17 @@ export const PERSON = {
 export const GOATCOUNTER_CODE = '';
 
 /**
- * Google AdSense — OFF until the site is approved. To turn on:
- *   1. set ADS_ENABLED = true
- *   2. set ADSENSE_CLIENT to your real `ca-pub-XXXXXXXXXXXXXXXX`
- *   3. put the matching line in static/ads.txt
- *   4. drop the Lighthouse "performance" budget in lighthouserc.json to ~0.8
- * While false: no loader script, no <AdSlot> output, no consent banner.
+ * Google AdSense.
+ *
+ * ADSENSE_CLIENT is the real publisher ID, so the loader script is emitted
+ * site-wide (docusaurus.config.js -> ADSENSE_ON) — this is what AdSense checks
+ * during "Requires review". static/ads.txt carries the matching DIRECT line.
+ *
+ * ADS_ENABLED still gates actual ad units: while false, every <AdSlot> renders
+ * nothing. After the account is approved, flip it to true and add ad units.
  */
 export const ADS_ENABLED = false;
-export const ADSENSE_CLIENT = 'ca-pub-0000000000000000';
+export const ADSENSE_CLIENT = 'ca-pub-1394375154476572';
 
 /** localStorage key the ConsentBanner writes once a choice is made. */
 export const CONSENT_KEY = 'site:ad-consent';

@@ -8,16 +8,22 @@
 
 ## Where things stand
 
-The docssheet site now lives in **this repo** (`github.com/abhishekgupta1/docssheet`),
-imported at **shortlist scope** on branch **`import-docssheet-site`** (not yet
-merged to `main`).
+The docssheet site lives in **this repo** (`github.com/abhishekgupta1/docssheet`),
+imported at **shortlist scope**. **It is live at `https://docssheet.com`** —
+`import-docssheet-site` was merged via PR #1 (`5a529f1`), GitHub Pages is on,
+DNS is set, HTTPS enforced. AdSense code is wired on a **new branch
+`adsense-onboarding`** (not yet merged — see PENDING-6).
 
 ```
 7f92718  Initial commit
-38bdb1c  Add launch planning docs          # Plan/ committed
+38bdb1c  Add launch planning docs
 1a6b226  Import docssheet site (shortlist scope)
 59b3d7e  Set onBrokenLinks: throw; sync Plan docs to the import
 85d5743  Add Plan/NEXT-SESSION.md handoff
+43b2f64  Update handoff: record local build + run verification
+5a529f1  Merge PR #1 -> main   (site goes live)
+b1d306f  Add Plan/GO-LIVE.md               \  branch adsense-onboarding
+<next>   Wire AdSense verification + D2     /  (open, not merged)
 ```
 
 **Content imported:** 15 flagship guides + 8 cheat sheets (SDET/SRE/SDE) +
@@ -32,8 +38,15 @@ more guides from there if needed (see PENDING-1).
 **Build state:** `npm run build` is clean — **zero broken-link warnings**,
 `onBrokenLinks: 'throw'`. Sitemap lists all 23 pages + intro + info pages under
 `https://docssheet.com`. No "Knowledge Base" / portfolio wording in `build/`.
-`ADS_ENABLED = false` (no ad code injected). Consent Mode v2 defaults to
-`denied`.
+Consent Mode v2 defaults to `denied`.
+
+**AdSense state (branch `adsense-onboarding`):** account created, `docssheet.com`
+added — "Requires review". Publisher ID `ca-pub-1394375154476572`. In the repo:
+the adsbygoogle **loader** is emitted site-wide (config `ADSENSE_ON` flag, true
+whenever `ADSENSE_CLIENT` is real); `src/data/site.js` `ADSENSE_CLIENT` set;
+`static/ads.txt` has the real DIRECT line; `google-site-verification`
+placeholder removed (D2). **`ADS_ENABLED` stays `false`** → the loader loads
+but zero `<AdSlot>` units render. Verified in a local build.
 
 **Run state (verified locally 2026-09-09):** `npm run serve` on `:3210`, then
 smoke-tested. Every route 200 (all 23 pages, the 6 info pages, `sitemap.xml` /
@@ -42,8 +55,9 @@ smoke-tested. Every route 200 (all 23 pages, the 6 info pages, `sitemap.xml` /
 docssheet branding, navbar = Docs / Cheat Sheets only, footer = Content / Site
 / Legal, sidebar = SDET/SRE/SDE only, redrawn 3-track intro SVG, mental-model
 diagrams render, code highlighting intact, consent banner shows and reflows on
-mobile, page HTML carries `ad_storage:"denied"` and **no** `adsbygoogle` /
-`google-adsense-account`. Titles are `<Page> | docssheet`.
+mobile, page HTML carries `ad_storage:"denied"`. Titles are `<Page> | docssheet`.
+(This run predates the `adsense-onboarding` branch — that branch adds the
+adsbygoogle loader but still renders no ad units.)
 
 ## Already done (do not redo)
 
@@ -61,63 +75,45 @@ mobile, page HTML carries `ad_storage:"denied"` and **no** `adsbygoogle` /
 - ✅ `sitemap.xml` + `robots.txt` verified in `build/` (spec R10, R11)
 - ✅ Built **and run** locally (`npm run serve`) — all routes 200, redirect +
   404 correct, desktop + mobile screenshots reviewed (see "Run state" above)
+- ✅ **Live on `https://docssheet.com`** — PR #1 merged, Pages on, DNS set,
+  HTTPS enforced (spec R1–R3, R23)
+- ✅ AdSense loader + `ads.txt` + `ADSENSE_CLIENT` wired on branch
+  `adsense-onboarding`, `ADS_ENABLED` still false (spec R19, R20)
+- ✅ `google-site-verification` placeholder removed (spec R14, decision D2)
 
 ---
 
 ## PENDING — do these next
 
-### In-repo, needs a decision from the owner first
+### DONE since first draft
+- **PENDING-3/4/5 → done.** `import-docssheet-site` merged (PR #1); GitHub Pages
+  on (Source: GitHub Actions); GoDaddy DNS set (4 A on `@` + `www` CNAME →
+  `abhishekgupta1.github.io`); custom domain + Enforce HTTPS. `https://docssheet.com`
+  serves; `https://www.docssheet.com` 301s to apex.
+- **PENDING-2 (D2) → done** on branch `adsense-onboarding` — placeholder meta removed.
 
-**PENDING-1 — Content volume (decision D8).** The site is ~23 pages, down from
-~200. This is the main risk the shortlist scope introduced: AdSense can reject
-for "thin content" / "low-value content." Decide:
+### PENDING-6 — Ship the AdSense verification (decision D3)
+Repo side is done on branch **`adsense-onboarding`**: loader emitted site-wide
+(config `ADSENSE_ON`), `ADSENSE_CLIENT = 'ca-pub-1394375154476572'`,
+`static/ads.txt` real line, `ADS_ENABLED` still `false`. Left to do (🧑):
+1. Merge `adsense-onboarding` → `main` (auto-deploys).
+2. Confirm live: `curl -s https://docssheet.com/ | grep adsbygoogle` and
+   `curl -s https://docssheet.com/ads.txt`.
+3. In AdSense: **Verify** / "I've placed the code", then **Submit for review**.
+4. On approval → flip `ADS_ENABLED = true` in `src/data/site.js` + add ad units.
+
+### PENDING-1 — Content volume (decision D8) — STILL OPEN
+The live site is ~23 pages. AdSense's most common rejection is "Low value /
+insufficient content." Decide:
 - (a) submit as-is (23 substantive pages, several 3k–19k words), or
 - (b) import a batch more guides from `../abhishekgupta1.github.io` first.
-If (b): the guides live under `../abhishekgupta1.github.io/docs/{sdet,sre,sde,mba,ai}-skills/`
-and `../abhishekgupta1.github.io/cheatsheets/`. Copy the `.md` + each dir's
-`_category_.json`, then `npm run build` (it will now **throw** on any broken
-cross-link — fix or de-link them). Watch for custom MDX components
-(`<InterviewQuestions>` etc.) — the imported `src/theme/MDXComponents.js` only
-registers `AdSlot`, so either add the component back or the build fails.
-
-**PENDING-2 — Search Console meta (decision D2).** `docusaurus.config.js` →
-`themeConfig.metadata` still ships
-`{name: 'google-site-verification', content: 'REPLACE_WITH_SEARCH_CONSOLE_TOKEN'}`.
-Either:
-- delete that one array entry (safe default — no Search Console dependency), or
-- create a Search Console **domain property** for `docssheet.com`, take the
-  HTML-tag token, paste it in.
-Do this before submitting to AdSense. Recommended default if the owner has no
-preference: **delete the entry now**, add a real token later.
-
-### Needs the owner / external accounts (cannot be done from the repo)
-
-**PENDING-3 — Merge + deploy (decision D9).**
-- Merge `import-docssheet-site` → `main` (PR: https://github.com/abhishekgupta1/docssheet/pull/new/import-docssheet-site).
-- `main` is what `.github/workflows/deploy.yml` runs on.
-
-**PENDING-4 — GitHub Pages (decision D1, part 1).**
-- Repo **Settings → Pages** for `abhishekgupta1/docssheet`: **enable Pages**,
-  Source = **GitHub Actions** (currently off).
-- Set Custom domain = `docssheet.com` (GitHub reads `static/CNAME` from the
-  build output).
-- Leave "Enforce HTTPS" until DNS verifies.
-
-**PENDING-5 — DNS (decision D1, part 2).**
-- Confirm which registrar holds `docssheet.com` (plan assumed GoDaddy — unverified).
-- Apex `@` → four A records: `185.199.108.153`, `185.199.109.153`,
-  `185.199.110.153`, `185.199.111.153`.
-- `www` → CNAME `abhishekgupta1.github.io`.
-- Verify: `dig docssheet.com +noall +answer` / `dig www.docssheet.com +noall +answer`.
-
-**PENDING-6 — AdSense verification tag (decision D3).**
-- Confirm a Google AdSense account exists (or create one), add `docssheet.com`.
-- AdSense issues a `<script>` loader or `<meta name="google-adsense-account"
-  content="ca-pub-…">` with a **real** `ca-pub-…` ID (the
-  `ca-pub-0000000000000000` placeholder in `src/data/site.js` will not verify).
-- Add the tag as an **unconditional** entry in `docusaurus.config.js`
-  `headTags` — NOT inside the `ADS_ENABLED` block. Keep `ADS_ENABLED = false`.
-- Redeploy, then submit for review.
+If (b): guides live under `../abhishekgupta1.github.io/docs/{sdet,sre,sde,mba,ai}-skills/`
+and `.../cheatsheets/`. Copy the `.md` + each dir's `_category_.json`, then
+`npm run build` (it **throws** on broken cross-links — fix or de-link). Watch
+for custom MDX components (`<InterviewQuestions>` etc.) — the imported
+`src/theme/MDXComponents.js` only registers `AdSlot`, so add the component back
+or the build fails. If MBA/AI tracks are re-added, restore their
+`sidebars.js` categories too.
 
 ### Verification
 
@@ -142,21 +138,25 @@ quick click-through on an actual phone (not just a 390px viewport).
   Funding Choices for EEA/UK.
 - **D6** — GA4 property and/or `GOATCOUNTER_CODE` (both currently empty/off).
 - **D7** — assign an owner + date to the AdSense submission.
-- `static/ads.txt` real publisher line — needs the post-approval pub ID. When
-  approved: `src/data/site.js` `ADS_ENABLED = true` + real `ADSENSE_CLIENT`;
-  `static/ads.txt` → `google.com, pub-XXXX, DIRECT, f08c47fec0942fa0`.
+- `static/ads.txt` / `ADSENSE_CLIENT` — already set to the real
+  `pub-1394375154476572`. On approval, the only change is
+  `src/data/site.js` `ADS_ENABLED = true` + adding ad units.
+- **`CLAUDE.md` is stale** — copied from the source site; still describes the
+  5-track / Learn-dropdown / claude-masterclass structure. Refresh to the
+  shortlist scope.
 
 ---
 
 ## Fast resume checklist
 
-1. `git checkout import-docssheet-site` in this repo.
-2. `npm install` if `node_modules` is missing, then `npm run build`
-   (`[SUCCESS]`, no broken links) and `npm run serve` — both already verified
-   green on 2026-09-09, so this is just a sanity re-check.
-3. Get the owner's answer on **PENDING-1** (content volume) and **PENDING-2**
-   (Search Console meta) — everything else is mechanical once those are set.
-4. Apply PENDING-2 (likely: delete the placeholder meta entry), commit.
-5. Hand PENDING-3/4/5/6 to the owner (merge, Pages, DNS, AdSense account).
-6. Once live: PENDING-7 (external-link + content-policy read) and PENDING-8
-   (real-domain / real-phone check).
+1. `git checkout adsense-onboarding` (has everything on `main` + the AdSense
+   wiring). `main` itself is live at `https://docssheet.com`.
+2. `npm install` if needed, then `npm run build` — `[SUCCESS]`, no broken
+   links; built HTML has the `adsbygoogle` loader and **no** `class="adsbygoogle"`
+   ad units.
+3. Open question for the owner: **PENDING-1 / D8** (submit with 23 pages, or
+   import more first).
+4. Ship PENDING-6: merge `adsense-onboarding` → `main`, then owner clicks
+   Verify + Submit in AdSense.
+5. After that: PENDING-7 (external-link + content-policy read) and PENDING-8
+   (real-phone check on the live domain).
