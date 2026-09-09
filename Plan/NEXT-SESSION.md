@@ -17,6 +17,7 @@ merged to `main`).
 38bdb1c  Add launch planning docs          # Plan/ committed
 1a6b226  Import docssheet site (shortlist scope)
 59b3d7e  Set onBrokenLinks: throw; sync Plan docs to the import
+85d5743  Add Plan/NEXT-SESSION.md handoff
 ```
 
 **Content imported:** 15 flagship guides + 8 cheat sheets (SDET/SRE/SDE) +
@@ -34,6 +35,16 @@ more guides from there if needed (see PENDING-1).
 `ADS_ENABLED = false` (no ad code injected). Consent Mode v2 defaults to
 `denied`.
 
+**Run state (verified locally 2026-09-09):** `npm run serve` on `:3210`, then
+smoke-tested. Every route 200 (all 23 pages, the 6 info pages, `sitemap.xml` /
+`robots.txt` / `CNAME` / `ads.txt`); `/` redirects to `/docs/intro`;
+`/nonexistent` → 404. Screenshots (desktop 1280px + mobile 390px) confirm:
+docssheet branding, navbar = Docs / Cheat Sheets only, footer = Content / Site
+/ Legal, sidebar = SDET/SRE/SDE only, redrawn 3-track intro SVG, mental-model
+diagrams render, code highlighting intact, consent banner shows and reflows on
+mobile, page HTML carries `ad_storage:"denied"` and **no** `adsbygoogle` /
+`google-adsense-account`. Titles are `<Page> | docssheet`.
+
 ## Already done (do not redo)
 
 - ✅ Site import + scaffold (config, sidebars, theme, ConsentBanner, AdSlot,
@@ -48,6 +59,8 @@ more guides from there if needed (see PENDING-1).
 - ✅ Front-matter `title`/`description` on all 23 pages + landings (spec R12);
   WIP-marker scan clean (spec R18 partial)
 - ✅ `sitemap.xml` + `robots.txt` verified in `build/` (spec R10, R11)
+- ✅ Built **and run** locally (`npm run serve`) — all routes 200, redirect +
+  404 correct, desktop + mobile screenshots reviewed (see "Run state" above)
 
 ---
 
@@ -106,18 +119,22 @@ preference: **delete the entry now**, add a real token later.
   `headTags` — NOT inside the `ADS_ENABLED` block. Keep `ADS_ENABLED = false`.
 - Redeploy, then submit for review.
 
-### Verification (after the site is live on the domain)
+### Verification
 
-**PENDING-7 — Per-page QA (spec R18, shortlist §4).** Run the §4 checklist
-against all 23 pages: mobile render (wide tables/code scroll), code-block
-highlighting intact, no dead external links, "Last updated" looks maintained,
-nothing tripping AdSense content policy. `npm run serve` locally covers most of
-it; do a real mobile pass once live.
+**PENDING-7 — Per-page QA (spec R18, shortlist §4).** Partly done: local run
+confirmed routing, rendering, code highlighting, and mobile reflow across the
+shortlist. **Still to do:**
+- dead **external** link check (`npm run linkcheck` skips `http(s)://` by
+  design — run a link checker that follows them, or spot-check by hand);
+- read all 23 pages for AdSense content-policy risks (copied third-party docs,
+  "cracked/free premium" framing, unsafe sample data, advice-as-fact);
+- "Last updated" timestamps — currently blank locally (files untracked in this
+  branch until merged); they populate from git once on `main`.
 
-**PENDING-8 — Live smoke test (spec R23–R24).** On `https://docssheet.com` and
-`https://www.docssheet.com`: HTTPS/cert OK, `/` redirects to `/docs/intro`, nav
-+ footer links, a few guides, a few cheat sheets, 404 page, the 3-track SVG on
-the docs landing at mobile width.
+**PENDING-8 — Live smoke test (spec R23–R24).** Local smoke test passed on
+`localhost:3210`. **Still to do on the real domain:** `https://docssheet.com`
+and `https://www.docssheet.com` load with a valid cert, `www` resolves, and a
+quick click-through on an actual phone (not just a 390px viewport).
 
 ### Deferred (post-approval — not blockers)
 
@@ -134,9 +151,12 @@ the docs landing at mobile width.
 ## Fast resume checklist
 
 1. `git checkout import-docssheet-site` in this repo.
-2. `npm install` if `node_modules` is missing, then `npm run build` — expect
-   `[SUCCESS]`, no broken links.
+2. `npm install` if `node_modules` is missing, then `npm run build`
+   (`[SUCCESS]`, no broken links) and `npm run serve` — both already verified
+   green on 2026-09-09, so this is just a sanity re-check.
 3. Get the owner's answer on **PENDING-1** (content volume) and **PENDING-2**
    (Search Console meta) — everything else is mechanical once those are set.
 4. Apply PENDING-2 (likely: delete the placeholder meta entry), commit.
 5. Hand PENDING-3/4/5/6 to the owner (merge, Pages, DNS, AdSense account).
+6. Once live: PENDING-7 (external-link + content-policy read) and PENDING-8
+   (real-domain / real-phone check).
