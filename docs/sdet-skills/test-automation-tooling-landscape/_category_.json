@@ -1,0 +1,8 @@
+{
+  "label": "Test Automation Tooling Landscape",
+  "position": 13,
+  "link": {
+    "type": "generated-index",
+    "description": "A categorized reference to the test automation tool ecosystem — foundations, functional, quality, distributed systems, delivery, execution, observability, architecture, and AI-powered testing."
+  }
+}

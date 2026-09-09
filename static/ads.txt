@@ -1,0 +1,4 @@
+# Google AdSense authorized sellers file.
+# Not active yet — AdSense is disabled (see src/data/site.js ADS_ENABLED).
+# When approved, replace the line below with your real publisher ID:
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
