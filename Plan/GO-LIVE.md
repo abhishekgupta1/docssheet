@@ -82,21 +82,29 @@ GoDaddy → **DNS → Manage DNS** for `docssheet.com`:
 - Closes spec **R1–R3**, **R23**.
 
 ### Step 6 — AdSense (only after Step 5) 🧑 + 🤖
-- [ ] 🧑 Create a Google AdSense account at https://www.google.com/adsense/, add `docssheet.com`
-- [ ] 🧑 Copy the verification snippet it issues (a `<script>` loader or
-      `<meta name="google-adsense-account" content="ca-pub-…">`), with the real `ca-pub-…` ID
-- [ ] 🤖 Add it as an **unconditional** entry in `docusaurus.config.js` `headTags`
-      (NOT inside the `ADS_ENABLED` block); keep `ADS_ENABLED = false`
-- [ ] 🧑 Merge/redeploy, then submit for review in AdSense
-- Spec **R20**, decision **D3**.
+- [x] 🧑 AdSense account created; `docssheet.com` added — status "Requires review".
+      Publisher ID **`ca-pub-1394375154476572`**.
+- [x] 🤖 Loader wired in `docusaurus.config.js` `headTags` via a new `ADSENSE_ON`
+      flag — emitted whenever `ADSENSE_CLIENT` is real, independent of `ADS_ENABLED`.
+- [x] 🤖 `src/data/site.js` → `ADSENSE_CLIENT = 'ca-pub-1394375154476572'`;
+      `ADS_ENABLED` stays `false` (no `<AdSlot>` renders during review).
+- [x] 🤖 `static/ads.txt` → `google.com, pub-1394375154476572, DIRECT, f08c47fec0942fa0`.
+- [x] 🤖 D2 done in the same change: `google-site-verification` placeholder removed.
+- [ ] 🧑 Merge the `adsense-onboarding` branch → `main` (auto-deploys).
+- [ ] 🧑 Confirm live: `curl -s https://docssheet.com/ | grep adsbygoogle` and
+      `curl -s https://docssheet.com/ads.txt`.
+- [ ] 🧑 In AdSense: click **Verify** / "I've placed the code", then **Submit for review**.
+- [ ] 🧑 On approval → ask 🤖 to flip `ADS_ENABLED = true` and add ad units.
+- Spec **R14**, **R19**, **R20**; decisions **D2**, **D3**.
 
 ---
 
 ## Do-now in-repo cleanups 🤖
 
-- [ ] **D2** — delete the `google-site-verification: REPLACE_WITH_SEARCH_CONSOLE_TOKEN`
-      entry from `docusaurus.config.js` → `themeConfig.metadata`. Re-add a real
-      token later only if a Search Console property is created. *Recommended.*
+- [x] **D2** — `google-site-verification` placeholder removed from
+      `docusaurus.config.js` → `themeConfig.metadata` (done in the
+      `adsense-onboarding` branch). Re-add a real token later only if a Search
+      Console property is created — easiest via a DNS TXT record.
 - [ ] **D8** — no change needed now. Going live with 23 pages is acceptable; if
       AdSense flags thin content, import more guides from `../abhishekgupta1.github.io`.
 
@@ -106,11 +114,13 @@ GoDaddy → **DNS → Manage DNS** for `docssheet.com`:
 
 | Step | Owner | Done |
 | ---- | ----- | ---- |
-| 1 — merge branch | 🤖 | ☐ |
-| 2 — enable Pages (docssheet repo) | 🧑 | ☐ |
-| 3 — GoDaddy DNS | 🧑 | ☐ |
-| 4 — custom domain + HTTPS | 🧑 | ☐ |
-| 5 — verify live | 🧑 | ☐ |
-| 6 — AdSense account + verification tag | 🧑 + 🤖 | ☐ |
+| 1 — merge import branch (`import-docssheet-site`) | 🧑 | ✅ (PR #1) |
+| 2 — enable Pages (docssheet repo) | 🧑 | ✅ |
+| 3 — GoDaddy DNS | 🧑 | ✅ |
+| 4 — custom domain + HTTPS | 🧑 | ✅ |
+| 5 — verify live (`https://docssheet.com` serving) | 🧑 | ✅ |
+| 6a — AdSense code wired in repo (`adsense-onboarding` branch) | 🤖 | ✅ |
+| 6b — merge `adsense-onboarding` → main, redeploy | 🧑 | ☐ |
+| 6c — click Verify + Submit for review in AdSense | 🧑 | ☐ |
 | Guard rail — strip `docssheet.com` from portfolio repo | 🧑 | ☐ |
-| D2 — remove Search Console placeholder | 🤖 | ☐ |
+| D2 — remove Search Console placeholder | 🤖 | ✅ |
