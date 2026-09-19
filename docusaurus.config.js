@@ -69,6 +69,10 @@ const conditionalHeadTags = [
   ...(ADSENSE_ON
     ? [
         {
+          tagName: 'meta',
+          attributes: {name: 'google-adsense-account', content: ADSENSE_CLIENT},
+        },
+        {
           tagName: 'script',
           attributes: {
             async: 'true',

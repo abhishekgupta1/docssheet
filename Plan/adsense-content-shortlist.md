@@ -2,10 +2,13 @@
 
 Companion to `docssheet-launch-spec.md` / `docssheet-launch-plan.md`.
 
-**Status (2026-09-09):** this list has been acted on — every page below was
-**imported into the `docssheet` repo** (branch `import-docssheet-site`) and is
-now the site's entire content set. Paths below are live in this repo. The
-source of truth for the fuller catalogue remains `../abhishekgupta1.github.io`.
+**Status (2026-09-09):** this list was the **first** import batch (branch
+`import-docssheet-site`, now on `main` / live). A **second batch** (branch
+`adsense-onboarding`, PR #2) added ~27 more guides + ~23 cheat sheets — SDET
+tool guides, more SRE guides incl. the incident-response cluster, and the AI
+track — bringing the site to ~80 pages. The 23 pages below remain the ones to
+**personally QA and point a reviewer at**; the rest are supporting depth. Fuller
+catalogue still in `../abhishekgupta1.github.io`.
 
 **Why this file exists:** AdSense reviewers don't read the whole site. They
 sample a handful of pages plus the required "site info" pages (About, Contact,

@@ -105,8 +105,8 @@ GoDaddy → **DNS → Manage DNS** for `docssheet.com`:
       `docusaurus.config.js` → `themeConfig.metadata` (done in the
       `adsense-onboarding` branch). Re-add a real token later only if a Search
       Console property is created — easiest via a DNS TXT record.
-- [ ] **D8** — no change needed now. Going live with 23 pages is acceptable; if
-      AdSense flags thin content, import more guides from `../abhishekgupta1.github.io`.
+- [x] **D8** — second import batch added ~27 guides + ~23 cheat sheets (branch
+      `adsense-onboarding`). Site is ~80 pages across SDET/SRE/SDE/AI. Build clean.
 
 ---
 
@@ -120,7 +120,8 @@ GoDaddy → **DNS → Manage DNS** for `docssheet.com`:
 | 4 — custom domain + HTTPS | 🧑 | ✅ |
 | 5 — verify live (`https://docssheet.com` serving) | 🧑 | ✅ |
 | 6a — AdSense code wired in repo (`adsense-onboarding` branch) | 🤖 | ✅ |
-| 6b — merge `adsense-onboarding` → main, redeploy | 🧑 | ☐ |
+| 6b — merge `adsense-onboarding` (PR #2) → main, redeploy | 🧑 | ☐ |
 | 6c — click Verify + Submit for review in AdSense | 🧑 | ☐ |
 | Guard rail — strip `docssheet.com` from portfolio repo | 🧑 | ☐ |
 | D2 — remove Search Console placeholder | 🤖 | ✅ |
+| D8 — second content import (~80 pages) | 🤖 | ✅ (in PR #2) |
