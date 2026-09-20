@@ -2,7 +2,9 @@
 title: "JMeter: The Complete Guide"
 description: "End-to-end reference for JMeter — test plan structure, load/stress/spike/soak testing, correlation, distributed testing, key metrics, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [jmeter, sdet, performance-testing]
+image: /img/social/jmeter-guide.png
 ---
 
 # JMeter — The Complete Guide
@@ -13,6 +15,28 @@ correctly, or walk into an SDET/performance interview. Organized as a
 lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/jmeter">📋 Quick reference: JMeter →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Networking Fundamentals](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the test plan structure: thread group, samplers, listeners
+2. Set threads, ramp-up, and loop count for a small load test
+3. Know the difference between load, stress, spike, and soak tests
+4. Run in non-GUI mode for CI and read the key metrics
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Build a test plan with thread groups and samplers
+- Distinguish load, stress, spike, and soak tests
+- Correlate and parameterize dynamic values
+- Run headless in CI and interpret the key metrics
+
+</KeyTakeaways>
 
 ---
 
@@ -436,6 +460,99 @@ invalidating the very results you're trying to collect. For real runs,
 remove heavy listeners and either use a lightweight `Summary Report` or
 write directly to a `.jtl` results file with no GUI listener at all, then
 generate the HTML dashboard report from that file after the run completes.
+
+---
+
+<Exercises>
+<Exercises.Task title="Run a plan headless and override it from the command line" level="intermediate" stretch="Re-run with a ramp-up of 0 and compare the maximum response time with the gentle ramp.">
+
+You need Java and Apache JMeter 5.6.x. Start the small server from the Postman guide's exercise (port 4010). Save this test plan as `login.jmx`. Its thread count, ramp-up, and loops come from properties, using the `${__P(users,5)}` pattern the guide describes:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Login load" enabled="true"/>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Users" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__P(loops,2)}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(users,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,2)}</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /login" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"username":"validuser","password":"correctpass"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">4010</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/login</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
+```
+
+Run it without the GUI. Delete `results.jtl` and `report/` before each run:
+
+```bash
+jmeter -n -t login.jmx -Jusers=5 -Jloops=2 -Jrampup=2 -l results.jtl -e -o report
+```
+
+**Done when:** the summary line shows 10 samples with `Err: 0 (0.00%)`, `results.jtl` has 10 data rows (users times loops), and `report/index.html` exists. Then run with `-Jusers=10 -Jloops=3` and confirm 30 samples without editing the plan.
+
+</Exercises.Task>
+<Exercises.Task title="Write the CI gate that fails on a high error rate" level="advanced">
+
+The guide's pipeline calls `python scripts/check_error_rate.py results.jtl --max-error-pct 1.0`. Write that script. It should read the results file (a CSV with `success` and `elapsed` columns), print the number of samples, the error percentage, and the 95th-percentile response time, and exit non-zero when the error percentage is above the limit.
+
+Test it on two runs of the plan above: once with the server running, and once with the server stopped.
+
+**Done when:** the healthy run prints `error%=0.0` and the script exits `0`, and the run with the server stopped reports `error%=100.0` and the script exits `1`. You can also say why a single average would hide the tail that the 95th percentile shows.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The load test that measured the test tool">
+<CaseStudy.Context>
+
+*Illustrative scenario.* An engineer wants to see failures as they happen, so they add a results-tree listener and start a load run with thousands of threads from the JMeter GUI.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The listener kept every request and response in memory and the GUI spent its effort redrawing. The tool ran out of memory and, before that, could not generate the load it was configured for, so the latency numbers described JMeter's own overhead instead of the system under test.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Use the GUI only to build and debug a plan with a handful of threads. Run real load in non-GUI mode, remove memory-hungry listeners, and write results to a `.jtl` file, then generate the report from that file.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to turn a list of endpoints into a JMeter plan outline (thread group, samplers, extractors), then open it with two threads and confirm every request really succeeds before scaling up.
+- Paste a `.jtl` excerpt or dashboard summary and ask it to interpret throughput, percentiles, and error rate. Check the numbers against the raw file, because an average alone hides tail latency.
+- Have it suggest thread-group settings for load, spike, and soak tests from a description of your traffic, and check that the ramp-up matches the intent (near zero for a spike, gradual for load).
+
+</AISpark>
 
 ---
 

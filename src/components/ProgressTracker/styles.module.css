@@ -1,0 +1,48 @@
+.tracker {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-300, #d3d3d3);
+  background: var(--ifm-card-background-color, #ffffff);
+  color: var(--ifm-color-emphasis-700);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--ifm-color-emphasis-500, #a3a3a3);
+}
+
+.inProgress.active {
+  background: rgba(184, 134, 11, 0.16);
+  border-color: #b8860b;
+  color: #8a6508;
+}
+
+[data-theme='dark'] .inProgress.active {
+  background: rgba(232, 193, 104, 0.16);
+  border-color: #e8c168;
+  color: #e8c168;
+}
+
+.known.active {
+  background: rgba(63, 143, 92, 0.16);
+  border-color: #3f8f5c;
+  color: #2f6c46;
+}
+
+[data-theme='dark'] .known.active {
+  background: rgba(111, 191, 138, 0.18);
+  border-color: #6fbf8a;
+  color: #6fbf8a;
+}

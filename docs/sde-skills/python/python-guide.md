@@ -2,7 +2,9 @@
 title: "Python: The Complete Guide"
 description: "End-to-end reference for Python — core language, data structures, OOP, concurrency, decorators/generators, error handling, testing, ops/DevOps automation scripting (subprocess, argparse, requests, boto3, SSH fleets), and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [python, sde, programming-language, automation, devops]
+image: /img/social/python-guide.png
 ---
 
 # Python — The Complete Guide
@@ -12,6 +14,26 @@ codebase, write idiomatic production code, or walk into an SDE interview.
 Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/python">📋 Quick reference: Python →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={10}>
+
+1. Learn the core data types and comprehensions
+2. Write functions with closures, then a decorator
+3. Understand the GIL and when to use threads, processes, or asyncio
+4. Write a `pytest` test and set up a virtual environment
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Use Python's core types, comprehensions, and functions
+- Write decorators, generators, and classes
+- Choose between threading, multiprocessing, and asyncio
+- Test with `pytest` and manage environments
+
+</KeyTakeaways>
 
 ---
 
@@ -1507,6 +1529,124 @@ a double charge, or corrupted state. Practical techniques: check-before-create
 (treat `AlreadyExists` as success), a lock/lease to prevent concurrent runs
 (`flock`, a conditional write), and idempotent writes (`PUT` with a fixed
 key rather than an appending `POST`).
+
+---
+
+<Exercises>
+<Exercises.Task title="Write a retry decorator that keeps the function's identity" level="intermediate">
+
+Implement `retry(times=3)` so it calls the wrapped function up to `times` times and re-raises the last error if every attempt fails. Use `functools.wraps`. Then run this harness against it:
+
+```python
+calls = {"flaky": 0, "broken": 0}
+
+
+@retry(times=3)
+def flaky():
+    """Fails twice, then works."""
+    calls["flaky"] += 1
+    if calls["flaky"] < 3:
+        raise ConnectionError("try again")
+    return "ok"
+
+
+@retry(times=3)
+def broken():
+    calls["broken"] += 1
+    raise ValueError("always fails")
+
+
+print(flaky(), calls["flaky"], flaky.__name__, flaky.__doc__)
+try:
+    broken()
+except ValueError as error:
+    print("raised:", error, "after", calls["broken"], "attempts")
+```
+
+**Done when:** it prints `ok 3 flaky Fails twice, then works.` and then `raised: always fails after 3 attempts`. The function name and docstring survive, which is what `functools.wraps` is for.
+
+</Exercises.Task>
+<Exercises.Task title="Measure the GIL: threads versus processes" level="advanced" stretch="Replace the CPU-bound loop with time.sleep(1) and compare threads again.">
+
+Run this on a multi-core machine. It does the same CPU-bound work sequentially, in four threads, and in four processes:
+
+```python
+import os
+import time
+from multiprocessing import Pool
+from threading import Thread
+
+
+def count_down(n):
+    while n > 0:
+        n -= 1
+
+
+N = 20_000_000
+JOBS = 4
+
+
+def timed(label, fn):
+    start = time.perf_counter()
+    fn()
+    print(f"{label:<14} {time.perf_counter() - start:.2f}s")
+
+
+def sequential():
+    for _ in range(JOBS):
+        count_down(N)
+
+
+def threaded():
+    threads = [Thread(target=count_down, args=(N,)) for _ in range(JOBS)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+
+def processes():
+    with Pool(processes=JOBS) as pool:
+        pool.map(count_down, [N] * JOBS)
+
+
+if __name__ == "__main__":
+    print("cpu cores:", os.cpu_count())
+    timed("sequential", sequential)
+    timed("4 threads", threaded)
+    timed("4 processes", processes)
+```
+
+**Done when:** the four threads take about as long as the sequential run (on my 12-core machine roughly 1.7 seconds each), while the four processes finish clearly faster (about 0.6 to 0.75 seconds), and you can explain that difference using the GIL and say which tool you would choose for I/O-bound work instead.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The default config that changed for every tenant">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A service keeps a default settings dictionary that includes a list of enabled features. For each new customer it makes a copy and then adds that customer's extra features to the list.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The copy was made with `copy.copy`, which only copies the top level, so every customer's settings still shared the same inner list. Adding a feature for one customer quietly added it for all of them, and the bug only showed up when someone noticed a feature they had never enabled.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+A shallow copy shares nested objects. Use `copy.deepcopy` when nested data must be independent, or build fresh structures for each customer, and write a test that mutates one copy and checks the others.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to write a decorator for retries or timing, then check by hand that it uses `functools.wraps` and preserves the function's name and docstring.
+- Have it recommend threading, multiprocessing, or asyncio for a workload you describe, and validate the recommendation with a small benchmark instead of accepting the argument.
+- Ask it to review code for mutable default arguments and shallow copies of nested data, and reproduce each suspected bug in a REPL before fixing it.
+
+</AISpark>
 
 ---
 

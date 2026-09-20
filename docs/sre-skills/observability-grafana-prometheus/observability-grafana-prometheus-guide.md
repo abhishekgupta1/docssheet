@@ -2,7 +2,9 @@
 title: "Observability (Grafana & Prometheus): The Complete Guide"
 description: "End-to-end reference for Observability (Grafana & Prometheus) — Prometheus architecture and PromQL, SLIs/SLOs and error budgets, alerting and dashboards, long-term storage, ELK/EFK and commercial APM tradeoffs, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [observability, grafana, prometheus, sre, sli, slo, error-budget, elk, datadog]
+image: /img/social/observability-grafana-prometheus-guide.png
 ---
 
 # Observability (Grafana & Prometheus) — The Complete Guide
@@ -15,6 +17,26 @@ For how OpenTelemetry traces/logs/metrics reach this stack via OTLP, see the
 this doc focuses on Prometheus and Grafana specifically.
 
 <a class="topic-crosslink" href="/cheatsheets/observability-grafana-prometheus">📋 Quick reference: Prometheus & Grafana →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={10}>
+
+1. Learn how Prometheus scrapes, stores, and queries metrics
+2. Write three PromQL queries: a rate, a ratio, and a percentile
+3. Define one SLI/SLO and compute its error budget
+4. Wire an alert through Alertmanager and read Common Pitfalls
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain how Prometheus scrapes, stores, and queries metrics
+- Write practical PromQL
+- Define SLIs, SLOs, and an error budget
+- Route alerts through Alertmanager and build Grafana dashboards
+
+</KeyTakeaways>
 
 ---
 
@@ -939,6 +961,59 @@ reaches a good outcome faster there. A larger org with the headcount to
 operate infra, or with strict cost/data-residency constraints, gets more
 long-term leverage self-hosting — especially if telemetry is emitted via
 OTel, keeping the backend choice swappable either way.
+
+---
+
+<Exercises>
+<Exercises.Task title="Query Prometheus about itself" level="intermediate" stretch="Shrink the rate window below four scrape intervals and describe what happens to the graph.">
+
+Run Prometheus locally (for example `docker run -p 9090:9090 prom/prometheus`), open the expression browser, and use Prometheus's own metrics. Write one query for the request rate per handler, and one for the p99 request duration per handler:
+
+```promql
+sum(rate(prometheus_http_requests_total[5m])) by (handler)
+
+histogram_quantile(0.99,
+  sum(rate(prometheus_http_request_duration_seconds_bucket[5m])) by (le, handler)
+)
+```
+
+**Done when:** both queries return one series per handler, and you can explain why the second sums `rate()` of the `_bucket` series by `le` before the quantile, instead of using raw bucket counts.
+
+</Exercises.Task>
+<Exercises.Task title="Turn a 99.95% SLO into numbers" level="advanced">
+
+A service has a 99.95% availability SLO over 30 days. Write its availability SLI in the guide's PromQL shape, then work out by hand: the error budget in minutes, the budget left after one 9-minute full outage, and how long the budget lasts at a 14.4x burn and at a 3x burn.
+
+**Done when:** you get 21.6 minutes of budget, 12.6 minutes (about 58%) left after the outage, and roughly 2 days at 14.4x (30 divided by 14.4) and 10 days at 3x.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The alert that paged for nothing and missed the leak">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team pages on a static rule: error rate above 5% for five minutes. Deploys keep tripping it at 3am, so the on-call rotation starts ignoring it.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+Brief blips during deploys crossed the threshold and paged. Meanwhile a slow 2% error leak never crossed 5%, and quietly consumed the month's error budget over about a week. The static rule treated a short spike and a sustained leak as the same thing, and could not tell either one what the SLO actually allowed.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Alert on burn rate against the SLO, using a long window to confirm the burn is sustained and a short one to confirm it is still happening. That pages on real budget risk and stays quiet for blips.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Describe a metric in plain words and ask an assistant for the PromQL. Run it in the expression browser and check that counters are wrapped in `rate()` and the window spans at least four scrape intervals.
+- Paste a static alert rule and ask it to rewrite it as multi-window burn-rate alerts for your stated SLO. Recompute the multipliers yourself, because they depend on the SLO and window.
+- Have it draft Grafana panels for one service following RED, then check each panel's query by hand.
+
+</AISpark>
 
 ---
 

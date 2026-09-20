@@ -1,8 +1,10 @@
 ---
 title: "Prometheus & Grafana Cheat Sheet"
 description: "Quick reference for Prometheus/Grafana observability — PromQL, golden signals, alerting, and Grafana basics."
+level: intermediate
 tags: [observability, prometheus, grafana, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/observability-grafana-prometheus.png
 ---
 
 # Prometheus & Grafana cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for metrics-based observability. For the full stack —
 Alertmanager routing, Thanos/Mimir, logs, and APM tradeoffs — see the [complete guide](/docs/sre-skills/observability-grafana-prometheus/observability-grafana-prometheus-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/observability-grafana-prometheus/observability-grafana-prometheus-guide">📖 Full guide: Prometheus & Grafana →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Instant vs. range vector** card
+2. Then the **rate() vs irate()** and **Aggregation** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/observability-grafana-prometheus/observability-grafana-prometheus-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

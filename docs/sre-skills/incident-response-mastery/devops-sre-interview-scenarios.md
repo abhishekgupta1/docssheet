@@ -2,8 +2,22 @@
 title: "DevOps/SRE Interview Scenarios"
 description: "Rapid-fire practice material for SRE and DevOps troubleshooting interviews — Linux, AWS+Linux combined incidents, Kubernetes, and a 15-pattern incident catalog."
 sidebar_position: 9
+level: advanced
 tags: [sre, devops, interview, scenarios, aws, kubernetes, incident-response]
+image: /img/social/devops-sre-interview-scenarios.png
 ---
+
+<LevelBadge level="advanced" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={15}>
+
+1. Pick one scenario and answer aloud before reading the solution
+2. Practise narrating your first three diagnostic commands
+3. Skim What Interviewers Look For before your next interview
+
+</TenMinute>
 
 ## Table of Contents
 

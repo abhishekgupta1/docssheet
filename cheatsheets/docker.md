@@ -2,8 +2,10 @@
 title: "Docker Cheat Sheet"
 description: "Quick reference for Docker — Dockerfile essentials, multi-stage builds, volumes, networking, and compose."
 sidebar_position: 6
+level: beginner
 tags: [docker, sde, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/docker.png
 ---
 
 # Docker cheatsheet
@@ -12,6 +14,17 @@ A one-page reference for Docker. For image layering internals and the full
 debugging playbook, see the [complete guide](/docs/sde-skills/docker-basics/docker-basics-guide).
 
 <a class="topic-crosslink" href="/docs/sde-skills/docker-basics/docker-basics-guide">📖 Full guide: Docker →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Dockerfile essentials** card
+2. Then the **ENTRYPOINT vs CMD** and **Layer-order optimization** cards
+3. Treat the other 9 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sde-skills/docker-basics/docker-basics-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sde">
 

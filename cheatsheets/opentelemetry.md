@@ -1,8 +1,10 @@
 ---
 title: "OpenTelemetry Cheat Sheet"
 description: "Quick reference for OpenTelemetry — traces/spans, context propagation, the Collector, and sampling."
+level: intermediate
 tags: [opentelemetry, observability, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/opentelemetry.png
 ---
 
 # OpenTelemetry cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for OpenTelemetry. For instrumentation deep-dives and
 Collector pipeline config, see the [complete guide](/docs/sre-skills/opentelemetry/opentelemetry-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/opentelemetry/opentelemetry-guide">📖 Full guide: OpenTelemetry →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Spans & traces** card
+2. Then the **Context propagation** and **Three signals** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/opentelemetry/opentelemetry-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

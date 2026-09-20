@@ -23,6 +23,25 @@ mistakes, and how it shows up in interviews and on the job. They span
 Browse the sidebar to explore each category, or jump to the matching
 [cheat sheet](/cheatsheets) when you just need the syntax.
 
+## Top features at a glance
+
+- **Guides by track** — in-depth guides across SDET, SRE, SDE and AI, each opening with a Mental Model diagram.
+- **Cheat Sheets** — quick-lookup pages with a progress tracker so you can mark what you've covered.
+- **Library, Roadmap & Skills Matrix** — browse every guide by track, level and reading time, and follow a suggested learning order.
+- **Progress Dashboard** — see your cheat-sheet progress across topics in one place.
+- **🧠 Mind map** — open an interactive map of any guide's headings in one click.
+- **Hands-on practice** — exercises, case studies and AI ideas on many guides.
+- **Light & dark themes, offline-ready** — light by default, with a toggle in the navbar, and installable as an app.
+
+<TenMinute minutes={5} title="Start here">
+
+1. Not sure where to begin? Try [Pick Your Focus](/start)
+2. Browse every guide by track, level, and reading time in the [Library](/library)
+3. See a suggested learning order for each track on the [Skill Roadmap](/roadmap)
+4. Need a quick lookup rather than a full guide? Use the [Cheat Sheets](/cheatsheets)
+
+</TenMinute>
+
 <div class="mental-model">
 <span class="mental-model__label">🧭 Mental model</span>
 

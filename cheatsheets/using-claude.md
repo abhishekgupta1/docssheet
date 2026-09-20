@@ -1,8 +1,10 @@
 ---
 title: "Claude Cheat Sheet"
 description: "Quick reference for Claude — model tiers, where to access it, prompting 101, and a best-practice checklist."
+level: beginner
 tags: [claude, ai, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/using-claude.png
 ---
 
 # Claude cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for using Claude effectively. For the full walkthrough,
 see the [complete guide](/docs/ai-skills/claude/claude-cheatsheet).
 
 <a class="topic-crosslink" href="/docs/ai-skills/claude/claude-cheatsheet">📖 Full guide: Claude →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Model tiers** card
+2. Then the **Where to access it** and **Core capabilities** cards
+3. Treat the other 3 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/ai-skills/claude/claude-cheatsheet) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--ai">
 

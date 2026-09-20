@@ -104,6 +104,11 @@ const config = {
 
   onBrokenLinks: 'throw',
 
+  // Renders ```mermaid fences (used in the tooling-landscape guide).
+  markdown: {
+    mermaid: true,
+  },
+
   headTags: conditionalHeadTags,
 
   i18n: {
@@ -184,9 +189,12 @@ const config = {
     // Per-page Open Graph images, generated at build time. Best-effort:
     // never breaks the build. Remove this line to disable.
     './plugins/og-image',
+    // Flat index of every doc, powering the /library page.
+    './plugins/docs-index',
   ],
 
   themes: [
+    '@docusaurus/theme-mermaid',
     [
       '@easyops-cn/docusaurus-search-local',
       {
@@ -222,6 +230,18 @@ const config = {
         items: [
           {type: 'docSidebar', sidebarId: 'docs', label: 'Docs', position: 'left'},
           {type: 'docSidebar', docsPluginId: 'cheatsheets', sidebarId: 'cheatsheets', label: 'Cheat Sheets', position: 'left'},
+          {
+            type: 'dropdown',
+            label: 'Learn',
+            position: 'left',
+            items: [
+              {to: '/library', label: 'Library'},
+              {to: '/roadmap', label: 'Skill Roadmap'},
+              {to: '/skills', label: 'Skills Matrix'},
+              {to: '/dashboard', label: 'Progress Dashboard'},
+              {to: '/start', label: 'Pick Your Focus'},
+            ],
+          },
           // Right side of the navbar is just the (wide) search bar + the theme
           // toggle — layout/ordering handled in src/css/custom.css.
         ],
@@ -234,6 +254,16 @@ const config = {
             items: [
               {label: 'Docs', to: '/docs/intro'},
               {label: 'Cheat Sheets', to: '/cheatsheets'},
+            ],
+          },
+          {
+            title: 'Learn',
+            items: [
+              {label: 'Library', to: '/library'},
+              {label: 'Skill Roadmap', to: '/roadmap'},
+              {label: 'Skills Matrix', to: '/skills'},
+              {label: 'Progress Dashboard', to: '/dashboard'},
+              {label: 'Pick Your Focus', to: '/start'},
             ],
           },
           {

@@ -2,7 +2,9 @@
 title: "Playwright: The Complete Guide"
 description: "End-to-end reference for Playwright — architecture, locators, waiting, fixtures, network mocking, CI, debugging, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [playwright, sdet, test-automation, e2e]
+image: /img/social/playwright-guide.png
 ---
 
 # Playwright — The Complete Guide
@@ -13,6 +15,26 @@ interview. Organized so you can jump to any section as a lookup, or read
 top-to-bottom as a course.
 
 <a class="topic-crosslink" href="/cheatsheets/playwright">📋 Quick reference: Playwright →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={10}>
+
+1. Install, then run your first test and open the HTML report
+2. Learn locators (`getByRole`, `getByText`) and why they beat CSS selectors
+3. Understand auto-waiting so you never need `sleep()`
+4. Read Fixtures and the Page Object Model before growing the suite
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Write and run a Playwright test end to end
+- Choose resilient locators and rely on auto-waiting
+- Structure a suite with fixtures and the Page Object Model
+- Mock the network, handle auth, and run in CI
+
+</KeyTakeaways>
 
 ---
 
@@ -714,6 +736,122 @@ A: Tag tests (`test('...', { tag: '@smoke' }, ...)`), then run `npx
 playwright test --grep @smoke` on every PR and the full suite on a merge/
 nightly schedule — keeps PR feedback fast while preserving full coverage
 cadence.
+
+---
+
+<Exercises>
+<Exercises.Task title="Assert on a delayed message without any sleep" level="intermediate" stretch="Raise the delay to 7000 and read the failure, then give just that assertion a longer timeout with the timeout option.">
+
+In a project with `@playwright/test` installed (`npm i -D @playwright/test` and `npx playwright install chromium`), save this as `tests/save.spec.ts`. The status message appears one second after you click:
+
+```ts
+import { test, expect } from '@playwright/test';
+
+test('saving shows a confirmation without any sleep', async ({ page }) => {
+  await page.setContent(`
+    <label for="name">Name</label>
+    <input id="name">
+    <button>Save</button>
+    <p role="status"></p>
+    <script>
+      document.querySelector('button').onclick = () => {
+        setTimeout(() => {
+          document.querySelector('[role=status]').textContent = 'Saved';
+        }, 1000);
+      };
+    </script>`);
+
+  await page.getByLabel('Name').fill('Ada');
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  await expect(page.getByRole('status')).toHaveText('Saved');
+});
+```
+
+Run it with `npx playwright test`. Then change the delay in the script from `1000` to `7000` and run it again.
+
+**Done when:** the first run passes with no `waitForTimeout`, and the second fails with a message naming the locator (`getByRole('status')`), the expected and received text, and `Timeout: 5000ms`.
+
+</Exercises.Task>
+<Exercises.Task title="Mock a page and its API, including the failure case" level="advanced">
+
+Serve both the page and the API from `page.route` so no backend is needed, and test the success and failure paths:
+
+```ts
+import { test, expect } from '@playwright/test';
+
+const html = `
+  <ul id="orders"></ul>
+  <p role="alert"></p>
+  <script>
+    fetch('/api/orders')
+      .then(r => { if (!r.ok) throw new Error('bad'); return r.json(); })
+      .then(orders => {
+        const ul = document.getElementById('orders');
+        orders.forEach(o => {
+          const li = document.createElement('li');
+          li.textContent = o.item;
+          ul.appendChild(li);
+        });
+      })
+      .catch(() => {
+        document.querySelector('[role=alert]').textContent = 'Could not load orders';
+      });
+  </script>`;
+
+test.beforeEach(async ({ page }) => {
+  await page.route('https://shop.test/', route =>
+    route.fulfill({ contentType: 'text/html', body: html }));
+});
+
+test('lists the mocked orders', async ({ page }) => {
+  await page.route('**/api/orders', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([{ id: 1, item: 'Widget' }, { id: 2, item: 'Gadget' }]),
+    }));
+  await page.goto('https://shop.test/');
+  await expect(page.getByRole('listitem')).toHaveCount(2);
+});
+
+test('shows an error when the API fails', async ({ page }) => {
+  await page.route('**/api/orders', route => route.fulfill({ status: 500, body: 'boom' }));
+  await page.goto('https://shop.test/');
+  await expect(page.getByRole('alert')).toHaveText('Could not load orders');
+});
+```
+
+**Done when:** both tests pass without touching a real server, and you can explain why the second test exercises an error path that would be hard to trigger against a healthy backend.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The page that never went idle">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team makes every test wait for the network to go idle after each navigation, believing it is the safest possible wait. The app polls a status endpoint and sends analytics beacons in the background.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The network never reached idle on some pages, so those tests sat until the timeout and failed for no functional reason, while other pages passed. The wait looked safe but depended on background traffic the tests did not control.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Modern apps with polling, websockets, or beacons may never go idle. Wait for something specific instead, such as a particular response or a visible piece of UI, and let web-first assertions retry until it appears.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to convert a CSS or XPath-based test to `getByRole` and `getByLabel` locators, then run it and confirm each locator resolves to exactly one element, because Playwright errors when an action matches several.
+- Paste a failing test's error output and ask which actionability check failed (attached, visible, stable, enabled, receiving events), then confirm by opening the trace yourself.
+- Have it write `page.route` mocks for an API's success and failure responses, and check that the mocked shapes match a real response by comparing against a live one.
+
+</AISpark>
 
 ---
 

@@ -2,10 +2,25 @@
 title: "Process Management & /proc"
 description: "Command-level and conceptual mastery of Linux process debugging via CLI and /proc — lifecycle, ps/top/kill, decision trees, deep scenarios, and interview Q&A."
 sidebar_position: 7
+level: intermediate
 tags: [linux, sre, process, proc-filesystem, ps, top, kill, zombie, troubleshooting]
+image: /img/social/process-management-proc.png
 ---
 
 A clean, SRE-focused mental model for debugging a slow or stuck service using only the CLI.
+
+<LevelBadge level="intermediate" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Learn process states, especially D (uninterruptible) and Z (zombie)
+2. Use `ps`, `top`, and `kill` with the right signals
+3. Read `/proc/<pid>/` for status, limits, and open files
+4. Walk the service troubleshooting decision tree once
+
+</TenMinute>
 
 ## Table of Contents
 

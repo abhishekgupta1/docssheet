@@ -1,8 +1,10 @@
 ---
 title: "Cloud Infrastructure Cheat Sheet"
 description: "Quick reference for cloud infrastructure — HA design, network topology, load balancing, autoscaling, and DR."
+level: intermediate
 tags: [cloud-infrastructure, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/cloud-infrastructure.png
 ---
 
 # Cloud infrastructure cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for cloud infrastructure design. For the full 3-tier
 HA reference architecture, see the [complete guide](/docs/sre-skills/cloud-infrastructure/cloud-infrastructure-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/cloud-infrastructure/cloud-infrastructure-guide">📖 Full guide: Cloud Infrastructure →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **AZs vs regions** card
+2. Then the **Active-active vs active-passive** and **Compute choice** cards
+3. Treat the other 3 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/cloud-infrastructure/cloud-infrastructure-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

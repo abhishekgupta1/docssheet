@@ -2,7 +2,9 @@
 title: "Test Automation Tools & Technology Landscape"
 description: "Test automation stopped being 'write Selenium scripts against the UI' a long time ago."
 sidebar_position: 0
+level: intermediate
 tags: [test-automation, sdet, tooling]
+image: /img/social/test-automation-tools-technology-landscape.png
 ---
 
 # Test Automation Tools & Technology Landscape
@@ -16,6 +18,17 @@ tags: [test-automation, sdet, tooling]
 **Created**: 2026-08-23
 
 <a class="topic-crosslink" href="/cheatsheets/test-automation-tooling-landscape">📋 Quick reference: Tooling Landscape →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={15}>
+
+1. Read the Introduction and the Test Automation Pyramid first
+2. Pick the section for the kind of testing you do: UI, API, mobile, or performance
+3. Scan the CI/CD and Observability-Driven Testing sections to see the wider picture
+4. Use the topic pages linked from each section for deeper reading
+
+</TenMinute>
 
 ---
 
@@ -1524,10 +1537,14 @@ No single tool in this guide is "the best" in isolation — each is the right ch
 
 ---
 
-**Sub-domains covered in this guide**: Functional Test Automation · Quality &
-Non-Functional Testing · Distributed Systems & Resilience Testing · Delivery
-Pipeline & Infrastructure · Observability & Test Governance · AI-Powered Test
-Automation · Building Your Tooling Roadmap — each mapped to its section above.
+**Related Resources in This Domain**:
+- Functional Test Automation
+- Quality & Non-Functional Testing
+- Distributed Systems & Resilience Testing
+- Delivery Pipeline & Infrastructure
+- Observability & Test Governance
+- AI-Powered Test Automation
+- Building Your Tooling Roadmap
 
 **Document Version**: 1.0
 **Last Updated**: 2026-08-23

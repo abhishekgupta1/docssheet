@@ -1,8 +1,10 @@
 ---
 title: "CI/CD Pipelines Cheat Sheet"
 description: "Quick reference for CI/CD — deployment strategies, GitHub Actions, secrets, and pitfalls."
+level: intermediate
 tags: [ci-cd, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/ci-cd-pipelines.png
 ---
 
 # CI/CD cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for CI/CD. For the Jenkins/GitLab CI deep-dives and
 full side-by-side comparison, see the [complete guide](/docs/sre-skills/ci-cd-pipelines/ci-cd-pipelines-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/ci-cd-pipelines/ci-cd-pipelines-guide">📖 Full guide: CI/CD →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Deployment strategies** card
+2. Then the **GitHub Actions core concepts** and **Example workflow** cards
+3. Treat the other 3 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/ci-cd-pipelines/ci-cd-pipelines-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

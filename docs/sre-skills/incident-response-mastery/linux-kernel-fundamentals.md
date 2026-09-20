@@ -2,10 +2,25 @@
 title: "Linux Kernel Fundamentals"
 description: "Conceptual foundation of how the Linux kernel manages processes, memory, I/O, and hardware — scheduling, user/kernel space, syscalls, interrupts, context switching, and modules."
 sidebar_position: 10
+level: advanced
 tags: [linux, sre, kernel, syscalls, interrupts, context-switching, kernel-modules]
+image: /img/social/linux-kernel-fundamentals.png
 ---
 
 Understand how Linux actually works before debugging it.
+
+<LevelBadge level="advanced" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Learn what the kernel does and the user-space / kernel-space boundary
+2. Understand system calls and how to see them with `strace`
+3. Learn why interrupts and context switches cost CPU time
+4. Test yourself with the Interview Q&A at the bottom
+
+</TenMinute>
 
 ## Table of Contents
 

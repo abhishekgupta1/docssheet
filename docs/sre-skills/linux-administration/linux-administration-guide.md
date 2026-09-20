@@ -2,7 +2,9 @@
 title: "Linux Administration: The Complete Guide"
 description: "End-to-end reference for Linux Administration — filesystem, permissions, process/service management, networking, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [linux, sre, sysadmin]
+image: /img/social/linux-administration-guide.png
 ---
 
 # Linux Administration — The Complete Guide
@@ -12,6 +14,26 @@ operate, debug, and harden a production Linux host, or walk into an SRE
 interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/linux-administration">📋 Quick reference: Linux Administration →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={10}>
+
+1. Walk the filesystem hierarchy (`/etc`, `/var`, `/proc`) and read a file's permissions with `ls -l`
+2. Find and inspect a running process with `ps`, then stop it with `kill`
+3. Tail a service's logs with `journalctl -u <svc> -f`
+4. Skim the Interview-Ready Q&A at the bottom to see what's expected
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Navigate the filesystem hierarchy and set correct permissions
+- Inspect, signal, and manage processes and services
+- Read logs and troubleshoot networking from the OS side
+- Automate routine work with shell scripts, cron, and text-processing tools
+
+</KeyTakeaways>
 
 ---
 
@@ -884,6 +906,66 @@ running right now. `start` only affects the current run state — it won't
 survive a reboot unless the unit is also enabled. `systemctl enable --now <unit>`
 does both atomically in one command, which is the usual choice when
 standing up a new production service.
+
+---
+
+<Exercises>
+<Exercises.Task title="Grant a one-off ACL, then remove it" level="intermediate" stretch="Also grant a whole extra group read access with a g: entry, then strip every ACL entry at once with setfacl -b.">
+
+Create a file called `demo.txt`. Using a second user account on your machine (a throwaway test user is fine), grant that user read access **without** changing the file's group:
+
+```bash
+setfacl -m u:USERNAME:r demo.txt
+getfacl demo.txt
+setfacl -x u:USERNAME demo.txt
+getfacl demo.txt
+```
+
+**Done when:** the first `getfacl` lists an entry for that user with `r--`, and the second no longer lists it.
+
+</Exercises.Task>
+<Exercises.Task title="Reproduce the disk full, but du says empty puzzle" level="advanced">
+
+On a scratch machine or VM, create a large file, keep a process holding it open, then delete it:
+
+```bash
+dd if=/dev/zero of=/tmp/big.bin bs=1M count=500
+tail -f /tmp/big.bin > /dev/null &
+rm /tmp/big.bin
+```
+
+Compare `df -h /tmp` with `du -sh /tmp`, then find the culprit with `lsof +L1`. Finally, stop the background process and check `df` again.
+
+**Done when:** `df` still counts the space while `du` does not, `lsof +L1` lists the deleted file with the process that holds it, and `df` drops once that process exits.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The service that only fails after a reboot">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A service starts fine when restarted by hand, but is down after every reboot. Its own log file is empty, so the first instinct is to keep tailing it.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The failure was recorded one level down. Running `journalctl -u SERVICE -b` showed the unit failing during startup, before the application wrote a single line, and adding `-p err` narrowed it to one message about a missing mount. The cause was an `/etc/fstab` entry with the wrong UUID.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+When the application log is silent, look at what the system recorded about the unit: the journal since boot, filtered by priority, then the mounts that define what exists at startup.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste `journalctl -u SERVICE -b` output and ask for the three most likely causes, ranked. Then verify each one yourself against the unit file and `systemctl status` before changing anything.
+- Ask an assistant to draft a `logrotate` config for an app's log directory, then dry-run it with `logrotate -d /etc/logrotate.conf` before it ever touches a real log.
+- Have it explain an unfamiliar `sed` or `awk` one-liner from a runbook step by step, then confirm by running it on a copy of the data, never the original.
+
+</AISpark>
 
 ---
 

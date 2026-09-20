@@ -1,8 +1,10 @@
 ---
 title: "Linux Administration Cheat Sheet"
 description: "Quick reference for Linux administration — permissions, processes, text processing, and networking basics."
+level: beginner
 tags: [linux, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/linux-administration.png
 ---
 
 # Linux administration cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Linux administration. For the full filesystem
 hierarchy, package management, and shell-scripting deep-dive, see the [complete guide](/docs/sre-skills/linux-administration/linux-administration-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/linux-administration/linux-administration-guide">📖 Full guide: Linux Administration →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **grep** card
+2. Then the **sed** and **Permissions** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/linux-administration/linux-administration-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

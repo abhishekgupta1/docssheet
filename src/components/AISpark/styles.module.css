@@ -1,0 +1,34 @@
+.box {
+  margin: 1.25rem 0;
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 40%, transparent);
+  border-radius: var(--cm-radius);
+  background: color-mix(in srgb, var(--ifm-color-primary) 7%, transparent);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--ifm-color-primary) 25%, transparent);
+}
+
+.icon {
+  font-size: 1rem;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.body {
+  padding: 0.8rem 0.9rem 0.3rem;
+  font-size: 0.9rem;
+}
+
+.body > :last-child {
+  margin-bottom: 0.6rem;
+}

@@ -2,8 +2,10 @@
 title: "Python Cheat Sheet"
 description: "Quick reference for Python — data structures, decorators, generators, OOP, concurrency, and typing."
 sidebar_position: 5
+level: beginner
 tags: [python, sde, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/python.png
 ---
 
 # Python cheatsheet
@@ -12,6 +14,17 @@ A one-page reference for Python. For the deep-dives on the GIL, MRO, and
 memory model, see the [complete guide](/docs/sde-skills/python/python-guide).
 
 <a class="topic-crosslink" href="/docs/sde-skills/python/python-guide">📖 Full guide: Python →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **`is` vs `==`** card
+2. Then the **Mutability gotcha** and **Comprehensions** cards
+3. Treat the other 10 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sde-skills/python/python-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sde">
 

@@ -2,7 +2,9 @@
 title: "Clean Architecture: The Complete Guide"
 description: "End-to-end reference for Clean Architecture — the Dependency Rule, the four concentric layers, Hexagonal/Onion equivalence, worked Python and Go examples with ports and adapters, tradeoffs, DDD-lite integration, and interview-ready Q&A."
 sidebar_position: 1
+level: advanced
 tags: [clean-architecture, sde, software-design, hexagonal-architecture]
+image: /img/social/clean-architecture-guide.png
 ---
 
 # Clean Architecture — The Complete Guide
@@ -13,6 +15,28 @@ walk into an SDE interview. Organized as a lookup you can also read
 top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/clean-architecture">📋 Quick reference: Clean Architecture →</a>
+
+<LevelBadge level="advanced" />
+
+**Prerequisites:** [Python](/docs/sde-skills/python/python-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the Dependency Rule: source dependencies point only inward
+2. Map the four concentric layers to a service you know
+3. See how dependency inversion enforces the rule, using the worked Python example
+4. Read Common Mistakes to avoid over-layering a simple CRUD app
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- State the Dependency Rule and apply it
+- Separate the four concentric layers
+- Use ports and adapters to invert dependencies
+- Recognise when the pattern is overkill
+
+</KeyTakeaways>
 
 ---
 
@@ -858,6 +882,170 @@ import-linter contracts in Python, `depguard`/`go-cleanarch` in Go, or
 ArchUnit tests in Java/Kotlin that fail the build on a forbidden import
 from `domain` into `infrastructure`. A rule that only lives in a comment or
 a wiki page doesn't survive the first few sprints.
+
+---
+
+<Exercises>
+<Exercises.Task title="Test a use case through a port, then add a rule" level="intermediate" stretch="Write a second adapter that stores orders in a JSON file and run the same tests against it.">
+
+Create this small package (`shop/__init__.py` is an empty file). The domain owns the rule, the use case owns the port, and the adapter satisfies it.
+
+`shop/domain.py`:
+
+```python
+from dataclasses import dataclass
+
+
+class NotPaidError(Exception):
+    pass
+
+
+@dataclass
+class Order:
+    id: str
+    paid: bool = False
+    status: str = "new"
+
+    def ship(self):
+        if not self.paid:
+            raise NotPaidError("cannot ship an unpaid order")
+        self.status = "shipped"
+```
+
+`shop/usecases.py`:
+
+```python
+from abc import ABC, abstractmethod
+
+from shop.domain import Order
+
+
+class OrderRepository(ABC):
+    """The port: owned by the inner layer, implemented by an outer one."""
+
+    @abstractmethod
+    def get(self, order_id: str) -> Order: ...
+
+    @abstractmethod
+    def save(self, order: Order) -> None: ...
+
+
+class ShipOrder:
+    def __init__(self, orders: OrderRepository):
+        self.orders = orders
+
+    def execute(self, order_id: str) -> Order:
+        order = self.orders.get(order_id)
+        order.ship()
+        self.orders.save(order)
+        return order
+```
+
+`shop/infrastructure.py`:
+
+```python
+from shop.domain import Order
+from shop.usecases import OrderRepository
+
+
+class InMemoryOrderRepository(OrderRepository):
+    def __init__(self):
+        self.store = {}
+
+    def get(self, order_id):
+        return self.store[order_id]
+
+    def save(self, order):
+        self.store[order.id] = order
+```
+
+`test_ship.py`:
+
+```python
+import unittest
+
+from shop.domain import NotPaidError, Order
+from shop.infrastructure import InMemoryOrderRepository
+from shop.usecases import ShipOrder
+
+
+class ShipOrderTest(unittest.TestCase):
+    def setUp(self):
+        self.repo = InMemoryOrderRepository()
+        self.use_case = ShipOrder(self.repo)
+
+    def test_paid_order_ships_and_is_saved(self):
+        self.repo.save(Order(id="A1", paid=True))
+        shipped = self.use_case.execute("A1")
+        self.assertEqual(shipped.status, "shipped")
+        self.assertEqual(self.repo.get("A1").status, "shipped")
+
+    def test_unpaid_order_cannot_ship(self):
+        self.repo.save(Order(id="B2", paid=False))
+        with self.assertRaises(NotPaidError):
+            self.use_case.execute("B2")
+        self.assertEqual(self.repo.get("B2").status, "new")
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+Run `python3 -m unittest test_ship`. Then add a new business rule, that an order which is already shipped cannot be shipped again, by writing a failing test first and implementing it in the domain.
+
+**Done when:** the two original tests pass with no database anywhere, and the new rule passes with changes only in `shop/domain.py` and the test file, leaving the use case and the adapter untouched.
+
+</Exercises.Task>
+<Exercises.Task title="Make the Dependency Rule fail the build" level="advanced">
+
+Run `pip install import-linter`, and save this as `.importlinter` in the project root:
+
+```ini
+[importlinter]
+root_package = shop
+
+[importlinter:contract:inner-layers-are-pure]
+name = Domain and use cases must not import infrastructure
+type = forbidden
+source_modules =
+    shop.domain
+    shop.usecases
+forbidden_modules =
+    shop.infrastructure
+```
+
+Run `lint-imports`. Then add a forbidden import at the top of `shop/domain.py`, for example `from shop.infrastructure import InMemoryOrderRepository`, and run it again.
+
+**Done when:** the first run reports the contract as `KEPT` and exits `0`, and the second reports it as `BROKEN` and exits non-zero, naming `shop.domain -> shop.infrastructure` and the line number. That non-zero exit is what lets CI reject the import instead of a reviewer having to notice it.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The business rule that needed a database to test">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team's order rules live in a service class that imports the ORM model directly and catches the database library's own errors. Each test of a rule needs a running database.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The tests were slow and awkward, so people wrote fewer of them, and a rule change shipped without one. Later, moving to a different data store meant touching business logic that had nothing to do with storage, because the domain objects were the database rows.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Keep a plain domain object and define the storage as a port owned by the use case, with the ORM mapping inside an adapter. The rules then test in milliseconds against an in-memory fake, and the store becomes a swappable detail.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to refactor a service that imports an ORM model into a domain object plus a port and an adapter, then check by hand that the domain and use case files import nothing from the infrastructure package.
+- Have it write an in-memory implementation of a repository port and tests for a use case, then confirm the tests fail when you break the business rule on purpose.
+- Ask it to propose an `import-linter` contract for your package layout, and verify the contract by adding a forbidden import and watching the build fail.
+
+</AISpark>
 
 ---
 

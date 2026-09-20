@@ -2,7 +2,9 @@
 title: "SQL: The Complete Guide"
 description: "End-to-end reference for SQL — DML/DDL, joins, aggregates, subqueries vs CTEs vs window functions, indexes, transactions, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [sql, sdet, database]
+image: /img/social/sql-guide.png
 ---
 
 # SQL — The Complete Guide
@@ -13,6 +15,26 @@ or walk into an SDET interview. Organized as a lookup you can also read
 top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/sql">📋 Quick reference: SQL →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={10}>
+
+1. Run `SELECT` with `WHERE`, `ORDER BY`, and `LIMIT`
+2. Learn INNER vs LEFT joins with a small example
+3. Use `GROUP BY` and `HAVING` for aggregates
+4. Read How SDETs Actually Use SQL for test-data and validation queries
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Query data with joins, aggregates, and subqueries
+- Choose between subqueries, CTEs, and window functions
+- Explain indexes and transactions
+- Use SQL for test data setup and validation
+
+</KeyTakeaways>
 
 ---
 
@@ -548,6 +570,66 @@ cleanup logic, and tests can run in any order without leftover state
 polluting each other. This only works cleanly when the code under test
 doesn't itself commit/manage transactions in a way that conflicts with the
 outer test transaction, which is worth confirming before relying on it.
+
+---
+
+<Exercises>
+<Exercises.Task title="Find missing and orphaned rows with joins" level="intermediate" stretch="Add a fourth query using a window function that shows each order next to the customer's running total.">
+
+This uses SQLite, which is already installed on most machines (`sqlite3 test.db`). Create the guide's sample data, including the order that points at a customer who does not exist:
+
+```sql
+CREATE TABLE customers (id INTEGER PRIMARY KEY, email TEXT UNIQUE);
+CREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER, total REAL);
+INSERT INTO customers VALUES (1,'ada@example.com'),(2,'grace@example.com'),(3,'alan@example.com');
+INSERT INTO orders VALUES (101,1,40.0),(102,1,60.0),(103,2,25.0),(104,99,10.0);
+```
+
+Write three queries: the customers who have no orders, the orders whose customer does not exist, and the customers with more than one order along with their order count and total spend.
+
+**Done when:** the first returns `alan@example.com`, the second returns order `104`, and the third returns customer `1` with `2` orders and `100.0`. You used a `LEFT JOIN` with `IS NULL` for the first two, and `GROUP BY` with `HAVING` for the third.
+
+</Exercises.Task>
+<Exercises.Task title="Watch an index change the query plan" level="advanced">
+
+On the same database, ask SQLite how it would run a lookup by customer, add the index from the guide, and ask again. SQLite's command is `EXPLAIN QUERY PLAN` (the guide's `EXPLAIN ANALYZE` is PostgreSQL syntax):
+
+```sql
+EXPLAIN QUERY PLAN SELECT * FROM orders WHERE customer_id = 1;
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+EXPLAIN QUERY PLAN SELECT * FROM orders WHERE customer_id = 1;
+```
+
+**Done when:** the first plan says `SCAN orders`, the second says `SEARCH orders USING INDEX idx_orders_customer_id (customer_id=?)`, and you can name the cost of adding this index that the guide warns about.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The table where every column got an index">
+<CaseStudy.Context>
+
+*Illustrative scenario.* One report query is slow, and someone fixes it with an index. Encouraged by the result, the team adds an index to most of the other columns on the same table just in case.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+Reads that filtered on the indexed columns got faster, but every insert, update, and delete now had to update every index as well, so write-heavy paths slowed down. The indexes also took up disk space comparable to the table itself, and most of them were never used by any query.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Index the columns used in `WHERE`, `JOIN ON`, and `ORDER BY` on large, frequently queried tables, and check the query plan to prove each index gets used. Every index is a tax on writes.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to write a query for a report you describe, then run it on a small table where you already know the answer and check that no joins dropped or duplicated rows.
+- Paste a slow query and its plan output and ask for index suggestions. Test each suggestion by comparing plans before and after, and weigh the write cost before keeping it.
+- Have it explain a window-function query step by step, and verify by running it on three or four rows you can check by hand.
+
+</AISpark>
 
 ---
 

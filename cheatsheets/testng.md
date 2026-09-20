@@ -1,8 +1,10 @@
 ---
 title: "TestNG Cheat Sheet"
 description: "Quick reference for TestNG — annotations, testng.xml, parallel execution, and data providers."
+level: intermediate
 tags: [testng, sdet, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/testng.png
 ---
 
 # TestNG cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for TestNG. For listeners/reporting and interview Q&A,
 see the [complete guide](/docs/sdet-skills/testng/testng-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/testng/testng-guide">📖 Full guide: TestNG →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core annotations** card
+2. Then the **`testng.xml` suite config** and **Parallel execution** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/testng/testng-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

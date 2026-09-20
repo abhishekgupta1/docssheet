@@ -2,7 +2,9 @@
 title: "Docker Basics: The Complete Guide"
 description: "End-to-end reference for Docker — images and layers, Dockerfile essentials, the container lifecycle, networking and volumes, docker-compose, a debugging playbook, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [docker, sde, containers]
+image: /img/social/docker-basics-guide.png
 ---
 
 # Docker Basics — The Complete Guide
@@ -12,6 +14,28 @@ service correctly, run and debug it locally, or walk into an SDE interview.
 Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/docker">📋 Quick reference: Docker →</a>
+
+<LevelBadge level="beginner" />
+
+**Prerequisites:** [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn containers vs VMs and how images are built from layers
+2. Write a minimal Dockerfile, then shrink it with a multi-stage build
+3. Run a container with a volume and a published port
+4. Use the Debugging Playbook the next time a container won't start
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain images, layers, and the container lifecycle
+- Write and shrink a Dockerfile with multi-stage builds
+- Persist data with volumes and connect containers
+- Run multi-service setups with docker-compose
+
+</KeyTakeaways>
 
 ---
 
@@ -827,6 +851,94 @@ building a multi-architecture image with `docker buildx build --platform
 linux/amd64,linux/arm64 ...` rather than a single-arch `docker build`. A
 second, less common cause is a baked-in absolute host path left over from a
 bind mount used during the build, which won't exist on the new host.
+
+---
+
+<Exercises>
+<Exercises.Task title="Prove that copying dependencies first keeps the cache" level="intermediate" stretch="Add a .dockerignore that excludes log files and confirm a changed log file no longer invalidates the COPY layer.">
+
+Create two files, `deps.txt` (containing `libfoo==1.0`) and `app.txt` (containing `v1`), plus two Dockerfiles. The install step is a deliberate 3-second sleep so the difference is visible:
+
+```dockerfile
+# Dockerfile.bad
+FROM alpine:3.20
+WORKDIR /app
+COPY . .
+RUN echo "installing dependencies" && sleep 3 && cat deps.txt
+```
+
+```dockerfile
+# Dockerfile.good
+FROM alpine:3.20
+WORKDIR /app
+COPY deps.txt ./
+RUN echo "installing dependencies" && sleep 3 && cat deps.txt
+COPY . .
+```
+
+For each Dockerfile: build it once, edit `app.txt`, then build it again with `docker build --progress=plain -f Dockerfile.good -t order-good .` (and the same for the bad one).
+
+**Done when:** on the second build of `Dockerfile.bad` the install step runs again and takes about 4 seconds, and on the second build of `Dockerfile.good` the install step is reported as `CACHED` and the whole build takes under a second.
+
+</Exercises.Task>
+<Exercises.Task title="Shrink an image with a multi-stage build" level="advanced">
+
+Build the same content two ways. In the single-stage version a 100 MB file used during the build stays in the image; in the multi-stage version only the small artifact is copied out:
+
+```dockerfile
+# Dockerfile.single
+FROM alpine:3.20
+RUN dd if=/dev/zero of=/big.bin bs=1M count=100 && echo hello > /app.txt
+CMD ["cat", "/app.txt"]
+```
+
+```dockerfile
+# Dockerfile.multi
+FROM alpine:3.20 AS build
+RUN dd if=/dev/zero of=/big.bin bs=1M count=100 && echo hello > /app.txt
+
+FROM alpine:3.20
+COPY --from=build /app.txt /app.txt
+CMD ["cat", "/app.txt"]
+```
+
+```bash
+docker build -f Dockerfile.single -t size-single .
+docker build -f Dockerfile.multi -t size-multi .
+docker images
+docker run --rm size-multi
+```
+
+**Done when:** `size-multi` is roughly 100 MB smaller than `size-single` (about 14 MB against about 119 MB when I ran it), and both images still print `hello`.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The database that lost its data on upgrade">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team runs a database in a container for a staging environment and stores its data in the container's own filesystem. To upgrade the image, they remove the container and start a new one.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+Everything written at runtime lived in the container's thin writable layer, which is discarded when the container is removed. The new container started with an empty database, and the staging data was gone.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Anything that must outlive a container belongs in a named volume, not the writable layer. Use bind mounts for local development source, and remember that removing a container removes its writable layer with it.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to write a Dockerfile for your app, then check by hand that the dependency manifest is copied before the source, that it runs as a non-root user where possible, and that the final image contains no build tools.
+- Paste `docker build` output and ask what invalidated the cache. Verify by changing one file at a time and watching which step runs again.
+- Have it review a compose file for data stored outside a volume and for ports exposed unnecessarily, and confirm by inspecting the running containers.
+
+</AISpark>
 
 ---
 

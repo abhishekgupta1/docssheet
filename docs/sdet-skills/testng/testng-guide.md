@@ -2,7 +2,9 @@
 title: "TestNG: The Complete Guide"
 description: "End-to-end reference for TestNG — annotations, testng.xml suite configuration, parallel execution, data providers, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [testng, sdet, java, testing-framework]
+image: /img/social/testng-guide.png
 ---
 
 # TestNG — The Complete Guide
@@ -12,6 +14,28 @@ suite from scratch, configure parallel/cross-browser execution, or walk into
 an SDET interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/testng">📋 Quick reference: TestNG →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Java](/docs/sdet-skills/java/java-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the core annotations and their execution order
+2. Configure a suite in `testng.xml`
+3. Use `@DataProvider` for data-driven tests and groups to select tests
+4. Understand soft vs hard assertions and parallel execution
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Use TestNG annotations and their execution order
+- Configure suites in `testng.xml`
+- Run data-driven and parallel tests
+- Choose between soft and hard assertions
+
+</KeyTakeaways>
 
 ---
 
@@ -561,6 +585,91 @@ different parameters — all without touching Java code. A CI pipeline can run
 `mvn test -Dgroups=smoke` on every PR for fast feedback and a nightly job
 with the full regression suite, just by pointing at different groups or XML
 files.
+
+---
+
+<Exercises>
+<Exercises.Task title="Watch a failed dependency skip its dependants" level="intermediate">
+
+In a Maven project with `org.testng:testng` 7.10.x as a test dependency, add this class and run `mvn test`:
+
+```java
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+public class FlowTest {
+
+    @Test
+    public void login() {
+        Assert.fail("login broke");
+    }
+
+    @Test(dependsOnMethods = {"login"})
+    public void addToCart() {
+    }
+
+    @Test(dependsOnMethods = {"addToCart"}, alwaysRun = true)
+    public void checkout() {
+    }
+}
+```
+
+**Done when:** the run reports `Tests run: 3, Failures: 1, Skipped: 1`, `addToCart` is the skipped one, and you can explain why `checkout` still ran.
+
+</Exercises.Task>
+<Exercises.Task title="Collect several failures with SoftAssert" level="advanced" stretch="Switch to hard assertions and confirm the report now shows only the first failed check.">
+
+Write a `@DataProvider` with three rows, and a test that checks two things about each row with `SoftAssert`:
+
+```java
+@DataProvider(name = "orders")
+public Object[][] orders() {
+    return new Object[][] {
+        {"widget", 2, 19.98},
+        {"gadget", 1, 5.00},
+        {"broken", 0, -1.0},
+    };
+}
+
+@Test(dataProvider = "orders")
+public void orderSummaryIsValid(String name, int qty, double total) {
+    SoftAssert soft = new SoftAssert();
+    soft.assertTrue(qty > 0, "quantity must be positive");
+    soft.assertTrue(total > 0, "total must be positive");
+    soft.assertAll();
+}
+```
+
+**Done when:** the first two rows pass, the third fails once, and its message lists both `quantity must be positive` and `total must be positive`.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="One failure that looked like forty">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A checkout suite chains its tests: add to cart depends on login, payment depends on add to cart, and so on. One night the login step breaks.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+TestNG reported the single failing login test as a failure and every dependent test as skipped, not failed. The dashboard showed one real problem instead of dozens, so the team went straight to the login step. The trade-off they noticed later: the chained tests could not run in parallel, because dependent tests serialize.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Know the difference between skipped and failed, because it keeps the root cause visible. Use `dependsOnMethods` sparingly, since it couples tests together and costs you parallelism.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to fold copy-pasted test methods into one `@DataProvider` test, then confirm each row is reported separately and a failing row does not stop the others.
+- Have it review a suite for shared mutable state, such as a `WebDriver` field, under `parallel="methods"`. Then verify by running in parallel several times instead of trusting its read.
+- Ask it to propose groups for smoke and regression, and count the results to check that `-Dgroups` selects exactly the tests you expect.
+
+</AISpark>
 
 ---
 

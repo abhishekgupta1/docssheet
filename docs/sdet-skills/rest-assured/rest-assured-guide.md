@@ -2,7 +2,9 @@
 title: "Rest Assured: The Complete Guide"
 description: "End-to-end reference for Rest Assured — given/when/then DSL, request specs, JSON/XML assertions, auth, schema validation, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [rest-assured, sdet, api-testing, java]
+image: /img/social/rest-assured-guide.png
 ---
 
 # Rest Assured — The Complete Guide
@@ -13,6 +15,28 @@ or walk into an SDET interview. Organized as a lookup you can also read
 top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/rest-assured">📋 Quick reference: Rest Assured →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Java](/docs/sdet-skills/java/java-guide), [JUnit](/docs/sdet-skills/junit/junit-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the `given() / when() / then()` DSL
+2. Assert on a JSON response using JSON Path and Hamcrest matchers
+3. Move shared setup into a request specification
+4. Add JSON schema validation to catch contract drift
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Write API tests with the given/when/then DSL
+- Assert on JSON with JSON Path and Hamcrest
+- Reuse setup with request specifications
+- Validate responses against a JSON schema
+
+</KeyTakeaways>
 
 ---
 
@@ -605,6 +629,81 @@ Postman for fast, ad hoc exploration of a new endpoint, manual sanity
 checks, or collaborating with non-engineers (PMs, manual QA) who want a UI
 rather than code — running that at scale in CI would still route through
 Newman, but the day-to-day interaction model is GUI-first.
+
+---
+
+<Exercises>
+<Exercises.Task title="Chain calls with a reusable request specification" level="intermediate" stretch="Add a ResponseSpecification that expects a JSON content type and reuse it in both tests.">
+
+Start the small server from the Postman guide's exercise (it listens on port 4010). In a Maven project with `io.rest-assured:rest-assured` 5.5.x and `org.junit.jupiter:junit-jupiter` 5.10.x as test dependencies, write a test that creates an order and then fetches it, using one shared `RequestSpecification`:
+
+```java
+static final RequestSpecification SPEC = new RequestSpecBuilder()
+    .setBaseUri("http://localhost:4010")
+    .setContentType(ContentType.JSON)
+    .build();
+
+int id = given().spec(SPEC).body("{\"item\":\"Widget\"}")
+    .when().post("/orders")
+    .then().statusCode(201).body("item", equalTo("Widget"))
+    .extract().path("id");
+
+given().spec(SPEC).pathParam("id", id).log().ifValidationFails()
+    .when().get("/orders/{id}")
+    .then().statusCode(200).body("id", equalTo(id));
+```
+
+**Done when:** `mvn test` passes, the second request uses the id returned by the first, and neither request repeats the base URI or content type.
+
+</Exercises.Task>
+<Exercises.Task title="Validate the whole response against a JSON schema" level="advanced">
+
+Add `io.rest-assured:json-schema-validator` 5.5.x. Save this as `src/test/resources/schemas/order-schema.json`:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "item"],
+  "properties": {
+    "id": { "type": "integer" },
+    "item": { "type": "string" }
+  }
+}
+```
+
+Fetch an order and validate it with `.body(matchesJsonSchemaInClasspath("schemas/order-schema.json"))`. Then add `"price"` to the `required` list and run again.
+
+**Done when:** the first run passes, and the second fails with a message reporting `object has missing required properties (["price"])`, so you can see how a schema catches a missing field that a status-code check would not.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The renamed field nobody noticed">
+<CaseStudy.Context>
+
+*Illustrative scenario.* An API team renames a response field. The consumer's tests check the status code and the `id`, and they keep passing.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The renamed field was not one the tests looked at, so nothing failed until a downstream consumer that actually read it started misbehaving. Field-by-field assertions only cover the fields someone remembered to assert on.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Validate the whole response shape against a JSON schema, and deserialize into POJOs so structural drift such as a renamed field or a changed type shows up in the tests, not in production.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to draft a JSON schema from a sample response, then tighten it by hand, because a schema generated from one example often marks optional fields as required or misses allowed values.
+- Have it convert a set of copy-pasted tests into a parameterized test with a request specification, and confirm each case still reports individually.
+- Ask it to review your tests for assertions that only check the status code, and decide which need body or schema checks.
+
+</AISpark>
 
 ---
 

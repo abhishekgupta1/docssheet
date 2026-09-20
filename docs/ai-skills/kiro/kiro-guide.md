@@ -2,7 +2,9 @@
 title: "Kiro: The Complete Guide"
 description: "End-to-end reference for Kiro, AWS's spec-driven agentic IDE — the requirements/design/tasks workflow, steering, hooks, MCP integration, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [kiro, ai-ide, aws, spec-driven-development, agentic-coding]
+image: /img/social/kiro-guide.png
 ---
 
 # Kiro — The Complete Guide
@@ -19,6 +21,26 @@ permanently fixed spec — verify exact syntax against current AWS
 documentation before depending on it in production tooling.
 
 <a class="topic-crosslink" href="/cheatsheets/kiro">📋 Quick reference: Kiro →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={10}>
+
+1. Understand spec-driven development vs vibe coding
+2. Write one requirement using EARS-format acceptance criteria
+3. Add steering files so the agent knows your project context
+4. Read Common Mistakes before adding hooks or MCP servers
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Contrast spec-driven development with vibe coding
+- Write requirements in EARS format
+- Use steering, hooks, and MCP to shape the agent
+- Fit Kiro into a team's SDLC
+
+</KeyTakeaways>
 
 ---
 
@@ -539,6 +561,55 @@ concept — spec-first development with review gates, persistent steering
 context, event-triggered hooks, and MCP-based tool extension — the exact
 syntax should always be checked against current AWS documentation before
 being relied on in production tooling.
+
+---
+
+<Exercises>
+<Exercises.Task title="Turn vague criteria into EARS statements" level="intermediate" stretch="Number your statements, then write two task lines that each cite the requirement numbers they satisfy.">
+
+Rewrite each of these as one or more EARS statements, using the guide's three forms (`WHEN ... THE SYSTEM SHALL ...`, `IF ... THEN THE SYSTEM SHALL ...`, `WHILE ... THE SYSTEM SHALL ...`):
+
+1. "The login should be fast and secure."
+2. "Handle errors gracefully."
+3. "Users can reset their password."
+
+**Done when:** every statement has a concrete trigger, precondition, or state and an observable response, none of them contains a word like fast, secure, or gracefully, and you could write an automated test from each one.
+
+</Exercises.Task>
+<Exercises.Task title="Write a scoped steering file" level="advanced">
+
+Create `.kiro/steering/testing-conventions.md` that loads only when test files are in context, using the same front matter shape as the guide's API-conventions example, with a `fileMatchPattern` for your test files and three rules. Then decide which of your other steering files should be `always` and which `manual`.
+
+**Done when:** the front matter sets `inclusion: fileMatch` and a `fileMatchPattern`, each rule is specific enough to check in code review (not "write good tests"), you can say when the file loads and when it does not, and the file is committed to the repository so the whole team inherits it.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The steering file three migrations out of date">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team sets up steering files once, at the start of a project. Over the following year the stack changes several times, but nobody revisits `tech.md`.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The file still described a state-management library the team had since moved away from. Every new spec and agent session followed it, so generated code kept reproducing the deprecated pattern, and reviewers found themselves explaining the current convention in one pull request after another.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Steering is living documentation. Review it at major refactors, keep it in the repository so everyone's agent sessions inherit the same constraints, and treat a stale `tech.md` as actively misleading rather than merely incomplete.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to turn a vague feature request into draft EARS criteria, then rewrite any criterion that lacks a concrete trigger or an observable response yourself.
+- Have it draft a `tech.md` from your `package.json` and repository layout, and check every stated version and convention against the repository before committing it as steering.
+- Ask it to trace a finished pull request back to requirement numbers, and verify each claimed link by reading the diff.
+
+</AISpark>
 
 ---
 

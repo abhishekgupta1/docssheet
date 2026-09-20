@@ -2,8 +2,10 @@
 title: "Kubernetes Cheat Sheet"
 description: "Quick reference for Kubernetes — core objects, kubectl, networking, scheduling, probes, and troubleshooting."
 sidebar_position: 3
+level: intermediate
 tags: [kubernetes, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/kubernetes.png
 ---
 
 # Kubernetes cheatsheet
@@ -12,6 +14,17 @@ A one-page reference for Kubernetes. For architecture, YAML deep-dives, and
 the full troubleshooting playbook, see the [complete guide](/docs/sre-skills/kubernetes/kubernetes-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/kubernetes/kubernetes-guide">📖 Full guide: Kubernetes →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core objects** card
+2. Then the **kubectl essentials** and **Context & namespace** cards
+3. Treat the other 9 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/kubernetes/kubernetes-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

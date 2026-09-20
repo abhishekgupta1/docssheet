@@ -1,8 +1,10 @@
 ---
 title: "Chaos Engineering Cheat Sheet"
 description: "Quick reference for chaos engineering — the lifecycle, failure injection types, tools, and blast-radius control."
+level: advanced
 tags: [chaos-engineering, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/chaos-engineering.png
 ---
 
 # Chaos engineering cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for chaos engineering. For worked LitmusChaos/AWS FIS
 examples and game-day facilitation, see the [complete guide](/docs/sre-skills/chaos-engineering/chaos-engineering-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/chaos-engineering/chaos-engineering-guide">📖 Full guide: Chaos Engineering →</a>
+
+<LevelBadge level="advanced" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Steady-state hypothesis** card
+2. Then the **Lifecycle** and **Failure injection types** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/chaos-engineering/chaos-engineering-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

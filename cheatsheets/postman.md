@@ -1,8 +1,10 @@
 ---
 title: "Postman Cheat Sheet"
 description: "Quick reference for Postman — collections, pm.* scripts, Newman CI runs, and mock servers."
+level: beginner
 tags: [postman, sdet, api-testing, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/postman.png
 ---
 
 # Postman cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Postman. For workspace organization and interview
 Q&A, see the [complete guide](/docs/sdet-skills/postman/postman-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/postman/postman-guide">📖 Full guide: Postman →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **`pm.*` test scripts** card
+2. Then the **Pre-request scripts** and **Chaining requests** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/postman/postman-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

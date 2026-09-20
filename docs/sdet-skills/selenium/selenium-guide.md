@@ -2,7 +2,9 @@
 title: "Selenium: The Complete Guide"
 description: "End-to-end reference for Selenium — WebDriver architecture, locators, waits, Page Object Model, Grid, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [selenium, sdet, automation, web-testing]
+image: /img/social/selenium-guide.png
 ---
 
 # Selenium — The Complete Guide
@@ -12,6 +14,28 @@ maintainable automation framework, debug a flaky suite, or walk into an SDET
 interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/selenium">📋 Quick reference: Selenium →</a>
+
+<LevelBadge level="beginner" />
+
+**Prerequisites:** [Java](/docs/sdet-skills/java/java-guide)
+
+<TenMinute minutes={10}>
+
+1. Understand WebDriver: how a script talks to the browser
+2. Learn locator strategies and prefer stable ones
+3. Replace `sleep` with explicit waits — the classic flakiness fix
+4. Structure tests with the Page Object Model, then scale with Grid
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain how WebDriver talks to the browser
+- Pick stable locators and use explicit waits
+- Structure tests with the Page Object Model
+- Run in parallel with Selenium Grid
+
+</KeyTakeaways>
 
 ---
 
@@ -464,6 +488,90 @@ window associated with that session and terminates the driver process
 itself. Using `close()` in teardown when you meant `quit()` leaks browser
 and driver processes across every CI run, eventually exhausting memory or
 process limits on long-running CI agents.
+
+---
+
+<Exercises>
+<Exercises.Task title="Replace a sleep with an explicit wait" level="intermediate" stretch="Move the locators and the click into a small Page Object class.">
+
+You need Java 17 or newer, Chrome, and `org.seleniumhq.selenium:selenium-java` 4.27 or newer (Selenium Manager downloads a matching driver). Save this page as `delayed.html`; its button only appears after 1.5 seconds:
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <p id="result"></p>
+    <script>
+      setTimeout(function () {
+        var b = document.createElement("button");
+        b.id = "go";
+        b.textContent = "Go";
+        b.onclick = function () { document.getElementById("result").textContent = "done"; };
+        document.body.appendChild(b);
+      }, 1500);
+    </script>
+  </body>
+</html>
+```
+
+Write a program that opens it in headless Chrome. First try `driver.findElement(By.id("go"))` straight away and catch the exception. Then wait for the button with `WebDriverWait` and `ExpectedConditions.elementToBeClickable`, click it, and print the result text. Do not use `Thread.sleep`.
+
+**Done when:** the program prints `no wait: NoSuchElementException` (from your own catch block) and then `done`. You may also see a harmless warning about a DevTools version.
+
+</Exercises.Task>
+<Exercises.Task title="Measure what mixing waits does" level="advanced">
+
+Time how long a 5-second explicit wait takes to give up on an element that never appears, first with the implicit wait at zero and then with a 10-second implicit wait:
+
+```java
+static long timeMissingElement(WebDriver driver) {
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    long start = System.nanoTime();
+    try {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("never-appears")));
+    } catch (TimeoutException e) {
+        // expected
+    }
+    return (System.nanoTime() - start) / 1_000_000_000;
+}
+
+driver.manage().timeouts().implicitlyWait(Duration.ZERO);
+System.out.println("implicit 0s  -> " + timeMissingElement(driver) + "s");
+
+driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+System.out.println("implicit 10s -> " + timeMissingElement(driver) + "s");
+```
+
+**Done when:** the first run takes about 5 seconds, the second takes clearly longer than the 5 you configured (about 10 seconds with Selenium 4.27 and Chrome when I ran it; the exact figure can vary), and you can explain why the guide says never to mix the two.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The five-second sleep after every click">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A UI suite has a `Thread.sleep(5000)` after most clicks. It passes on developer laptops, but the nightly run takes hours and still fails a few tests at random on slower CI machines.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+Most pages were ready in well under a second, so the sleeps burned time on every step. On a slow or busy runner the same pages sometimes needed longer than five seconds, so the tests were both too slow and still flaky. The team's reaction was to raise the sleeps, which made the first problem worse.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+A fixed delay is either too long or too short. Wait on a condition instead, using explicit waits such as `elementToBeClickable`, and keep the implicit wait at zero so the two timers never compound.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to replace `Thread.sleep()` calls with explicit waits, then check that each condition matches what the step really needs (visible versus clickable) and that no implicit wait is set anywhere.
+- Paste a flaky test and its stack trace and ask for ranked causes such as a stale element, a race on page load, or a shared driver. Reproduce the top cause yourself before changing any code.
+- Have it suggest `data-testid` locators to replace structural XPath, then confirm the developers will actually add and keep those attributes.
+
+</AISpark>
 
 ---
 

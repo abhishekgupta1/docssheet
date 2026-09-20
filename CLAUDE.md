@@ -16,7 +16,7 @@ needed; don't hand-write new topics.
 
 ## How this project is used
 
-Two working areas. There is no landing page — `/` redirects to `/docs/intro`.
+Three working areas. There is no landing page — `/` redirects to `/docs/intro`.
 
 1. **Docs** (`docs/`, served at `/docs`, sidebar in `sidebars.js`)
    Long-form guides grouped by track: **SDET Skills**, **SRE Skills**,
@@ -32,15 +32,40 @@ Two working areas. There is no landing page — `/` redirects to `/docs/intro`.
    `cheatsheets/intro.md` is a hand-maintained tile grid — add a tile when you
    add a sheet.
 
+3. **Learn** (navbar dropdown; pages in `src/pages/`) — client-side tools over the
+   cheat-sheet catalogue: `/library` (every guide by track/level/reading time,
+   fed by `plugins/docs-index`), `/roadmap`, `/skills`, `/dashboard`
+   (per-browser progress, `src/utils/progress.js`), `/start`. Data lives in
+   `src/data/{topics,skills}.js` — `topics.js` must list exactly the cheat
+   sheets that exist (the sync script prunes it).
+
+### Syncing from the parent
+
+Run `node scripts/sync-from-parent.mjs` (add `--dry-run` to preview). It
+overwrites every existing `docs/**` / `cheatsheets/**` file (except the two
+`intro.md` files), plus the shared components, Learn pages/data/utils and the
+`docs-index` plugin, copies the `image:` social images those pages reference,
+prunes MBA out of the Learn data and de-links references to pages not imported
+here. Anything docssheet-specific is left alone and merged by hand:
+`docusaurus.config.js`, `sidebars*.js`, `src/data/site.js`, `src/theme/*`,
+`src/css/custom.css`, the legal pages, `ConsentBanner`, `AdSlot`, both
+`intro.md`. To import another sheet, add it to `EXTRA_SHEETS` in the script;
+add its tile to `cheatsheets/intro.md`.
+
 ### Not imported (available in `../abhishekgupta1.github.io`)
 
-MBA/leadership guides, the `test-automation-tooling-landscape` sub-topic pages
-(only the top-level landscape guide is here), the blog, and the Learn tools
-(`/roadmap`, `/skills`, `/quiz`, `/dashboard`, `/start` — their `src/pages/*`,
-`src/data/{topics,skills,quiz}.js`, and the extra `src/components/*` were left
-behind). `src/theme/MDXComponents.js` therefore registers only `AdSlot`; if you
-import content that uses `<InterviewQuestions>`, `<KeyTakeaways>`, etc., copy
-those components back and register them or the build fails.
+MBA/leadership guides and sheets, the `test-automation-tooling-landscape`
+sub-topic pages (only the top-level landscape guide + sheet are here), the
+blog (so `playwright-cross-browser-testing` / `sre-observability-slos` sheets,
+whose "full guide" is a blog article, are skipped), the podcast button and
+Giscus comments, and `docs/ai-skills/claude-masterclass` (derived from a
+third-party Udemy course — copyright/AdSense risk, never import).
+`src/theme/MDXComponents.js` registers only the components imported pages use
+(`KeyTakeaways`, `TenMinute`, `Exercises`, `CaseStudy`, `AISpark`, `LevelBadge`,
+`TechIcon`, `AdSlot`); if you import content using `<InterviewQuestions>`,
+`<LearningPath>`, `<InteractiveExample>`, `<VisualExplanation>`,
+`<KnowledgeMap>` or `<Commentary>`, copy those components back and register
+them or the build fails.
 
 Removed from the original portfolio and NOT to be re-added without being asked:
 Projects, Articles, Resume, Certifications, the marketing landing page. The
@@ -69,7 +94,7 @@ navbar — because AdSense requires them.
   from `../abhishekgupta1.github.io` into the existing structure.
 - Don't refactor core components (`src/components/*`, `src/theme/*`,
   `docusaurus.config.js`, `sidebars*.js`, page files) unless asked.
-- Keep the navbar to **Docs / Cheat Sheets**. New nav entries need a deliberate
+- Keep the navbar to **Docs / Cheat Sheets / Learn**. New nav entries need a deliberate
   ask.
 - Planning docs live in `Plan/` — `GO-LIVE.md` (hosting steps), `NEXT-SESSION.md`
   (handoff), `docssheet-launch-spec.md` / `-plan.md`, `adsense-content-shortlist.md`.

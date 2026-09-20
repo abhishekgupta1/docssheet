@@ -1,8 +1,10 @@
 ---
 title: "SQL Cheat Sheet"
 description: "Quick reference for SQL — joins, aggregates, CTEs vs window functions, indexes, and transactions."
+level: beginner
 tags: [sql, sdet, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/sql.png
 ---
 
 # SQL cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for SQL. For indexing internals and interview Q&A, see
 the [complete guide](/docs/sdet-skills/sql/sql-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/sql/sql-guide">📖 Full guide: SQL →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core DML** card
+2. Then the **Joins** and **Aggregates & grouping** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/sql/sql-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

@@ -2,7 +2,9 @@
 title: "JUnit: The Complete Guide"
 description: "End-to-end reference for JUnit — JUnit 5 architecture, annotations, assertions, extensions, tagging, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [junit, sdet, java, testing-framework]
+image: /img/social/junit-guide.png
 ---
 
 # JUnit — The Complete Guide
@@ -12,6 +14,28 @@ JUnit 5 tests, build a custom extension, or walk into an SDET interview.
 Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/junit">📋 Quick reference: JUnit →</a>
+
+<LevelBadge level="beginner" />
+
+**Prerequisites:** [Java](/docs/sdet-skills/java/java-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the core annotations: `@Test`, `@BeforeEach`, `@AfterEach`
+2. Write assertions and one `@ParameterizedTest`
+3. Use `@Tag` to filter which tests run
+4. Skim JUnit 5 vs TestNG to know which fits your project
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Write JUnit 5 tests with the core annotations
+- Use parameterized and nested tests
+- Filter runs with tags
+- Extend behaviour with `@ExtendWith`
+
+</KeyTakeaways>
 
 ---
 
@@ -534,6 +558,67 @@ A: Tag the relevant tests with `@Tag("smoke")`, then configure Surefire
 'smoke' }` to filter by tag, or pass `-Dgroups=smoke` on the CLI. This lets
 one test codebase serve both a fast on-commit smoke suite and a full nightly
 regression run without maintaining separate test classes.
+
+---
+
+<Exercises>
+<Exercises.Task title="Test a discount method with one parameterized test" level="intermediate" stretch="Group the tests into @Nested classes with @DisplayName and read the hierarchical report.">
+
+In a Maven project with `org.junit.jupiter:junit-jupiter` 5.10.x as a test dependency, add this method:
+
+```java
+public class Price {
+    /** Returns the price in cents after taking percent off; the discount is rounded down. */
+    public static int applyDiscount(int cents, int percent) {
+        return cents - (cents * percent / 100);
+    }
+}
+```
+
+Write one `@ParameterizedTest` with `@CsvSource` and at least four rows: no discount, half off, full discount, and an odd amount where the discount does not divide evenly. Run `mvn test`, then change the method to subtract one extra cent and run again.
+
+**Done when:** all rows pass first, and after the change the report lists each failing row separately, by its position, instead of stopping at the first.
+
+</Exercises.Task>
+<Exercises.Task title="Run only the smoke tests" level="advanced">
+
+Add one test tagged `@Tag("smoke")` and one tagged `@Tag("flaky")` next to your parameterized test. Then compare the two runs:
+
+```bash
+mvn test
+mvn test -Dgroups=smoke -DexcludedGroups=flaky
+```
+
+**Done when:** the first run executes every test, and the second reports `Tests run: 1`, and you can say why a pipeline would run `smoke` on every pull request and keep `flaky` out entirely.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The test that only makes sense on staging">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A suite includes tests that need a staging environment. The nightly build runs on a runner that cannot reach it, and those tests fail every night.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The red builds were not real regressions, but they looked identical to real ones. The team began to skim past red results, and eventually a genuine failure sat unnoticed among the expected ones.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Environment-dependent tests should declare their precondition with an assumption such as `assumeTrue`, so they end up aborted rather than failed when the environment is wrong. Combined with tags, that keeps a red build meaning something.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to generate `@CsvSource` rows for a method's edge cases (zero, boundaries, rounding), then run them and read every failure yourself, because a generated expected value can simply be wrong.
+- Have it merge a set of copy-pasted similar tests into one parameterized test, and confirm the report still identifies each case individually.
+- Ask it to suggest `@Tag` groupings such as smoke and regression, then count the results to check that the Surefire filters select exactly the tests you intend.
+
+</AISpark>
 
 ---
 

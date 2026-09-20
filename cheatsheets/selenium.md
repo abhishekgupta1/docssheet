@@ -1,8 +1,10 @@
 ---
 title: "Selenium Cheat Sheet"
 description: "Quick reference for Selenium — locators, waits, Page Object Model, Grid, and the Actions API."
+level: beginner
 tags: [selenium, sdet, e2e, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/selenium.png
 ---
 
 # Selenium cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Selenium. For WebDriver architecture and interview
 Q&A, see the [complete guide](/docs/sdet-skills/selenium/selenium-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/selenium/selenium-guide">📖 Full guide: Selenium →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Locator strategies** card
+2. Then the **Waits (avoid the classic flakiness bug)** and **Page Object Model** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/selenium/selenium-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

@@ -1,8 +1,10 @@
 ---
 title: "Terraform Cheat Sheet"
 description: "Quick reference for Terraform — core workflow, HCL syntax, state, modules, and drift."
+level: intermediate
 tags: [terraform, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/terraform.png
 ---
 
 # Terraform cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Terraform. For state internals, modules, and the
 full AWS worked example, see the [complete guide](/docs/sre-skills/terraform/terraform-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/terraform/terraform-guide">📖 Full guide: Terraform →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core workflow** card
+2. Then the **Safer apply** and **HCL basics** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/terraform/terraform-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

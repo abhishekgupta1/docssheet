@@ -1,8 +1,10 @@
 ---
 title: "MCP & AI Agents Cheat Sheet"
 description: "Quick reference for MCP and AI agents — hosts/clients/servers, tools/resources/prompts, and agent design patterns."
+level: intermediate
 tags: [mcp, ai-agents, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/mcp-ai-agents.png
 ---
 
 # MCP & AI agents cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for MCP and AI agents. For agent design patterns and
 safety/guardrail depth, see the [complete guide](/docs/sre-skills/mcp-ai-agents/mcp-ai-agents-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/mcp-ai-agents/mcp-ai-agents-guide">📖 Full guide: MCP & AI Agents →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Architecture: host, client, server** card
+2. Then the **What a server exposes** and **Transport** cards
+3. Treat the other 3 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/mcp-ai-agents/mcp-ai-agents-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

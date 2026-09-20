@@ -2,8 +2,23 @@
 title: "Incident Simulation Labs"
 description: "10 timed production incident simulations plus 6 hands-on labs — CPU saturation, disk-full, OOM kills, SYN backlog exhaustion, cgroup throttling, DNS breakage, and more."
 sidebar_position: 4
+level: advanced
 tags: [sre, linux, simulation, chaos-engineering, incident-response]
+image: /img/social/incident-simulation-labs.png
 ---
+
+<LevelBadge level="advanced" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={15}>
+
+1. Read How To Use This Pack, then time-box yourself
+2. Read only the Alert of Incident 1 and decide what you'd check first
+3. Compare with "What You Should Check" and "What You're Expected To Discover"
+4. Repeat for Incidents 2–4 before trying the hands-on labs
+
+</TenMinute>
 
 ## How To Use This Pack
 

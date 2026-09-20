@@ -1,8 +1,10 @@
 ---
 title: "Appium Cheat Sheet"
 description: "Quick reference for Appium — capabilities, locators, gestures, device farms, and flakiness pitfalls."
+level: intermediate
 tags: [appium, sdet, mobile, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/appium.png
 ---
 
 # Appium cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Appium. For architecture, driver internals, and
 interview Q&A, see the [complete guide](/docs/sdet-skills/appium/appium-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/appium/appium-guide">📖 Full guide: Appium →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Desired capabilities** card
+2. Then the **Android vs iOS drivers** and **Locator strategies** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/appium/appium-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

@@ -1,8 +1,10 @@
 ---
 title: "AI-Assisted Engineering Cheat Sheet"
 description: "Quick reference for AI-assisted engineering workflows — guardrails, human-in-the-loop, and overreliance risks."
+level: beginner
 tags: [ai-assisted-engineering, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/ai-assisted-engineering-workflows.png
 ---
 
 # AI-assisted engineering cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for using AI assistants safely in engineering/SRE work.
 For rollout strategy and productivity data, see the [complete guide](/docs/sre-skills/ai-assisted-engineering-workflows/ai-assisted-engineering-workflows-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/ai-assisted-engineering-workflows/ai-assisted-engineering-workflows-guide">📖 Full guide: AI-Assisted Engineering →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Never blindly apply AI-generated infra changes** card
+2. Then the **Human-in-the-loop, by risk** and **Verify, don't trust** cards
+3. Treat the other 3 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/ai-assisted-engineering-workflows/ai-assisted-engineering-workflows-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

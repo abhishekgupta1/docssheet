@@ -1,0 +1,75 @@
+.page {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.lede {
+  max-width: 65ch;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.group {
+  margin-top: 2rem;
+}
+
+.groupHead {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--ifm-color-emphasis-200);
+}
+
+.table {
+  width: 100%;
+  display: table;
+  font-size: 0.9rem;
+}
+
+.table th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+.meter {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.pip {
+  width: 14px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--ifm-color-emphasis-300);
+}
+
+.pipOn {
+  background: var(--ifm-color-primary);
+}
+
+.note {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.status {
+  text-align: center;
+}
+
+.meterCol { width: 110px; }
+.statusCol { width: 48px; text-align: center; }
+
+@media (max-width: 720px) {
+  .noteCol,
+  .note {
+    display: none;
+  }
+}
