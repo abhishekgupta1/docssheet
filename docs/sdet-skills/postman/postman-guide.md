@@ -2,7 +2,9 @@
 title: "Postman: The Complete Guide"
 description: "End-to-end reference for Postman — collections, environments, pre-request/test scripts, Newman CI execution, mock servers, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [postman, sdet, api-testing]
+image: /img/social/postman-guide.png
 ---
 
 # Postman — The Complete Guide
@@ -13,6 +15,26 @@ headlessly in CI, or walk into an SDET interview. Organized as a lookup you
 can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/postman">📋 Quick reference: Postman →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={10}>
+
+1. Create a collection and send your first request
+2. Add a test script using the `pm.*` API and an environment variable
+3. Chain two requests by passing a value between them
+4. Run the collection in CI with Newman
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Organise requests into collections and environments
+- Write test scripts and chain requests
+- Run collections in CI with Newman
+- Choose between Postman and Rest Assured
+
+</KeyTakeaways>
 
 ---
 
@@ -451,6 +473,105 @@ file — one row per iteration. Each column becomes a variable accessible via
 the collection once per row, so assertions can reference expected values
 per row (e.g., expected status code) directly from the data file instead of
 hardcoding them in the script.
+
+---
+
+<Exercises>
+<Exercises.Task title="Chain two requests and run them with Newman" level="intermediate" stretch="Move the JSON content-type header into a collection-level setting instead of repeating it on each request.">
+
+Save this as `server.js` and run `node server.js`. It listens on port 4010; if that port is busy, choose another and change it everywhere. (If a request unexpectedly returns 404 with an HTML body, some other program is answering on your port.)
+
+```js
+const http = require('http');
+
+const orders = {};
+let next = 1;
+
+http.createServer((req, res) => {
+  let body = '';
+  req.on('data', chunk => (body += chunk));
+  req.on('end', () => {
+    res.setHeader('Content-Type', 'application/json');
+    const json = body ? JSON.parse(body) : {};
+
+    if (req.method === 'POST' && req.url === '/orders') {
+      const id = next++;
+      orders[id] = json;
+      res.statusCode = 201;
+      return res.end(JSON.stringify({ id, ...json }));
+    }
+
+    const m = req.url.match(/^\/orders\/(\d+)$/);
+    if (req.method === 'GET' && m && orders[m[1]]) {
+      return res.end(JSON.stringify({ id: Number(m[1]), ...orders[m[1]] }));
+    }
+
+    if (req.method === 'POST' && req.url === '/login') {
+      if (!json.username) { res.statusCode = 400; return res.end('{}'); }
+      if (json.password !== 'correctpass') { res.statusCode = 401; return res.end('{}'); }
+      return res.end(JSON.stringify({ token: 'abc' }));
+    }
+
+    res.statusCode = 404;
+    res.end('{}');
+  });
+}).listen(4010, () => console.log('listening on 4010'));
+```
+
+In Postman, create a collection with two requests. First `POST http://localhost:4010/orders` with the body `{"item":"Widget"}`, whose Tests tab checks for status 201 and stores the returned `id` in a collection variable called `orderId`. Second `GET http://localhost:4010/orders/{{orderId}}`, whose test checks for status 200 and that the returned `id` equals the stored one. Export the collection and run it:
+
+```bash
+npx newman run Orders.postman_collection.json
+```
+
+**Done when:** Newman reports 2 requests and 2 assertions with 0 failed, and the second request URL was filled in as `/orders/1` by the value your first request stored.
+
+</Exercises.Task>
+<Exercises.Task title="Drive one request from a CSV file" level="advanced">
+
+Use the same server. Create a collection with one request, `POST http://localhost:4010/login`, with the body `{"username":"{{username}}","password":"{{password}}"}` and one test: the status must equal the expected status from the current data row, read with `pm.iterationData.get("expectedStatus")` and converted with `Number(...)`. Save this as `data.csv`:
+
+```csv
+username,password,expectedStatus
+validuser,correctpass,200
+validuser,wrongpass,401
+,correctpass,400
+```
+
+```bash
+npx newman run Login.postman_collection.json -d data.csv
+```
+
+**Done when:** Newman reports 3 iterations and 3 assertions with 0 failed. Then change one `expectedStatus` to a wrong value and confirm the run reports exactly 1 failed assertion.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The token refresh pasted into forty requests">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A collection grows to about forty requests, and each one carries its own copy of the code that refreshes the auth token before sending.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+When the token endpoint changed, someone updated most of the copies but missed a few. The stale ones failed with confusing 401 errors that depended on which requests happened to run first, and the team lost time working out which copy was out of date.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Put shared logic such as token refresh in a collection-level or folder-level pre-request script so it runs before every request from one place. Keep credentials as secret-type variables so they are masked and left out of exports.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to write `pm.test` assertions for a sample JSON response, then run them against the real response and delete any assertion that only passes because it is too loose.
+- Have it turn a list of edge cases into a CSV for the Collection Runner, and check that each row's expected status matches how the API really behaves, not how the assistant assumed it would.
+- Ask it to review a collection for secrets committed in plain variables or scripts, and confirm each finding before moving anything.
+
+</AISpark>
 
 ---
 

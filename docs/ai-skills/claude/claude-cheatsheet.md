@@ -1,8 +1,22 @@
+---
+level: beginner
+image: /img/social/claude-cheatsheet.png
+---
 # Claude Cheatsheet — Learn It in One Read
 
 A quick-reference guide to understanding and using Claude (by Anthropic) effectively.
 
 <a class="topic-crosslink" href="/cheatsheets/using-claude">📋 Quick reference: Claude →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Learn the model tiers and pick the right one for the task
+2. Read Prompting 101 — context, goal, constraints
+3. Use the Best-Practice Checklist on your next prompt
+
+</TenMinute>
 
 ---
 

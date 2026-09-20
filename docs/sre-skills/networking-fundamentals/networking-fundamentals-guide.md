@@ -2,7 +2,9 @@
 title: "Networking Fundamentals: The Complete Guide"
 description: "End-to-end reference for Networking Fundamentals — OSI/TCP-IP model, addressing, DNS/TLS, load balancing, troubleshooting tools, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [networking, sre, tcp-ip, dns]
+image: /img/social/networking-fundamentals-guide.png
 ---
 
 # Networking Fundamentals — The Complete Guide
@@ -13,6 +15,28 @@ issues under pressure, or walk into an SRE interview. Organized as a lookup
 you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/networking-fundamentals">📋 Quick reference: Networking →</a>
+
+<LevelBadge level="beginner" />
+
+**Prerequisites:** [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
+
+<TenMinute minutes={10}>
+
+1. Trace one request through the layers: DNS → TCP handshake → TLS → HTTP
+2. Practise CIDR: work out the size of a `/24` and a `/16`
+3. Run `dig`, `curl -v`, and `ss` against a real service
+4. Read Common Failure Scenarios to see how each layer breaks
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Trace a request through OSI/TCP-IP layers, DNS, TCP, and TLS
+- Work out CIDR ranges and subnet sizes
+- Explain L4 vs L7 load balancing, firewalls, and NAT
+- Diagnose common network failures with standard tools
+
+</KeyTakeaways>
 
 ---
 
@@ -447,6 +471,59 @@ track connection state, and they're evaluated in rule-number order with
 explicit deny support (security groups are allow-only). NACLs are typically
 used for coarse subnet-wide blocking; security groups do the fine-grained,
 per-instance access control.
+
+---
+
+<Exercises>
+<Exercises.Task title="Carve a /24 into eight subnets" level="beginner" stretch="Repeat with 10.20.0.0/16 split into /20 subnets and state how many you get.">
+
+Split `192.168.10.0/24` into `/27` subnets **by hand**. Write each subnet's address range and its usable host count using `2^(32 - prefix) - 2`. Then check yourself:
+
+```bash
+python3 -c "import ipaddress; print([str(s) for s in ipaddress.ip_network('192.168.10.0/24').subnets(new_prefix=27)])"
+```
+
+**Done when:** your list has 8 subnets from `192.168.10.0/27` to `192.168.10.224/27`, each with 30 usable hosts, and it matches the script's output.
+
+</Exercises.Task>
+<Exercises.Task title="Walk the diagnostic order against a real host" level="intermediate">
+
+Pick any public HTTPS site and run the guide's tools in its order: `ping -c 4`, `dig`, `nc -zv HOST 443`, then `curl -o /dev/null -s -w "%{time_total}\n" https://HOST`. Finish by reading the certificate expiry:
+
+```bash
+echo | openssl s_client -connect HOST:443 2>/dev/null | openssl x509 -noout -enddate
+```
+
+**Done when:** you have written one sentence per tool stating which layer it tested and what it told you, and you have a `notAfter` date for the certificate.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The cutover half the users never saw">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team moves a service to a new IP and changes the DNS A record at the moment of cutover. The new servers are healthy, yet for hours some users keep reaching the old ones.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The record had a long TTL. Caching resolvers that had already looked it up kept serving the old address until their copy expired, so different users saw different answers depending on when they last resolved.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Lower the TTL hours before a planned cutover, make the change, then raise the TTL back afterwards. Lowering it at the moment of change is too late, because resolvers are still holding the old value.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste `dig` and `curl -v` output and ask which layer the failure sits at and why. Then confirm by running the next tool in the diagnostic order yourself.
+- Ask it to check a multi-VPC subnet plan for overlapping ranges, and verify every range with Python's `ipaddress` module instead of trusting its arithmetic.
+- Have it explain a `tcpdump` capture line by line, and treat that as a hypothesis to check against `ss -s` or a capture from the other end of the connection.
+
+</AISpark>
 
 ---
 

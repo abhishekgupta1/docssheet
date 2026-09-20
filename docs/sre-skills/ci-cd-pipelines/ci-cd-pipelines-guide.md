@@ -2,7 +2,9 @@
 title: "CI/CD (Jenkins, GitLab CI & GitHub Actions): The Complete Guide"
 description: "End-to-end reference for CI/CD — pipeline concepts, deployment strategies, side-by-side Jenkins/GitLab CI/GitHub Actions syntax, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [ci-cd, jenkins, gitlab-ci, github-actions, sre]
+image: /img/social/ci-cd-pipelines-guide.png
 ---
 
 # CI/CD (Jenkins, GitLab CI & GitHub Actions) — The Complete Guide
@@ -12,6 +14,28 @@ from scratch, read/modify one in any of the three dominant tools, or walk
 into an SRE interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/ci-cd-pipelines">📋 Quick reference: CI/CD →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Git](/docs/sde-skills/git/git-guide), [Docker Basics](/docs/sde-skills/docker-basics/docker-basics-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the pipeline stages: build → test → scan → deploy
+2. Compare rolling, blue-green, and canary deployments
+3. Pick one tool (Jenkins, GitLab CI, or GitHub Actions) and read its section
+4. Read Secrets Management and Common Pitfalls before wiring credentials
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Describe the stages of a delivery pipeline
+- Compare rolling, blue-green, and canary deployments
+- Read and write pipelines in Jenkins, GitLab CI, or GitHub Actions
+- Handle secrets without leaking them
+
+</KeyTakeaways>
 
 ---
 
@@ -1299,6 +1323,56 @@ conflict). A merge train queues MRs targeting the same protected branch and
 runs each one's pipeline as if the prior queued MRs had already merged,
 only merging in order if that pipeline is still green — catching the "two
 green MRs together break main" case before it happens instead of after.
+
+---
+
+<Exercises>
+<Exercises.Task title="Build, stage, then approve to production" level="intermediate" stretch="Make the staging job run a smoke test and stop the pipeline if it fails.">
+
+In a GitHub repository, write a workflow with three jobs: build, deploy to staging, deploy to production. Upload the build output as an **artifact** and download that same artifact in both deploy jobs. Put production behind an `environment` with required reviewers, and give the deploy job `permissions: id-token: write` for OIDC instead of a stored cloud key.
+
+**Done when:** production waits for a human approval, both deploys use the artifact from the build job rather than rebuilding, and no long-lived cloud access key exists in the repository secrets.
+
+</Exercises.Task>
+<Exercises.Task title="Predict a rolling update before you run it" level="advanced">
+
+On a local cluster such as kind, create a Deployment with `replicas: 6`, `maxSurge: 1`, and `maxUnavailable: 0`. Before changing the image, write down the largest number of pods that can exist and the smallest number available during the rollout. Then trigger it and watch:
+
+```bash
+kubectl rollout status deployment/DEPLOYMENT_NAME
+kubectl get pods -w
+```
+
+**Done when:** you observed at most 7 pods and never fewer than 6 available, matching your prediction, and you can explain what changes if `maxUnavailable` becomes 1.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The pipeline nobody trusted">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team's pipeline goes red several times a week. The habit is to re-run it, and it usually goes green, so red builds are treated as noise.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+One of those red runs was a real regression, hidden among the flaky failures. It was re-run until it passed, merged, and reached production. By then the pipeline had effectively stopped working as a safety net.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Quarantine and fix flaky tests instead of tolerating them. A pipeline is only useful while a red build means something, and pipeline changes deserve review just like application code.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste a failing job log and ask an assistant to find the first real error and what changed. Then reproduce it locally or re-run only that stage before touching the pipeline.
+- Ask it to convert a Jenkinsfile stage to GitHub Actions or GitLab CI, and check the result against the guide's side-by-side table (approval gates, matrix builds, secrets), since equivalents are rarely one-to-one.
+- Have it review a workflow for secret exposure, such as fork-PR triggers or echoed secret-derived values, and confirm each finding yourself before changing any trigger.
+
+</AISpark>
 
 ---
 

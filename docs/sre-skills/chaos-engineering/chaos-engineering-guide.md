@@ -2,7 +2,9 @@
 title: "Chaos Engineering: The Complete Guide"
 description: "End-to-end reference for chaos engineering — the steady-state hypothesis, the experiment lifecycle, failure injection types, tools, Game Days, blast-radius safety, and interview-ready Q&A."
 sidebar_position: 1
+level: advanced
 tags: [chaos-engineering, sre, reliability, resilience]
+image: /img/social/chaos-engineering-guide.png
 ---
 
 # Chaos Engineering — The Complete Guide
@@ -12,6 +14,28 @@ a safe experiment, run a Game Day, or walk into an SRE interview. Organized
 as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/chaos-engineering">📋 Quick reference: Chaos Engineering →</a>
+
+<LevelBadge level="advanced" />
+
+**Prerequisites:** [Kubernetes](/docs/sre-skills/kubernetes/kubernetes-guide), [Observability (Grafana & Prometheus)](/docs/sre-skills/observability-grafana-prometheus/observability-grafana-prometheus-guide)
+
+<TenMinute minutes={10}>
+
+1. Define a steady-state hypothesis before injecting anything
+2. Follow the lifecycle: hypothesis → experiment → observe → learn
+3. Set blast-radius limits and a stop condition first
+4. Study the LitmusChaos pod-delete example as your first experiment
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Write a steady-state hypothesis and run an experiment through its lifecycle
+- Choose failure-injection types and tools
+- Limit blast radius and define stop conditions
+- Plan and run a Game Day
+
+</KeyTakeaways>
 
 ---
 
@@ -473,6 +497,51 @@ instead of discovering them during a real incident at 3am. A disproved
 hypothesis is a finding — file it, fix the underlying weakness (a missing
 timeout, an under-provisioned replica count, a circuit breaker that never
 trips), and re-run to confirm the fix actually closed the gap.
+
+---
+
+<Exercises>
+<Exercises.Task title="Write a falsifiable hypothesis" level="intermediate" stretch="Name the smallest experiment that tests it, its blast radius, and the alarm that would stop it.">
+
+A product-page service reads from a cache and has a latency SLO of 300 ms for 99% of requests. Write a hypothesis, in the guide's format, about what happens when the cache becomes unavailable for five minutes.
+
+**Done when:** your steady state is a business or SLO metric (not CPU), the hypothesis names a specific resilience mechanism such as a fallback to the database behind a circuit breaker, it includes a numeric threshold and a time window, and someone could clearly disprove it.
+
+</Exercises.Task>
+<Exercises.Task title="Plan a Game Day that is not a demo" level="advanced">
+
+Your hypothesis is that losing one availability zone keeps you inside your SLO. Write a one-page Game Day plan covering who is notified, who acts as incident commander, the automated stop condition, and what the retro must produce.
+
+**Done when:** the plan names an abort condition tied to a real alarm (not someone watching a dashboard), keeps the exact timing from the responding on-call so they diagnose for real, and ends with tracked action items that have owners.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The experiment with no abort button">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team runs a pod-kill experiment against a payments service. Because it is just a test, there is no automated stop condition. One engineer is meant to watch a dashboard and pull the plug by hand.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The hypothesis was wrong. Retries piled up and the error rate climbed, while the engineer who was supposed to be watching was pulled into another meeting. Without an automated halt, the failed experiment turned into a real outage.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Every experiment needs a stop condition wired to a monitoring signal, not a person's attention. The same alarm can serve as both the abort trigger and the pass or fail measurement, and the first run of any new experiment should hit a single instance or canary.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Give an assistant your architecture and SLO and ask for three falsifiable hypotheses. Keep only those tied to a mechanism you can point to in your config, and rewrite the thresholds yourself.
+- Ask it to draft the abort alarm for an experiment, and confirm the alarm actually fires on a synthetic breach before the first run.
+- Have it turn Game Day notes into an action-item list, then assign owners and due dates yourself.
+
+</AISpark>
 
 ---
 

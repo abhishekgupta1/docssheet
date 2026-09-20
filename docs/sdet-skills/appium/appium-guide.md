@@ -2,7 +2,9 @@
 title: "Appium: The Complete Guide"
 description: "End-to-end reference for Appium — architecture, capabilities, Android vs iOS drivers, mobile locators, device farms, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [appium, sdet, automation, mobile-testing]
+image: /img/social/appium-guide.png
 ---
 
 # Appium — The Complete Guide
@@ -12,6 +14,28 @@ automation framework, debug flaky device tests, or walk into an SDET
 interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/appium">📋 Quick reference: Appium →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Java](/docs/sdet-skills/java/java-guide), [Selenium](/docs/sdet-skills/selenium/selenium-guide)
+
+<TenMinute minutes={10}>
+
+1. Understand the architecture: client → Appium server → platform driver → device
+2. Learn the capabilities object and how it selects device, OS, and app
+3. Compare UiAutomator2 (Android) and XCUITest (iOS), and the mobile locator strategies
+4. Read Common Flakiness Pitfalls before running on real devices or a cloud farm
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain how the Appium client, server, and platform driver interact
+- Configure capabilities for Android and iOS
+- Choose reliable mobile locators
+- Decide between emulators, real devices, and cloud farms
+
+</KeyTakeaways>
 
 ---
 
@@ -428,6 +452,67 @@ Appium 1.x capability syntax will fail session creation against an Appium 2
 server until capabilities are updated and the correct driver package
 (`appium driver install uiautomator2`) is installed. It's a common source of
 "works locally, fails after a server upgrade" issues.
+
+---
+
+<Exercises>
+<Exercises.Task title="Build Android capabilities and read the prefixes" level="intermediate" stretch="Switch to XCUITestOptions for iOS, replace the package and activity with a bundle ID, and note which keys change.">
+
+Add `io.appium:java-client` 9.x as a dependency. You do not need a server or a device for this task. Build the options and print them:
+
+```java
+UiAutomator2Options options = new UiAutomator2Options()
+    .setPlatformName("Android")
+    .setAutomationName("UiAutomator2")
+    .setDeviceName("Pixel_7_API_34")
+    .setAppPackage("com.example.myapp")
+    .setAppActivity(".MainActivity")
+    .setNoReset(false);
+System.out.println(new java.util.TreeMap<>(options.asMap()));
+```
+
+**Done when:** the printed map shows `platformName` unprefixed and every other key (such as `appium:automationName` and `appium:appPackage`) with the `appium:` prefix, and you can say what changed between Appium 1.x and 2.x that this reflects.
+
+</Exercises.Task>
+<Exercises.Task title="Pick the right locator for four elements" level="advanced">
+
+Write one `AppiumBy` locator for each element, choosing the strategy the guide prefers, and print them (no device needed):
+
+1. A login button that has the accessibility ID `login_button` on both platforms.
+2. An Android username field whose resource ID is `com.example:id/username`.
+3. An Android settings row called Settings, far down a long scrollable list.
+4. An iOS button with no identifier whose label contains `Submit`.
+
+**Done when:** the four printed locators are, in order, `AppiumBy.accessibilityId: login_button`, `AppiumBy.id: com.example:id/username`, an `AppiumBy.androidUIAutomator` locator using `UiScrollable` and `scrollIntoView` for the text Settings, and `AppiumBy.iOSNsPredicate: label CONTAINS 'Submit'`. You can also say why XPath is the last resort.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The suite that broke on every release">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A mobile suite finds most elements with long XPath expressions copied from an inspector. Each release, small layout changes break a batch of tests that have nothing to do with the change.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The XPath locators depended on the exact structure of the screen, so any restructuring invalidated them, and XPath is also the slowest strategy because Appium walks the entire native element tree. The team spent each release repairing locators instead of finding bugs.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Ask developers to add explicit accessibility identifiers to interactive elements. It is the mobile equivalent of `data-testid`, the single highest-leverage change for maintainability, and it doubles as real screen-reader support.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to convert flat Appium 1.x capabilities into an Appium 2 options object, then print the resulting map to check that every non-standard key carries the `appium:` prefix.
+- Paste a screen's element tree from Appium Inspector and ask for locators in order of preference. Verify each against the real app instead of trusting the first suggestion.
+- Have it draft a list of accessibility identifiers to request from developers, then confirm with the team that each one is stable and unique per screen.
+
+</AISpark>
 
 ---
 

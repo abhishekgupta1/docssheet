@@ -2,13 +2,25 @@
 title: "Incident Response Mastery: Overview & Study Path"
 description: "Navigation map for the Incident Response Mastery series — org-level incident management setup, mindset, hands-on simulations, a 90-day roadmap, and deep Linux/kernel/interview references."
 sidebar_position: 1
+level: beginner
 tags: [sre, linux, incident-response, index]
+image: /img/social/overview.png
 ---
 
 A complete SRE and Linux debugging knowledge base, organized by depth:
 mindset → practice → structured learning → reference.
 
 <a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Read the document list below and pick your entry point
+2. Follow the Suggested Reading Order rather than jumping around
+3. Keep the Core Principle in mind while reading every other page
+
+</TenMinute>
 
 <div class="mental-model">
 <span class="mental-model__label">🧭 Mental model</span>

@@ -2,17 +2,32 @@
 title: "Incident Management Setup"
 description: "Org-level incident management scaffolding — severity classification, IC/Comms/Scribe roles, on-call and escalation policy, PagerDuty/Opsgenie alert routing, communication templates, blameless postmortems, and runbook design."
 sidebar_position: 2
+level: intermediate
 tags: [sre, incident-response, incident-management, on-call, pagerduty, opsgenie, postmortem, runbooks]
+image: /img/social/incident-management-setup.png
 ---
 
 [Incident Response Mindset](./incident-response-mindset) is what an individual engineer thinks while debugging. This document is the scaffolding around them: how an org classifies incidents, who does what during one, how paging routes an alert to a human, and how the organization turns the incident into a written record. Get the setup wrong and even a sharp debugger drowns in noise, unclear authority, and comms chaos. Get it right and a mediocre debugger still ships a controlled, well-communicated resolution.
+
+<LevelBadge level="intermediate" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Learn how severity levels are defined and who declares them
+2. Know the roles: Incident Commander, Comms, Scribe
+3. Copy the communication templates for your own on-call rotation
+4. Read the blameless postmortem structure and the runbook checklist
+
+</TenMinute>
 
 ## Table of Contents
 
 1. [Quick Reference](#quick-reference)
 2. [What Is It / Core Concepts](#what-is-it--core-concepts)
 3. [Detailed Examples](#detailed-examples)
-4. [Key Takeaways](#key-takeaways)
+4. [Summary](#summary)
 5. [Common Mistakes](#common-mistakes)
 6. [Advanced Usage](#advanced-usage)
 7. [Related Topics](#related-topics)
@@ -333,7 +348,7 @@ Design principles:
 
 ---
 
-## Key Takeaways
+## Summary
 
 - 💡 Severity criteria must be written down and criteria-based — ambiguity about "is this a SEV1?" burns more time than most actual mitigations.
 - 🔥 Role separation (IC / Comms / Scribe / SMEs) exists to protect cognitive bandwidth under pressure, not to add ceremony — never let one person hold two of these seats in a SEV1 if headcount allows avoiding it.

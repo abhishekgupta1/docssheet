@@ -1,8 +1,10 @@
 ---
 title: "JUnit Cheat Sheet"
 description: "Quick reference for JUnit 5 — annotations, assertions, parameterized tests, and the extension model."
+level: beginner
 tags: [junit, sdet, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/junit.png
 ---
 
 # JUnit cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for JUnit 5. For the extension model and interview Q&A,
 see the [complete guide](/docs/sdet-skills/junit/junit-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/junit/junit-guide">📖 Full guide: JUnit →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core annotations** card
+2. Then the **Assertions & assumptions** and **Parameterized tests** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/junit/junit-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

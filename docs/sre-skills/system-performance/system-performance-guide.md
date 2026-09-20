@@ -2,7 +2,9 @@
 title: "System Performance: The Complete Guide"
 description: "End-to-end reference for diagnosing Linux system performance with the USE and RED methods — CPU, memory, disk I/O, network, the standard toolkit, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [system-performance, sre, linux, troubleshooting, use-method]
+image: /img/social/system-performance-guide.png
 ---
 
 # System Performance — The Complete Guide
@@ -16,6 +18,28 @@ method, and a worked example that ties it together. Organized as a lookup
 you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/system-performance">📋 Quick reference: System Performance →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the USE method: Utilisation, Saturation, Errors for every resource
+2. Run the toolkit in order: `uptime`, `vmstat`, `iostat`, `ss`, `top`
+3. Follow the worked "the server is slow" example end to end
+4. Read Common Mistakes so you don't blame CPU by default
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Apply the USE method to CPU, memory, disk, and network
+- Use the standard toolkit in a sensible order
+- Diagnose a slow server end to end
+- Avoid the common mistakes that mislead performance debugging
+
+</KeyTakeaways>
 
 ---
 
@@ -670,6 +694,63 @@ resource and adds extra load (sampling overhead) to a system that's already
 struggling. The standard toolkit order exists precisely so cheap, wide
 tools (`uptime`, `vmstat`, `mpstat`) rule resources in or out before
 reaching for expensive, narrow tools like `perf`, `strace`, or `bpftrace`.
+
+---
+
+<Exercises>
+<Exercises.Task title="Catch a single pinned core" level="intermediate" stretch="Start a second yes process and see how the per-CPU picture changes.">
+
+On a multi-core Linux machine or VM, load exactly one core, then compare the aggregate view with the per-CPU view:
+
+```bash
+yes > /dev/null &
+vmstat 1 5
+mpstat -P ALL 1 5
+kill %1
+```
+
+**Done when:** `vmstat` shows the overall CPU still mostly idle (`id` high), while `mpstat -P ALL` shows one core near 100% busy. That is the situation the guide says an aggregate average hides.
+
+</Exercises.Task>
+<Exercises.Task title="Run USE over a table of readings" level="advanced">
+
+Classify each resource as utilization, saturation, or errors, and decide whether it is the bottleneck:
+
+- **CPU:** 95% utilised, run queue of 1 on an 8-core machine, no errors.
+- **Disk:** 60% utilised, `await` around 400 ms, queue depth climbing.
+- **Network interface:** 20% utilised, no queueing, 500 CRC errors.
+- **Memory:** 70% used, no swap in or out.
+
+**Done when:** you name the disk as the bottleneck, explain why the busy CPU is fine (high utilization without saturation), and report the network errors as a separate finding rather than the cause.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The disk that looked healthy on average">
+<CaseStudy.Context>
+
+*Illustrative scenario.* An application's p99 latency spikes intermittently. `iostat` reports an `await` of about 2 ms, which looks perfectly healthy, and every dashboard is green.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+An engineer took a block-I/O latency histogram with a low-overhead tracing tool. Most I/O finished in 1 to 2 ms, but a distinct second cluster sat at 16 to 32 ms. That two-peaked shape is invisible in a single averaged number, and it lined up with the latency spikes. Tracing every call with `strace -T` would have slowed the process enough to distort the result.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Averages hide multi-modal behaviour. When the average looks fine but the tail hurts, look at the distribution, and use low-overhead tracing to get it.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste `vmstat 1` and `iostat -xz 1` output and ask an assistant to walk USE for each resource. Verify its claims about saturation (run queue, `await`, queue depth) yourself before acting.
+- Ask it to turn the 60-second checklist into a runbook script that saves each command's output to a timestamped file. Review by hand that it does not run anything expensive, such as `perf record`, by default on a struggling machine.
+- Have it explain a `perf` summary in plain language, and treat that as a hypothesis to confirm with a second signal such as `pidstat`.
+
+</AISpark>
 
 ---
 

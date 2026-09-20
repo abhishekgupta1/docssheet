@@ -1,8 +1,10 @@
 ---
 title: "Networking Fundamentals Cheat Sheet"
 description: "Quick reference for networking — troubleshooting tools, diagnostic order, DNS, and TCP/TLS basics."
+level: beginner
 tags: [networking, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/networking-fundamentals.png
 ---
 
 # Networking cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for networking fundamentals. For the OSI/TCP-IP models,
 subnetting, and TLS handshake detail, see the [complete guide](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide">📖 Full guide: Networking →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Troubleshooting tools** card
+2. Then the **Diagnostic order under pressure** and **TCP vs UDP** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

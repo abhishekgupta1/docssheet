@@ -1,0 +1,54 @@
+.container {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 4px solid var(--ifm-color-primary);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-color-emphasis-100);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-primary-darkest);
+}
+
+html[data-theme='dark'] .header {
+  color: var(--ifm-color-primary-lightest);
+}
+
+.icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.content {
+  font-size: 0.95rem;
+}
+
+.content :global(ul),
+.content :global(ol) {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+.content :global(li) {
+  margin-bottom: 0.35rem;
+}
+
+.content :global(li:last-child) {
+  margin-bottom: 0;
+}
+
+.content :global(p:last-child) {
+  margin-bottom: 0;
+}

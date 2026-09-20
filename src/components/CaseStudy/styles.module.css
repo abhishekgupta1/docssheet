@@ -1,0 +1,43 @@
+.wrap {
+  margin: 1.5rem 0;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 4px solid var(--cm-advanced);
+  border-radius: var(--cm-radius);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--ifm-background-surface-color);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.body {
+  padding: 0.9rem 1rem 0.4rem;
+}
+
+.part {
+  margin-bottom: 0.8rem;
+}
+
+.partLabel {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.partBody > :last-child {
+  margin-bottom: 0;
+}

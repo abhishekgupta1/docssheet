@@ -1,8 +1,10 @@
 ---
 title: "System Performance Cheat Sheet"
 description: "Quick reference for system performance — the USE method, RED method, and the standard Linux toolkit."
+level: intermediate
 tags: [system-performance, linux, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/system-performance.png
 ---
 
 # System performance cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for system performance analysis. For the full worked
 "server is slow" diagnosis, see the [complete guide](/docs/sre-skills/system-performance/system-performance-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/system-performance/system-performance-guide">📖 Full guide: System Performance →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **The USE method** card
+2. Then the **The RED method** and **CPU** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/system-performance/system-performance-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

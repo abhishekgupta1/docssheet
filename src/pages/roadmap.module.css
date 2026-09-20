@@ -1,0 +1,97 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.lede {
+  max-width: 60ch;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.track {
+  margin-top: 2.25rem;
+}
+
+.trackHead {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--ifm-color-emphasis-200);
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.tier {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  padding: 0.85rem;
+  background: var(--ifm-background-surface-color);
+}
+
+.tierHead {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+  margin-bottom: 0.6rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-400);
+}
+.dot_beginner { background: var(--cm-beginner); }
+.dot_intermediate { background: var(--cm-intermediate); }
+.dot_advanced { background: var(--cm-advanced); }
+
+.nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-color);
+}
+
+.node:hover {
+  border-color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.nodeLabel {
+  flex: 1;
+}
+
+.known {
+  border-color: var(--cm-beginner);
+  background: color-mix(in srgb, var(--cm-beginner) 10%, transparent);
+}
+
+.inProgress {
+  border-color: var(--cm-intermediate);
+  background: color-mix(in srgb, var(--cm-intermediate) 10%, transparent);
+}
+
+.empty {
+  color: var(--ifm-color-emphasis-500);
+}

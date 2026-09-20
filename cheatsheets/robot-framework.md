@@ -1,8 +1,10 @@
 ---
 title: "Robot Framework Cheat Sheet"
 description: "Quick reference for Robot Framework — suite structure, built-in libraries, keywords, and data-driven testing."
+level: beginner
 tags: [robot-framework, sdet, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/robot-framework.png
 ---
 
 # Robot Framework cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Robot Framework. For reporting and framework
 comparisons, see the [complete guide](/docs/sdet-skills/robot-framework/robot-framework-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/robot-framework/robot-framework-guide">📖 Full guide: Robot Framework →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Suite file structure** card
+2. Then the **Built-in libraries** and **Custom keywords** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/robot-framework/robot-framework-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

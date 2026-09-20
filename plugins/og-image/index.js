@@ -96,6 +96,15 @@ function titleFromHtml(html, siteTitle) {
   return t || null;
 }
 
+// A page whose front matter sets `image` gets an og:image different from the
+// site-wide default; leave those alone so hand-made/generated images win.
+function hasCustomImage(html, defaultImage) {
+  const m = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"/i);
+  if (!m) return false;
+  const base = path.basename(defaultImage || '');
+  return !!base && !m[1].endsWith(base);
+}
+
 function rewriteMeta(html, imageUrl, title) {
   let out = html;
   const setOrInject = (attr, val, content) => {
@@ -144,6 +153,7 @@ module.exports = function ogImagePlugin(context) {
           const htmlPath = htmlPathFor(outDir, route);
           if (!htmlPath) continue;
           let html = fs.readFileSync(htmlPath, 'utf8');
+          if (hasCustomImage(html, siteConfig.themeConfig && siteConfig.themeConfig.image)) continue;
           const title = titleFromHtml(html, siteConfig.title || '') || route;
           const slug = route.replace(/^\/|\/$/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
           const pngPath = path.join(outImgDir, `${slug}.png`);

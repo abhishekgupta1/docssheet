@@ -2,8 +2,22 @@
 title: "90-Day Linux/SRE Mastery Roadmap"
 description: "A 12-week phased learning plan from Linux comfort to production-grade SRE debugging skill — filesystem, processes, networking, CPU/memory, containers, and observability."
 sidebar_position: 5
+level: beginner
 tags: [sre, linux, roadmap, learning-plan, performance, containers, observability]
+image: /img/social/linux-sre-90-day-roadmap.png
 ---
+
+<LevelBadge level="beginner" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={5}>
+
+1. Read the three phases: Foundations, Depth, Production Mastery
+2. Pick your current phase and only look at that section
+3. Adopt the Daily Habit, then use the Final Skill Checklist as your finish line
+
+</TenMinute>
 
 ## How This Roadmap Is Structured
 

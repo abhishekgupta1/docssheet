@@ -1,8 +1,10 @@
 ---
 title: "Kiro Cheat Sheet"
 description: "Quick reference for Kiro — the spec-driven requirements/design/tasks workflow, steering, hooks, and MCP."
+level: intermediate
 tags: [kiro, ai, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/kiro.png
 ---
 
 # Kiro cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Kiro's spec-driven workflow. For the full walkthrough
 and worked EARS/design/tasks examples, see the [complete guide](/docs/ai-skills/kiro/kiro-guide).
 
 <a class="topic-crosslink" href="/docs/ai-skills/kiro/kiro-guide">📖 Full guide: Kiro →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **The core loop** card
+2. Then the **`.kiro/` layout** and **EARS acceptance criteria** cards
+3. Treat the other 7 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/ai-skills/kiro/kiro-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--ai">
 

@@ -1,8 +1,10 @@
 ---
 title: "Clean Architecture Cheat Sheet"
 description: "Quick reference for Clean Architecture — the Dependency Rule, the four layers, ports/adapters, and common mistakes."
+level: advanced
 tags: [clean-architecture, sde, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/clean-architecture.png
 ---
 
 # Clean Architecture cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Clean Architecture. For the worked Python and Go
 examples and the full DDD-lite discussion, see the [complete guide](/docs/sde-skills/clean-architecture/clean-architecture-guide).
 
 <a class="topic-crosslink" href="/docs/sde-skills/clean-architecture/clean-architecture-guide">📖 Full guide: Clean Architecture →</a>
+
+<LevelBadge level="advanced" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **The Dependency Rule** card
+2. Then the **The four layers** and **Ports & adapters** cards
+3. Treat the other 8 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sde-skills/clean-architecture/clean-architecture-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sde">
 

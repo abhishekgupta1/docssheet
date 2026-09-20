@@ -2,12 +2,27 @@
 title: "Linux Debugging Reference"
 description: "Master outline of Linux subsystems and tools an SRE must know cold — systemd, CPU/memory/disk, networking, observability, security, containers, boot, and the practical debugging playbook."
 sidebar_position: 6
+level: intermediate
 tags: [linux, sre, debugging, systemd, networking, containers, security, boot]
+image: /img/social/linux-debugging-reference.png
 ---
 
 You should deeply understand: `/proc`, `strace`, `tcpdump`, `vmstat`, `iostat`, `systemctl`, `journalctl`, `top`, `ss`.
 
 Senior engineers think in: **resource bottlenecks**, **kernel states**, **queues**, **backpressure**, **timeouts**, **failure domains**.
+
+<LevelBadge level="intermediate" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Start with the Practical Debugging Playbook
+2. Pick the subsystem you're debugging: CPU, memory, disk, or network
+3. Use the matching tool list rather than guessing
+4. Bookmark this page as your reference during incidents
+
+</TenMinute>
 
 ## Table of Contents
 

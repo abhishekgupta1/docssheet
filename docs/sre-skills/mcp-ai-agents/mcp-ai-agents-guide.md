@@ -2,7 +2,9 @@
 title: "MCP & AI Agents: The Complete Guide"
 description: "End-to-end reference for MCP & AI Agents — the Model Context Protocol's architecture, agent design patterns, dev-automation use cases, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [mcp, ai-agents, llm, automation]
+image: /img/social/mcp-ai-agents-guide.png
 ---
 
 # MCP & AI Agents — The Complete Guide
@@ -16,6 +18,28 @@ on, see the
 [AI-Assisted Engineering Workflows guide](/docs/sre-skills/ai-assisted-engineering-workflows/ai-assisted-engineering-workflows-guide).
 
 <a class="topic-crosslink" href="/cheatsheets/mcp-ai-agents">📋 Quick reference: MCP & AI Agents →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [AI-Assisted Engineering Workflows](/docs/sre-skills/ai-assisted-engineering-workflows/ai-assisted-engineering-workflows-guide)
+
+<TenMinute minutes={10}>
+
+1. Understand the Host / Client / Server split in MCP
+2. Learn how an agent differs from a single-shot LLM call
+3. Read the agent design patterns and pick one for a dev-automation task
+4. Review Safety & Guardrails before giving an agent any write access
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain MCP's host, client, and server roles
+- Distinguish an agent from a single-shot LLM call
+- Pick an agent design pattern for a dev-automation task
+- Apply safety guardrails before granting an agent write access
+
+</KeyTakeaways>
 
 ---
 
@@ -458,6 +482,92 @@ and shared across applications. Without MCP, each application hand-defines
 and maintains its own tool integrations; with MCP, a server (e.g., a GitHub
 or Postgres server) is written once and any MCP-compatible host can
 discover and use it unmodified.
+
+---
+
+<Exercises>
+<Exercises.Task title="Build a tiny MCP server and list it from a client" level="intermediate" stretch="Add a second tool that writes a file, then decide what approval gate it would need before an agent may call it.">
+
+In a fresh virtual environment run `pip install "mcp<2"` (the examples use the 1.x API; version 2 renamed `FastMCP` to `MCPServer`). Save this as `server.py`:
+
+```python
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("notes")
+
+@mcp.tool()
+def word_count(text: str) -> int:
+    """Count the words in a piece of text."""
+    return len(text.split())
+
+@mcp.resource("notes://readme")
+def readme() -> str:
+    """A read-only note the host can pull into context."""
+    return "This server exposes one tool and one resource."
+
+if __name__ == "__main__":
+    mcp.run()
+```
+
+Then save this as `client.py` and run it from the same environment:
+
+```python
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+async def main():
+    params = StdioServerParameters(command="python", args=["server.py"])
+    async with stdio_client(params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            tools = await session.list_tools()
+            print([t.name for t in tools.tools])
+            result = await session.call_tool("word_count", {"text": "one two three"})
+            print(result.content[0].text)
+            resources = await session.list_resources()
+            print([str(r.uri) for r in resources.resources])
+
+asyncio.run(main())
+```
+
+**Done when:** it prints `['word_count']`, then `3`, then `['notes://readme']`, and you can say which file plays the server and which plays the host and client.
+
+</Exercises.Task>
+<Exercises.Task title="Design the guardrails for an incident triage agent" level="advanced">
+
+The guide describes a triage agent with MCP servers for metrics, logs, and ticketing that drafts a summary and stops short of remediation. Write its guardrail spec: which tools it gets, what each may do, where a human must approve, what credentials it holds, what is logged, and what budget stops it running unattended.
+
+**Done when:** every tool is read-only unless it has a named approval step, credentials are narrowly scoped and short-lived, every tool call is logged with its arguments and result, there is a cap on steps or time, and the spec states that tool output is treated as data, not instructions.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The ticket that gave the agent orders">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A triage agent reads ticket descriptions to correlate them with alerts. One ticket contains text written to look like new instructions to the agent, asking it to take an action unrelated to triage.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The agent loop treated the ticket's contents as part of its instructions and tried to act on them. What limited the damage was not the model's judgement: the agent held only read-only tools and had no path to a write action without a human approving it.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Content returned by a tool is data, and that rule has to be designed into the agent and host rather than left to the model. Least-privilege tool scope and approval gates before irreversible actions are what turn a successful injection into a harmless one.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to scaffold an MCP server around one read-only internal tool, then review by hand that no exposed tool can write or delete and that its arguments are validated.
+- Feed it a tool result containing hostile-looking text and ask how an agent should treat it. Then test your own agent loop to confirm it handles tool output as data.
+- Have it draft an audit-log format for tool calls, and check that a real call can be fully reconstructed from the log alone.
+
+</AISpark>
 
 ---
 

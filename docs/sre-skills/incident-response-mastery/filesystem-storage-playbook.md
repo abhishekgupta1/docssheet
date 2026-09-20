@@ -2,7 +2,9 @@
 title: "Filesystem & Storage Playbook"
 description: "Deep filesystem, storage, and disk-incident debugging knowledge for production SRE work — FHS, inodes, LVM, RAID, permissions, and a full storage incident debugging playbook."
 sidebar_position: 8
+level: intermediate
 tags: [linux, sre, filesystem, storage, inodes, lvm, raid, permissions, disk-full]
+image: /img/social/filesystem-storage-playbook.png
 ---
 
 From an SRE perspective, filesystem & storage knowledge is not theoretical. It directly impacts:
@@ -12,6 +14,19 @@ From an SRE perspective, filesystem & storage knowledge is not theoretical. It d
 - **Security** (wrong permissions → breach)
 - **Scalability** (poor volume planning → incidents)
 - **Recovery** (RAID/LVM mismanagement → data loss)
+
+<LevelBadge level="intermediate" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Learn the inode trap: a disk can be full while `df` shows free space
+2. Know when to use LVM and what each RAID level trades off
+3. Review permissions, special bits, and ACLs for common outages
+4. Follow the Storage Incident Debugging Playbook for the next disk alert
+
+</TenMinute>
 
 ## Table of Contents
 

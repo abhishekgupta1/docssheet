@@ -1,8 +1,10 @@
 ---
 title: "AWS Cheat Sheet"
 description: "Quick reference for AWS — EC2, S3, VPC, IAM, RDS/DynamoDB, ELB/ASG, and CLI essentials."
+level: intermediate
 tags: [aws, sre, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/aws.png
 ---
 
 # AWS cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for AWS. For the shared responsibility model, architecture
 patterns, and exam-style gotchas, see the [complete guide](/docs/sre-skills/aws/aws-guide).
 
 <a class="topic-crosslink" href="/docs/sre-skills/aws/aws-guide">📖 Full guide: AWS →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Core compute** card
+2. Then the **S3 storage classes** and **VPC basics** cards
+3. Treat the other 7 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sre-skills/aws/aws-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sre">
 

@@ -2,7 +2,9 @@
 title: "OpenTelemetry: The Complete Guide"
 description: "End-to-end reference for OpenTelemetry — traces, metrics, logs, SDK/Collector architecture, instrumentation, sampling, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [opentelemetry, observability, sre, tracing, metrics]
+image: /img/social/opentelemetry-guide.png
 ---
 
 # OpenTelemetry — The Complete Guide
@@ -12,6 +14,28 @@ instrument a new service, design a Collector pipeline, or walk into an SRE
 interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/opentelemetry">📋 Quick reference: OpenTelemetry →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Observability (Grafana & Prometheus)](/docs/sre-skills/observability-grafana-prometheus/observability-grafana-prometheus-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the three signals — traces, metrics, logs — and how they correlate
+2. Understand API vs SDK vs Collector, and what each is responsible for
+3. Try auto-instrumentation on one service before writing manual spans
+4. Read the Sampling section before turning on tracing in production
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain traces, metrics, and logs and how they correlate
+- Distinguish the API, SDK, and Collector and what each does
+- Instrument a service with auto and manual instrumentation
+- Choose a sampling strategy and debug common pitfalls
+
+</KeyTakeaways>
 
 ---
 
@@ -649,6 +673,95 @@ before the SDK initializes, the patch never attaches — and there's no error,
 just silent zero spans. Fix is to load the tracing bootstrap first,
 typically via `node -r ./tracing.js server.js` or as the literal first line
 of the entrypoint.
+
+---
+
+<Exercises>
+<Exercises.Task title="Record an error on a span" level="intermediate" stretch="Count the exception events on the span and work out why there may be more than one.">
+
+In a Python virtual environment, run `pip install opentelemetry-sdk`, then create a span that fails and print it to the console:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor, ConsoleSpanExporter
+
+provider = TracerProvider()
+provider.add_span_processor(SimpleSpanProcessor(ConsoleSpanExporter()))
+tracer = provider.get_tracer("checkout-service")
+
+try:
+    with tracer.start_as_current_span("charge-card") as span:
+        try:
+            raise ValueError("card declined")
+        except ValueError as e:
+            span.record_exception(e)
+            span.set_status(trace.StatusCode.ERROR, str(e))
+            raise
+except ValueError:
+    pass
+```
+
+**Done when:** the printed span has a `status_code` of `ERROR` and at least one `exception` event carrying the message.
+
+</Exercises.Task>
+<Exercises.Task title="See what head sampling throws away" level="advanced">
+
+Sample 10% of traces at the start and count what survives, including one deliberately failing request:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
+
+exporter = InMemorySpanExporter()
+provider = TracerProvider(sampler=ParentBased(TraceIdRatioBased(0.10)))
+provider.add_span_processor(SimpleSpanProcessor(exporter))
+tracer = provider.get_tracer("demo")
+
+for i in range(1000):
+    with tracer.start_as_current_span("request") as span:
+        if i == 500:
+            span.set_status(trace.StatusCode.ERROR, "the one failing request")
+
+kept = exporter.get_finished_spans()
+print(len(kept), any(s.status.status_code == trace.StatusCode.ERROR for s in kept))
+```
+
+Run it several times.
+
+**Done when:** it keeps roughly 10% each run (expect somewhere around 80 to 120 of 1000), the failing request is missing in most runs, and you can explain why tail-based sampling in the Collector is what keeps errors, and why you never sample errors away to save cost.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The trace that split in two">
+<CaseStudy.Context>
+
+*Illustrative scenario.* Checkout traces look healthy from the gateway through the order service, but the payment step appears as a separate, unrelated trace. Nobody can follow a slow order end to end.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The order service handed the payment work to a message queue, and the trace context was not passed along in the message headers. The consumer started a brand-new trace, so the request fragmented at the async boundary.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Context has to be propagated across every hop, including queues and background jobs. To verify, follow a single trace ID through every service and treat any point where a new trace begins as a propagation bug.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to add manual spans to a function, then check by hand that the attributes carry business meaning such as order ID or tenant ID, and that none of them is a high-cardinality metric label.
+- Paste a Collector pipeline config and ask it to explain each receiver, processor, and exporter. Confirm the pipeline actually lists the processors you expect for each signal.
+- Have it propose a tail-sampling policy that keeps all errors and slow traces plus a small sample of the rest, and test it against recorded traces before rollout. Never let it drop errors to save cost.
+
+</AISpark>
 
 ---
 

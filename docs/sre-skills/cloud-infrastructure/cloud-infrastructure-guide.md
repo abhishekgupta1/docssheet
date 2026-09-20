@@ -2,7 +2,9 @@
 title: "Cloud Infrastructure: The Complete Guide"
 description: "Provider-agnostic architecture patterns — HA design, network topology, compute choice, load balancing, autoscaling, and DR — complementing the AWS-specific and Terraform-specific guides elsewhere in this site."
 sidebar_position: 1
+level: intermediate
 tags: [cloud-infrastructure, sre, architecture, high-availability]
+image: /img/social/cloud-infrastructure-guide.png
 ---
 
 # Cloud Infrastructure — The Complete Guide
@@ -21,6 +23,28 @@ Senior engineers think in **failure domains**, **blast radius**, **RTO/RPO**,
 is organized around those five ideas.
 
 <a class="topic-crosslink" href="/cheatsheets/cloud-infrastructure">📋 Quick reference: Cloud Infrastructure →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Networking Fundamentals](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn HA design: multiple AZs, no single point of failure
+2. Understand RTO and RPO and pick a DR pattern to match
+3. Compare VMs, containers, and serverless for one workload
+4. Read the 3-tier reference architecture end to end
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Design for high availability across zones
+- Choose between VMs, containers, and serverless
+- Pick a disaster-recovery pattern from RTO and RPO
+- Sketch a 3-tier HA reference architecture
+
+</KeyTakeaways>
 
 ---
 
@@ -488,6 +512,55 @@ permission issues), and nobody discovers this until the real outage forces
 the first restore attempt. Real DR requires scheduled restore testing, plus
 a stated RTO/RPO the backup cadence and DR pattern are actually built to
 meet — not just the existence of a backup job.
+
+---
+
+<Exercises>
+<Exercises.Task title="Match three workloads to a DR pattern" level="intermediate">
+
+Using the guide's DR pattern table, choose a pattern for each workload and write one sentence on why the cheaper patterns don't fit:
+
+1. An internal wiki: RTO 24 hours, RPO 4 hours.
+2. An order-history service: RTO 1 hour, RPO 5 minutes.
+3. A checkout API: RTO 5 minutes, RPO 1 minute.
+
+**Done when:** each choice is consistent with the table's RTO and RPO columns, and for each one you can name the cheaper pattern that fails and the number it fails on.
+
+</Exercises.Task>
+<Exercises.Task title="Design health checks that do not amplify failures" level="advanced" stretch="Say which of your two checks maps to liveness and which to readiness, and what each triggers.">
+
+A service depends on a database it cannot work without, and on a recommendations API that is nice to have. Write down the rules for its `/healthz` endpoint: what makes it report unhealthy, what does not, and what interval, timeout, and consecutive-failure threshold you would configure on the load balancer.
+
+**Done when:** losing the database connection fails the check, a slow recommendations API does not, and your threshold requires more than one failed check before removing an instance, with a stated reason.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The backup nobody had restored">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team takes nightly snapshots and copies them to a second region. On paper the disaster recovery plan is complete, but nobody has ever restored from those backups.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+During the first real drill the data restored, but the servers around it had been built by hand over the years. Recreating them took far longer than the recovery time the business had been told to expect.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+An untested backup is a hypothesis, not a backup. Schedule restore tests, and keep the infrastructure as code so that rebuilding it is a `terraform apply` measured in hours rather than a manual effort measured in days.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Give an assistant your stated RTO and RPO and ask it to propose a DR pattern with cost trade-offs. Check its pick against the guide's table, and ask it to defend why each cheaper pattern fails.
+- Ask it to draft a `/healthz` handler and load-balancer thresholds, then review by hand that it never fails readiness because of a non-critical dependency.
+- Have it turn a 3-tier architecture sketch into an IaC skeleton, and read the `terraform plan` output yourself before anything is applied.
+
+</AISpark>
 
 ---
 

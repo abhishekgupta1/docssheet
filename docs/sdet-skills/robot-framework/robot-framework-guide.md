@@ -2,7 +2,9 @@
 title: "Robot Framework: The Complete Guide"
 description: "End-to-end reference for Robot Framework — keyword-driven testing, .robot suite structure, built-in libraries, custom keywords, and interview-ready Q&A."
 sidebar_position: 1
+level: beginner
 tags: [robot-framework, sdet, automation, bdd]
+image: /img/social/robot-framework-guide.png
 ---
 
 # Robot Framework — The Complete Guide
@@ -13,6 +15,28 @@ or walk into an SDET interview. Organized as a lookup you can also read
 top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/robot-framework">📋 Quick reference: Robot Framework →</a>
+
+<LevelBadge level="beginner" />
+
+**Prerequisites:** [Python](/docs/sde-skills/python/python-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the `.robot` file structure: settings, variables, test cases, keywords
+2. Try the built-in libraries, then write one custom keyword
+3. Use data-driven templates to run one test with many inputs
+4. Read When to Choose Robot Framework to decide if it fits your team
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Read and write `.robot` suite files
+- Use built-in libraries and write custom keywords
+- Drive one test with many inputs
+- Decide when a keyword-driven framework fits
+
+</KeyTakeaways>
 
 ---
 
@@ -460,6 +484,89 @@ tight IDE tooling (refactoring, type-checking, debugging) matters more than
 plain-text readability. Robot's strength — accessibility to non-programmers
 — is also its cost: less expressive and less tooling-mature than writing
 tests directly in a general-purpose language.
+
+---
+
+<Exercises>
+<Exercises.Task title="Turn three rows into three tests with a template" level="intermediate" stretch="Tag one row smoke and run only it with robot --include smoke.">
+
+Run `pip install robotframework`, save this as `discount.robot`, and run `robot discount.robot`:
+
+```robotframework
+*** Settings ***
+Test Template    Discount Should Be
+
+*** Test Cases ***                 PRICE    PERCENT    EXPECTED
+Ten percent off                    100      10         90
+Quarter off                        80       25         60
+No discount                        50       0          50
+
+*** Keywords ***
+Discount Should Be
+    [Arguments]    ${price}    ${percent}    ${expected}
+    ${result}=    Evaluate    round(${price} * (100 - ${percent}) / 100, 2)
+    Should Be Equal As Numbers    ${result}    ${expected}
+```
+
+**Done when:** the run reports `3 tests, 3 passed`, each row appearing as its own named test. Then change one `EXPECTED` value to a wrong number and confirm exactly one test fails, with a message such as `60.0 != 61.0`, while the other two still pass.
+
+</Exercises.Task>
+<Exercises.Task title="Call a Python keyword from a suite, and fix the string trap" level="advanced">
+
+Save the guide's custom keyword library as `CartUtils.py`:
+
+```python
+from robot.api.deco import keyword, library
+
+
+@library
+class CartUtils:
+
+    @keyword("Calculate Expected Total")
+    def calculate_expected_total(self, items, tax_rate=0.08):
+        subtotal = sum(item["price"] * item["qty"] for item in items)
+        return round(subtotal * (1 + tax_rate), 2)
+```
+
+Then write `cart.robot` with two items in a list of dictionaries and two tests: one using the default tax rate and one passing `tax_rate=0.10`. Tag the first test `smoke`. Write the item prices and quantities as plain text first (for example `price=10`) and watch what happens, then fix it. Robot Framework passes plain values as strings, and the number syntax is `${10}`:
+
+```robotframework
+*** Variables ***
+&{WIDGET}         price=${10}    qty=${2}
+&{GADGET}         price=${5}     qty=${1}
+@{CART_ITEMS}     ${WIDGET}    ${GADGET}
+```
+
+**Done when:** the first test expects `27.0` and the second expects `27.5` and both pass, `robot --include smoke cart.robot` runs only the tagged test, and you can explain the `TypeError` you saw before the fix.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The login steps pasted into forty suites">
+<CaseStudy.Context>
+
+*Illustrative scenario.* Every suite file starts with the same handful of login steps, copied in when it was created. A redesign of the login page changes the fields.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The change needed editing in every suite, and a few copies were missed, so some suites kept failing at login for reasons unrelated to what they tested. The steps were also hard for non-programmers to read, because each suite spelled out raw field IDs.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Put shared login and setup in one keyword inside a `.resource` file and import it from each suite. Sequencing existing actions belongs in a readable user keyword, and only genuine logic, such as calculations or API calls, needs a Python library.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Ask an assistant to refactor a suite with repeated steps into a template plus a `.resource` file, then run it and confirm each data row still reports as its own test.
+- Have it write a Python keyword library for a calculation, then test it with values that come from Robot variables. Remember they arrive as strings unless written like `${10}`.
+- Ask it to suggest tags such as smoke and regression, then run `--include` for each and count how many tests execute.
+
+</AISpark>
 
 ---
 

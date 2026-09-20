@@ -2,8 +2,10 @@
 title: "Git Cheat Sheet"
 description: "Quick reference for Git — branching, rebasing, stash, bisect, undoing mistakes, and conflict resolution."
 sidebar_position: 4
+level: beginner
 tags: [git, sde, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/git.png
 ---
 
 # Git cheatsheet
@@ -12,6 +14,17 @@ A one-page reference for Git. For the object model, DAG internals, and the
 full "Oh No" recovery playbook, see the [complete guide](/docs/sde-skills/git/git-guide).
 
 <a class="topic-crosslink" href="/docs/sde-skills/git/git-guide">📖 Full guide: Git →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Branching** card
+2. Then the **Merging vs rebasing** and **Interactive rebase** cards
+3. Treat the other 9 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sde-skills/git/git-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sde">
 

@@ -1,8 +1,10 @@
 ---
 title: "Cucumber & BDD Cheat Sheet"
 description: "Quick reference for Cucumber and BDD — Gherkin syntax, step definitions, hooks, tags, and data tables."
+level: beginner
 tags: [cucumber, bdd, sdet, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/cucumber-bdd.png
 ---
 
 # Cucumber & BDD cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Cucumber/BDD. For the full walkthrough and
 anti-patterns, see the [complete guide](/docs/sdet-skills/cucumber-bdd/cucumber-bdd-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/cucumber-bdd/cucumber-bdd-guide">📖 Full guide: Cucumber & BDD →</a>
+
+<LevelBadge level="beginner" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **Gherkin syntax** card
+2. Then the **Step definitions** and **Data tables** cards
+3. Treat the other 4 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/cucumber-bdd/cucumber-bdd-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

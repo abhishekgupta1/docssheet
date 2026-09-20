@@ -2,7 +2,9 @@
 title: "Kubernetes: The Complete Guide"
 description: "End-to-end reference for Kubernetes — architecture, core objects, networking, scheduling, health checks, rollouts, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [kubernetes, sre, containers, orchestration]
+image: /img/social/kubernetes-guide.png
 ---
 
 # Kubernetes — The Complete Guide
@@ -12,6 +14,28 @@ cluster in production, debug a broken deployment at 2am, or walk into an
 SRE interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/kubernetes">📋 Quick reference: Kubernetes →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Docker Basics](/docs/sde-skills/docker-basics/docker-basics-guide), [Networking Fundamentals](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide), [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the architecture: control plane vs worker nodes
+2. Understand Pod, Deployment, and Service, and how they relate
+3. Practise `kubectl get`, `describe`, `logs`, and `rollout undo`
+4. Read the Troubleshooting section for CrashLoopBackOff and Pending pods
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Describe the control-plane and node architecture
+- Use Pods, Deployments, and Services correctly
+- Roll out and roll back a change
+- Troubleshoot with `kubectl` and probes
+
+</KeyTakeaways>
 
 ---
 
@@ -818,6 +842,62 @@ validation before anything is created. Worse, `spec.selector` is
 **immutable** once the Deployment exists, so you can't relabel your way
 out of a mismatch after the fact on an existing object; the only fix is
 recreating the Deployment with a consistent selector.
+
+---
+
+<Exercises>
+<Exercises.Task title="Write a Deployment with two different probes" level="intermediate" stretch="Point the readiness probe at a path that returns an error and watch what happens to the Pods and the Service endpoints.">
+
+Write a `Deployment` for `nginx:1.27` with 3 replicas, a `readinessProbe`, and a `livenessProbe` with an `initialDelaySeconds`. Validate it against your cluster without creating anything:
+
+```bash
+kubectl apply --dry-run=client -f deploy.yaml
+```
+
+**Done when:** the dry run reports `deployment.apps/web created (dry run)`, and you can state what each probe's failure does: readiness removes the Pod from Service endpoints without restarting it, liveness makes the kubelet restart the container.
+
+</Exercises.Task>
+<Exercises.Task title="Follow the CrashLoopBackOff walkthrough" level="advanced">
+
+On any local cluster, create a Pod that crashes on purpose, then run the guide's steps in order:
+
+```bash
+kubectl run crashy --image=busybox --restart=Always -- sh -c 'echo boom; exit 1'
+kubectl get pod crashy
+kubectl describe pod crashy
+kubectl logs crashy --previous
+```
+
+**Done when:** `describe` shows `Last State: Terminated` with `Exit Code: 1`, the restart count keeps rising, `logs --previous` shows `boom`, and you can explain why `--previous` is the step people skip.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The zero-downtime rollout that dropped requests">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team sets `maxUnavailable: 0` and `maxSurge: 1` and assumes rollouts are now zero-downtime. Users still see a burst of errors every time a new version goes out.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+The readiness probe only checked that the process was up, and it answered immediately. New Pods joined the Service endpoints before the application could actually serve requests, so the rollout followed its safe strategy while sending real traffic to Pods that were not ready.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+A rolling update is zero-downtime only if the readiness probe is accurate. Make the probe reflect real ability to serve traffic, not just that the process exists.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste `kubectl describe pod` output and ask an assistant to read the Events and exit code and rank the likely causes. Confirm with `kubectl logs --previous` yourself before changing any manifest.
+- Ask it to review a Deployment for missing resource requests, limits, and probes. Check the change with `kubectl diff -f` and read the diff before any real rollout.
+- Have it draft pod anti-affinity rules to spread replicas, then confirm with `kubectl get pods -o wide` that they actually landed on different nodes.
+
+</AISpark>
 
 ---
 

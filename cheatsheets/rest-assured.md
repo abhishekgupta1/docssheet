@@ -1,8 +1,10 @@
 ---
 title: "Rest Assured Cheat Sheet"
 description: "Quick reference for Rest Assured — the given/when/then DSL, request specs, JSON assertions, and schema validation."
+level: intermediate
 tags: [rest-assured, sdet, api-testing, cheat-sheet]
 hide_table_of_contents: true
+image: /img/social/rest-assured.png
 ---
 
 # Rest Assured cheatsheet
@@ -11,6 +13,17 @@ A one-page reference for Rest Assured. For POJO serialization and advanced
 filters, see the [complete guide](/docs/sdet-skills/rest-assured/rest-assured-guide).
 
 <a class="topic-crosslink" href="/docs/sdet-skills/rest-assured/rest-assured-guide">📖 Full guide: Rest Assured →</a>
+
+<LevelBadge level="intermediate" />
+
+<TenMinute minutes={5}>
+
+1. Begin with the **given/when/then DSL** card
+2. Then the **Request specifications** and **JSON path & Hamcrest** cards
+3. Treat the other 5 cards as lookups — scan by card title when you need one
+4. Open the [full guide](/docs/sdet-skills/rest-assured/rest-assured-guide) when a card isn't enough
+
+</TenMinute>
 
 <div class="cheat-sheet cheat-sheet--sdet">
 

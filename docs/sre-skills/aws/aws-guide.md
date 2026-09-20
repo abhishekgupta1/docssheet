@@ -2,7 +2,9 @@
 title: "AWS: The Complete Guide"
 description: "End-to-end reference for AWS — compute, storage, networking, IAM, databases, high availability, and interview-ready Q&A."
 sidebar_position: 1
+level: intermediate
 tags: [aws, sre, cloud, solutions-architect, aws-cli]
+image: /img/social/aws-guide.png
 ---
 
 # AWS — The Complete Guide
@@ -13,6 +15,28 @@ it as an SRE, or walk into an AWS-focused interview. Organized as a lookup
 you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/aws">📋 Quick reference: AWS →</a>
+
+<LevelBadge level="intermediate" />
+
+**Prerequisites:** [Cloud Infrastructure](/docs/sre-skills/cloud-infrastructure/cloud-infrastructure-guide), [Networking Fundamentals](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide)
+
+<TenMinute minutes={10}>
+
+1. Learn the Shared Responsibility Model — what AWS secures vs what you do
+2. Understand VPC, subnets, security groups, and IAM roles at a high level
+3. Read High Availability and Cost Optimization for the design trade-offs
+4. Skim the CLI Essentials for the commands you'll use daily
+
+</TenMinute>
+
+<KeyTakeaways title="After this guide you can">
+
+- Explain the Shared Responsibility Model
+- Reason about compute, storage, VPC networking, and IAM
+- Design for high availability and cost
+- Use the AWS CLI for everyday tasks
+
+</KeyTakeaways>
 
 ---
 
@@ -1011,6 +1035,64 @@ application event) to targets like Lambda or Step Functions. They're
 complementary, not competing: a CloudWatch alarm can trigger an SNS
 notification, while an EventBridge rule triggers workflow logic in
 response to a discrete event.
+
+---
+
+<Exercises>
+<Exercises.Task title="Confirm who you are before you do anything" level="intermediate" stretch="Set AWS_PROFILE to a different profile and re-run get-caller-identity, then name which link of the credential resolution order changed.">
+
+In a sandbox account, run the two identity checks the guide recommends, then use `--query` to keep only what you need:
+
+```bash
+aws configure list
+aws sts get-caller-identity
+aws s3api list-buckets --query "Buckets[].Name" --output text
+```
+
+**Done when:** both identity commands point at the account and profile you expect, and the last command prints bucket names only, as plain text.
+
+</Exercises.Task>
+<Exercises.Task title="Debug a 403 without trial and error" level="advanced">
+
+In a sandbox account, create a role whose permission policy allows only `s3:GetObject` and `s3:PutObject` on `arn:aws:s3:::EXAMPLE-BUCKET/*`. Then test it with no side effects:
+
+```bash
+aws iam simulate-principal-policy \
+  --policy-source-arn arn:aws:iam::ACCOUNT_ID:role/YOUR_ROLE \
+  --action-names s3:PutObject s3:DeleteObject \
+  --resource-arns arn:aws:s3:::EXAMPLE-BUCKET/*
+```
+
+**Done when:** the result shows `allowed` for `s3:PutObject` and `implicitDeny` for `s3:DeleteObject`, and you can say why the second is denied even though no policy says Deny.
+
+</Exercises.Task>
+</Exercises>
+
+<CaseStudy title="The 443 rule that worked on paper">
+<CaseStudy.Context>
+
+*Illustrative scenario.* A team tightens a subnet's network ACL to allow inbound port 443 only. The security groups are unchanged, yet the website stops responding.
+
+</CaseStudy.Context>
+<CaseStudy.WhatHappened>
+
+Network ACLs are stateless. The inbound rule let requests in, but there was no outbound rule for the ephemeral port range (1024 to 65535), so every response was silently dropped. A security group would never have caused this, because it automatically permits the return leg.
+
+</CaseStudy.WhatHappened>
+<CaseStudy.Lesson>
+
+Treat security groups and network ACLs as different tools. A stateless ACL needs rules for both directions, so when traffic vanishes after an ACL change, check the return path first.
+
+</CaseStudy.Lesson>
+</CaseStudy>
+
+<AISpark>
+
+- Paste an IAM policy and ask an assistant to flag over-broad actions or resources and propose a tighter version. Then prove the result with `aws iam simulate-principal-policy` instead of trusting it.
+- Ask it to write a `--query` (JMESPath) expression for an output you describe, and run it against `--output table` on a small real result to confirm the shape.
+- Have it draft an idempotent bootstrap script using the check-then-act pattern, then review by hand that it sets `set -euo pipefail` and never hardcodes keys, and run it twice to confirm the second run changes nothing.
+
+</AISpark>
 
 ---
 

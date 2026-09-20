@@ -2,13 +2,28 @@
 title: "Incident Response Mindset"
 description: "The internal thought process experienced SREs execute automatically under pressure — USE method, blast radius, mitigation before root cause, and the 5 Whys."
 sidebar_position: 3
+level: intermediate
 tags: [sre, incident-response, mindset, use-method, root-cause-analysis]
+image: /img/social/incident-response-mindset.png
 ---
 
 This is not a generic checklist. This is the internal thought process
 experienced SREs execute automatically under pressure.
 
 Print this. Memorize it. Practice it.
+
+<LevelBadge level="intermediate" />
+
+<a class="topic-crosslink" href="/cheatsheets/incident-response-mastery">📋 Quick reference: Incident Response Mastery →</a>
+
+<TenMinute minutes={10}>
+
+1. Learn to stabilise yourself before you touch anything
+2. Define the problem precisely: what, since when, how many users
+3. Check recent changes and blast radius before forming a hypothesis
+4. Mitigate first, find root cause second
+
+</TenMinute>
 
 ## Table of Contents
 
