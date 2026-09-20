@@ -2,8 +2,6 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import {GOATCOUNTER_CODE, ADSENSE_CLIENT} from './src/data/site.js';
 
-const GITHUB_REPO = 'https://github.com/abhishekgupta1/docssheet';
-const EDIT_URL = `${GITHUB_REPO}/tree/main/`;
 
 /**
  * Analytics + ads are injected here only when switched on in src/data/site.js.
@@ -125,9 +123,6 @@ const config = {
           path: './docs',
           routeBasePath: 'docs',
           sidebarPath: './sidebars.js',
-          editUrl: EDIT_URL,
-          showLastUpdateTime: true,
-          showLastUpdateAuthor: true,
         },
         blog: false,
         theme: {
@@ -158,9 +153,6 @@ const config = {
         path: 'cheatsheets',
         routeBasePath: 'cheatsheets',
         sidebarPath: './sidebarsCheatsheets.js',
-        editUrl: EDIT_URL,
-        showLastUpdateTime: true,
-        showLastUpdateAuthor: true,
       }),
     ],
     [
@@ -218,8 +210,8 @@ const config = {
         // {name: 'google-site-verification', content: '<token>'} entry here.
       ],
       colorMode: {
-        defaultMode: 'dark',
-        respectPrefersColorScheme: true,
+        defaultMode: 'light',
+        respectPrefersColorScheme: false,
       },
       navbar: {
         title: 'docssheet',
