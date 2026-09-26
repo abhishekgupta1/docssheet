@@ -5,7 +5,7 @@ description: The cookies and browser storage this site uses, why, and how to con
 
 # Cookie Policy
 
-*Last updated: September 8, 2026*
+*Last updated: September 27, 2026*
 
 This page explains the cookies and cookie-like browser storage used on
 `docssheet.com`. It supplements the [Privacy Policy](/privacy).
@@ -25,24 +25,29 @@ This page explains the cookies and cookie-like browser storage used on
 | `cheatsheet-progress` (and related keys) | `localStorage` | Remembers which cheat sheets you've marked as known / in progress | Until you clear it |
 | `theme` | `localStorage` | Remembers your light/dark mode choice | Until you clear it |
 | Search index keys | `localStorage` / IndexedDB | Caches the on-site search index for speed | Until you clear it |
+| `site:ad-consent` | `localStorage` | Remembers your cookie-banner choice (accepted / rejected) | Until you clear it |
 
 None of these are used for tracking or advertising, and none are shared with
 anyone. Clear them via your browser's "clear site data" option.
 
 ## Set by third parties
 
-- **Google AdSense (planned).** When advertising is enabled, Google and
-  partners may set cookies to serve, cap, and measure ads, and — unless you opt
-  out — to personalise them. Controls:
+- **Google AdSense (active).** The AdSense script loads on every page. If you
+  accept advertising cookies in the consent banner, Google and its partners may
+  set cookies to serve, cap, and measure ads and — unless you opt out — to
+  personalise them. If you reject (or haven't chosen yet), Google Consent Mode
+  tells Google not to use advertising cookies. See
+  [How Google uses cookies in advertising](https://policies.google.com/technologies/ads).
+  Controls:
   [Google Ads Settings](https://adssettings.google.com/),
   [optout.aboutads.info](https://optout.aboutads.info/),
   [youronlinechoices.eu](https://www.youronlinechoices.eu/).
-- **Google Analytics (planned).** When analytics is enabled, GA4 may set
-  cookies (e.g. `_ga`) to distinguish visitors for aggregated reporting.
-  Opt out with the
-  [Google Analytics Opt-out Add-on](https://tools.google.com/dlpage/gaoptout).
 
-This page will be updated to list these as **active** once they are switched on.
+This site does not currently use Google Analytics or any other cookie-based
+analytics.
+
+You can change your advertising-cookie choice at any time by clearing this
+site's data in your browser; the consent banner will then appear again.
 
 ## Managing cookies
 

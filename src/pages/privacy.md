@@ -5,7 +5,7 @@ description: What data this site does and does not collect, how it is used, and 
 
 # Privacy Policy
 
-*Last updated: September 8, 2026*
+*Last updated: September 27, 2026*
 
 This site (`docssheet.com`) is a free docs and cheat-sheet learning resource
 for software engineers, run by Abhishek Gupta. This page explains what happens
@@ -16,8 +16,8 @@ to data when you visit.
 - There are **no accounts** and no login.
 - The site does **not** ask you for personal information.
 - Your learning progress is stored **in your own browser**, not on a server.
-- Some data is processed by third parties that host the site, serve fonts, or
-  (in future) show ads and aggregate analytics. Those are described below.
+- The site uses **Google AdSense**. Some data is processed by third parties
+  that host the site, serve fonts, or serve ads. Those are described below.
 
 ## What is stored in your browser
 
@@ -29,6 +29,7 @@ something between visits:
 | Cheat-sheet progress (e.g. "known" / "in progress") | Remembers which cheat sheets you've worked through |
 | Theme preference (light / dark) | Remembers your display choice |
 | Search index data | Makes on-site search fast |
+| Cookie consent choice | Remembers whether you accepted or rejected advertising cookies |
 
 This data never leaves your device, is not sent to me, and is not linked to any
 identity. You can clear it at any time by clearing site data in your browser.
@@ -47,15 +48,19 @@ identity. You can clear it at any time by clearing site data in your browser.
   cookies**, stores no personal data, and does not track you across sites, so no
   consent prompt is needed for it. It is only active once a site code is
   configured; if the counter is not set up, no analytics script loads at all.
-- **Advertising (planned).** If Google AdSense is enabled, Google and its
-  partners may use cookies or similar technologies to serve and measure ads.
-  You can review and control this at
-  [Google Ads Settings](https://adssettings.google.com/) and
-  [aboutads.info/choices](https://optout.aboutads.info/). See also
+- **Advertising (Google AdSense).** This site uses Google AdSense, and the
+  AdSense script loads on every page. Google and its partners use cookies or
+  similar technologies to serve, cap, and measure ads. Google's use of advertising cookies
+  enables it and its partners to serve ads to you based on your visits to this
+  site and/or other sites on the Internet. Advertising cookies are only used
+  once you accept them in the consent banner; until then Google Consent Mode
+  signals "denied". You can opt out of personalised advertising at
+  [Google Ads Settings](https://adssettings.google.com/), or opt out of some
+  third-party vendors' use of cookies at
+  [aboutads.info/choices](https://optout.aboutads.info/). See
+  [How Google uses cookies in advertising](https://policies.google.com/technologies/ads)
+  and
   [How Google uses information from sites that use its services](https://policies.google.com/technologies/partner-sites).
-
-If and when analytics or ads are active, this page and the
-[Cookie Policy](/cookie-policy) will say so specifically.
 
 ## Cookies
 
