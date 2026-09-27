@@ -1,0 +1,8 @@
+{
+  "label": "SRE",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Python for Site Reliability Engineers."
+  }
+}

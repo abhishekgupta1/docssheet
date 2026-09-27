@@ -15,6 +15,16 @@ into an SDE interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/git">📋 Quick reference: Git →</a>
 
+:::tip How to use this page
+
+This guide explains *why* Git behaves as it does — the model under the
+commands, and the trade-offs between them. New to Git? Learn the commands step
+by step with the [Git cheat sheet](/cheatsheets/git) and its practice repo
+first, then practise with the [Git learning path](/docs/learning-path/git/git-learning-path).
+Come back here when you want to understand what a command really does.
+
+:::
+
 <LevelBadge level="beginner" />
 
 <TenMinute minutes={10}>
@@ -87,13 +97,20 @@ into an SDE interview. Organized as a lookup you can also read top-to-bottom.
 
 ## 1. What Git Actually Is
 
-Git is a **distributed, content-addressable version control system**. Every
+**In short:** Git keeps a full history of snapshots on every copy of a project, linked together like a family tree — understanding that picture explains every command.
+
+Git is a **distributed, content-addressable version control system (VCS)**:
+a tool that records the history of a project's files (*version control*),
+where every copy is complete (*distributed*), and where everything stored is
+named by a fingerprint of its contents (*content-addressable*). Every
 clone is a full copy of the repository's history — there is no single
 "central" copy required for the system to function (GitHub/GitLab are just a
 convention, not a technical requirement).
 
 The mental model that unlocks everything else: **Git is a directed acyclic
-graph (DAG) of snapshots, not a stack of diffs.** Each commit points to a
+graph (DAG) of snapshots, not a stack of diffs.** A DAG is a set of points
+joined by one-way arrows that never loop back — here, each commit points back
+to its parent commit(s). Each commit points to a
 full snapshot of the project (via a tree), not a delta against the previous
 commit — deltas are only a storage optimization Git applies internally
 (packfiles), invisible at the model level. Understanding this DAG is what
@@ -103,6 +120,8 @@ separates "I memorized some commands" from "I understand what `rebase`,
 ---
 
 ## 2. The Object Model
+
+**In short:** everything Git stores is one of four kinds of object, each named by a fingerprint (hash) of its contents; branches and tags are just names pointing at commits.
 
 Git's entire history is four object types, all stored under `.git/objects`,
 each addressed by the **SHA-1 (or SHA-256 on newer repos) hash of its
@@ -118,8 +137,8 @@ what "content-addressable" means.
 
 ```bash
 git cat-file -p HEAD              # show the commit object: tree, parent, message
-git cat-file -p HEAD^{tree}        # show the tree object: entries and their blob hashes
-git cat-file -p <blob-sha>          # show a blob's raw content
+git cat-file -p 'HEAD^{tree}'      # show the tree object: entries and their blob hashes
+git cat-file -p HEAD:README.md      # show a blob's raw content (a file as stored in a commit)
 git rev-parse HEAD                  # the commit's SHA
 ```
 
@@ -161,6 +180,8 @@ operations, not string/diff hacks.
 
 ## 3. The Three Trees: Working Directory, Staging Area, Repository
 
+**In short:** your files, the staging area, and the history are three separate places, and most commands just copy content from one to another.
+
 Git tracks state across **three areas**, and almost every command is really
 about moving content between them:
 
@@ -189,9 +210,13 @@ git diff                       # working dir vs staging area (unstaged changes)
 git diff --staged              # staging area vs last commit (what commit would contain)
 ```
 
+**Try it:** in the [practice repo](/cheatsheets/git#practice-repo), change two lines in `app.py`, then use `git add -p` to stage only one of them. Compare `git diff` and `git diff --staged`.
+
 ---
 
 ## 4. Branching, Merging, and Rebasing
+
+**In short:** merging joins two lines of history with a new commit; rebasing copies your commits onto a new starting point — clean, but it changes their ids.
 
 ### Creating and switching branches
 
@@ -304,9 +329,13 @@ git push --force origin feature-x
 # or outright conflicts, because Alice's rebase orphaned the commits Bob built on.
 ```
 
+**Try it:** make two commits on a branch and one on `main`. Merge the branch in one clone and rebase it in another, then compare the two `git log --oneline --graph` outputs.
+
 ---
 
 ## 5. Common Branching Workflows
+
+**In short:** most teams use short-lived feature branches merged into `main` through pull requests; how long a branch lives matters more than which model you pick.
 
 | Workflow | Shape | When it fits |
 |---|---|---|
@@ -331,6 +360,8 @@ shipping v1.x patches while developing v2.0) — not as a default choice.
 ---
 
 ## 6. Essential Commands Beyond add/commit/push
+
+**In short:** fetch before you merge, search history with `log`, shelve work with `stash`, copy single commits with `cherry-pick`, find bugs with `bisect`, and rescue anything with `reflog`.
 
 ### `git fetch` vs `git pull` — the distinction that trips people up
 
@@ -486,9 +517,13 @@ only way back for uncommitted or unstashed work.
   aggregate diff — much faster than eyeballing two `git log -p` outputs
   side by side.
 
+**Try it:** use `git log -S"print" --oneline` in the practice repo to find the commit that first added a `print`.
+
 ---
 
 ## 7. Resolving Merge Conflicts
+
+**In short:** a conflict is Git asking you to decide between two edits to the same lines — combine the *intent* of both sides, not just one side's text.
 
 A conflict happens when Git can't automatically reconcile the same lines
 changed differently on both sides being merged/rebased.
@@ -532,9 +567,13 @@ git commit                      # (merge) — or `git rebase --continue` (rebase
   branch that repeatedly rebases against a fast-moving trunk and keeps
   hitting the same conflict.
 
+**Try it:** create a conflict during a *rebase* and check which side `--ours` gives you. Is it the one you expected?
+
 ---
 
 ## 8. Undoing Things Safely
+
+**In short:** choose the undo by how far the change has travelled — `restore` for your files, `reset` for local commits, `revert` for anything already pushed.
 
 This is the single highest-stakes topic in day-to-day Git — knowing the
 **blast radius** of each undo command prevents real data loss.
@@ -601,9 +640,13 @@ the fix, not the theory:
 | **Restore a file from an old commit without touching anything else** | `git restore --source=<sha> -- <file>` |
 | **Committed a secret and already pushed it** | Deleting the file in a new commit does **not** remove it from history — the blob is still fully retrievable via `git log -p` or `git show <old-sha>:<path>`. Rewrite history with `git filter-repo` (or BFG Repo-Cleaner) to strip it from every commit, force-push to all remotes, have every collaborator re-clone, **and rotate the credential** — anyone with an existing clone or prior fetch still has the old blob until they re-clone. |
 
+**Try it:** for each row of the "Oh No" table you haven't used before, cause the situation in the practice repo and then fix it.
+
 ---
 
 ## 9. Tags — Lightweight vs Annotated
+
+**In short:** a tag permanently names one commit; use annotated tags (with author, date, and message) for releases.
 
 Tags mark a specific commit permanently — unlike branches, they don't move
 as you commit.
@@ -628,6 +671,8 @@ signature.
 ---
 
 ## 10. `.gitignore` and Hooks
+
+**In short:** `.gitignore` keeps files out of Git; hooks run your checks automatically — useful for fast feedback, but CI is the real gate.
 
 ```gitignore
 # .gitignore
@@ -707,9 +752,13 @@ be relied on as a security boundary for a team — anyone can skip or delete
 their local copy. Treat local hooks as a fast feedback loop for the author,
 and enforce the same checks in CI as the actual gate.
 
+**Try it:** install the `pre-commit` hook above, then try to commit a Python file containing `import pdb`.
+
 ---
 
 ## 11. Common Gotchas
+
+**In short:** the mistakes that catch nearly everyone once, and the habit that prevents each.
 
 - **Detached HEAD state** — checking out a commit SHA or tag directly (not a
   branch) puts `HEAD` on the commit itself instead of a branch ref. Any new
@@ -764,6 +813,8 @@ and enforce the same checks in CI as the actual gate.
 ---
 
 ## 12. Interview-Ready Q&A
+
+**In short:** the questions interviewers ask most, with answers that show you understand the model, not just the commands. Try answering each aloud before reading the answer.
 
 **Q: What is a Git commit, really — a diff or a snapshot?**
 A: A snapshot. Every commit points to a tree object representing the
@@ -933,6 +984,8 @@ On any shared or pushed branch, undo with `git revert`, which adds a new commit 
 ---
 
 ## 13. One-Line Summary
+
+**In short:** the whole guide in one sentence.
 
 **Git is a content-addressable DAG of snapshots, not a stack of diffs — the
 staging area lets you shape commits deliberately, rebase only what's still

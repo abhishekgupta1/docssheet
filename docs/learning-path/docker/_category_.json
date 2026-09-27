@@ -1,0 +1,8 @@
+{
+  "label": "Docker",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered Docker learning path: six hands-on milestones with checkable results."
+  }
+}

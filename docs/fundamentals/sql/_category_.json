@@ -1,0 +1,8 @@
+{
+  "label": "SQL",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "An SQL quick reference for looking things up, with dialect differences, and SQL best practices."
+  }
+}

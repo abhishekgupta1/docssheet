@@ -809,6 +809,47 @@ a:hover {
   .cheat-sheet { column-count: 1; }
 }
 
+/* Opt-in row-major grid: cards read left to right, then wrap to the next row */
+.cheat-sheet--grid {
+  column-count: initial;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.cheat-sheet--grid > .cheat-card {
+  display: block;
+  min-width: 0;
+  margin: 0;
+}
+
+/* Opt-in single column: cards stack one after another, top to bottom */
+.cheat-sheet--stack {
+  column-count: 1;
+}
+
+.cheat-sheet--stack > .cheat-card {
+  display: block;
+  padding: 1.25rem 1.5rem 1.4rem;
+}
+
+/* Stacked sheets are read in full, so headings use a normal reading size */
+.cheat-sheet--stack .cheat-card h4 {
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Jump buttons at the top of a cheat sheet */
+.cheat-jump-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
 .cheat-card {
   break-inside: avoid;
   display: inline-block;

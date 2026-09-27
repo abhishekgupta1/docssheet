@@ -15,6 +15,15 @@ Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/docker">📋 Quick reference: Docker →</a>
 
+:::tip How to use this page
+
+This guide explains *why* Docker behaves as it does — layers, isolation,
+networking, and the trade-offs behind each best practice. New to Docker? Learn
+the commands step by step with the [Docker cheat sheet](/cheatsheets/docker)
+first, then practise with the [Docker learning path](/docs/learning-path/docker/docker-learning-path).
+
+:::
+
 <LevelBadge level="beginner" />
 
 **Prerequisites:** [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
@@ -92,6 +101,8 @@ Organized as a lookup you can also read top-to-bottom.
 
 ## 1. Containers vs. Virtual Machines
 
+**In short:** a container is an isolated *process* sharing the host's kernel; a VM is an isolated *machine* with its own kernel — so containers are lighter and faster, and VMs isolate more strongly.
+
 Both isolate workloads, but at fundamentally different layers.
 
 | | Container | Virtual Machine |
@@ -113,6 +124,8 @@ potentially affects every container sharing that kernel).
 ---
 
 ## 2. Images and Layers
+
+**In short:** an image is a stack of cached, read-only layers; a container adds one writable layer on top, which is thrown away when the container is removed.
 
 A Docker **image** is a read-only template built from a stack of **layers**,
 each corresponding to an instruction in a Dockerfile. A **container** is a
@@ -146,9 +159,13 @@ docker image history myapp:latest    # see each layer, its size, and the command
 docker image inspect myapp:latest     # full metadata: layers, env, entrypoint, config
 ```
 
+**Try it:** run `docker image history python:3.12-slim` and find the largest layer. Which instruction created it?
+
 ---
 
 ## 3. Dockerfile Essentials
+
+**In short:** the instructions you'll use in every Dockerfile, the two ways to write `CMD`/`ENTRYPOINT`, and why the order of instructions decides how fast builds are.
 
 ```dockerfile
 FROM node:20-slim AS base
@@ -266,9 +283,13 @@ change — forcing a full dependency reinstall on every single build. Copying
 only the manifest files first, installing, then copying the rest keeps the
 expensive install step cached across ordinary code changes.
 
+**Try it:** reorder the practice Dockerfile from the [cheat sheet](/cheatsheets/docker#practice-app) so the copy of your source comes first, change one line of code, and compare build times.
+
 ---
 
 ## 4. Multi-Stage Builds & Minimizing Image Size
+
+**In short:** build with every tool you need, then copy only the result into a small final image — smaller downloads, fewer vulnerabilities.
 
 A **multi-stage build** uses multiple `FROM` statements in one Dockerfile;
 each is a separate build stage, and later stages can selectively copy
@@ -401,6 +422,8 @@ docker run -it myapp:debug sh
 
 ## 5. The Container Lifecycle
 
+**In short:** containers move through created → running → stopped → removed; `run` flags and resource limits control how they behave on the way.
+
 ```bash
 docker build -t myapp:1.0 .              # build an image from a Dockerfile in the current dir
 docker run -d --name web -p 8080:80 myapp:1.0   # create + start a container, detached, port-mapped
@@ -454,9 +477,13 @@ rather than kills). Setting `--memory-swap` equal to `--memory` disables
 swap for the container entirely, so memory pressure surfaces as an
 OOM-kill immediately instead of degrading into swap-thrashing first.
 
+**Try it:** run a container with `--memory 64m` that allocates 128 MB, and read `OOMKilled` and the exit code with `docker inspect`.
+
 ---
 
 ## 6. Volumes vs. Bind Mounts vs. tmpfs
+
+**In short:** keep data that must survive in volumes, mount source code with bind mounts while developing, and use tmpfs for scratch data kept in memory.
 
 Containers are ephemeral by design — the writable layer is destroyed on `rm`.
 Persisting data or sharing files with the host requires explicit storage.
@@ -518,9 +545,13 @@ Docker preserves the container's own `node_modules` (installed at image
 build time) underneath it instead of exposing whatever — or nothing — is
 in the host's `node_modules`.
 
+**Try it:** start PostgreSQL twice with the same named volume and check your data survives; then try the same with no volume.
+
 ---
 
 ## 7. Networking Basics
+
+**In short:** containers on the same user-defined network find each other by name; `-p` is only for reaching a container from outside Docker.
 
 ```bash
 docker network ls                        # bridge, host, none by default
@@ -574,9 +605,13 @@ DOCKER -n` on the host). Two practical consequences:
   published (this is the single most common "I published the port but can't
   connect" cause — see the debugging playbook, §11).
 
+**Try it:** run two containers on the default bridge network and try to reach one by name from the other. Then repeat on a network you created.
+
 ---
 
 ## 8. docker-compose for Local Multi-Service Setups
+
+**In short:** one YAML file describes every service your app needs, and `docker compose up` starts them together on a shared network.
 
 `docker-compose` (now the `docker compose` CLI plugin) defines and runs
 multi-container applications from a single YAML file — the standard way to
@@ -654,9 +689,13 @@ anonymous-volume line (`- /app/node_modules`) is the trick from §6: it keeps
 the bind-mounted host source from shadowing the dependencies installed at
 image-build time.
 
+**Try it:** add a health check to a database service and make the web service wait for it with `condition: service_healthy`.
+
 ---
 
 ## 9. Image Tagging & Registries
+
+**In short:** tags are movable labels and digests are fixed fingerprints — deploy by version tag or digest, never by `latest`.
 
 ```bash
 docker build -t myorg/myapp:1.4.2 .          # semantic version tag
@@ -681,6 +720,8 @@ docker pull myorg/myapp:1.4.2
 ---
 
 ## 10. Common Pitfalls
+
+**In short:** the mistakes nearly everyone makes with Docker once, and how to avoid each.
 
 - **Running as root inside the container** — the Dockerfile default user is
   root unless you explicitly `USER` to something else. If an attacker
@@ -737,6 +778,8 @@ docker pull myorg/myapp:1.4.2
 
 ## 11. Debugging Playbook
 
+**In short:** check status and exit code, then logs, then settings, then look inside — in that order.
+
 A quick lookup table for the failures that show up over and over in day-to-day
 container work — what to check first, in order.
 
@@ -753,6 +796,8 @@ container work — what to check first, in order.
 ---
 
 ## 12. Interview-Ready Q&A
+
+**In short:** the questions interviewers ask most. Try answering each aloud before reading the answer.
 
 **Q: What's the fundamental difference between a container and a VM?**
 A: A container isolates a process using the host kernel's namespaces (what
@@ -943,6 +988,8 @@ Anything that must outlive a container belongs in a named volume, not the writab
 ---
 
 ## 13. One-Line Summary
+
+**In short:** the whole guide in one sentence.
 
 **A container is an isolated process sharing the host kernel, not a tiny
 VM — build small images by ordering Dockerfile instructions for cache

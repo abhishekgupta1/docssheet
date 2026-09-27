@@ -20,6 +20,12 @@ mistakes, and how it shows up in interviews and on the job. They span
 - **SDE Skills** — Software development topics and patterns: Python, Git, Docker, Clean Architecture
 - **AI Skills** — AI-assisted engineering: working with Claude, Kiro, MCP & AI agents, and AI-assisted workflows
 
+Alongside the tracks, three cross-track sections help you learn a language end to end:
+
+- **[Fundamentals](/docs/fundamentals)** — Python, Java, and SQL quick references and coding best practices, from basic to advanced
+- **[Role Guides](/docs/role-guides)** — how those fundamentals apply day to day for an SDET, SRE, or SDE
+- **[Learning Path](/docs/learning-path)** — ordered roadmaps, syllabi, and weekly mini-projects for Python, Java, SQL, Git, Docker, and Kubernetes
+
 Browse the sidebar to explore each category, or jump to the matching
 [cheat sheet](/cheatsheets) when you just need the syntax.
 

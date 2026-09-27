@@ -1,0 +1,8 @@
+{
+  "label": "SQL",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered SQL learning path: a roadmap with what to learn in each milestone, and a dataset with checked tasks for each one."
+  }
+}
