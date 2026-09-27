@@ -16,6 +16,16 @@ top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/sql">📋 Quick reference: SQL →</a>
 
+:::tip How to use this page
+
+This guide explains the *why* — indexing internals, transactions, interview
+questions. New to SQL? Learn step by step with the [SQL cheat sheet](/cheatsheets/sql)
+and the [SQL learning path](/docs/learning-path/sql/implementation-roadmap)
+first, and look up syntax in the [Quick Reference](/docs/fundamentals/sql/sql-quick-reference).
+Section 9's testing uses are expanded in [SQL for SDET](/docs/role-guides/sdet/sql-for-sdet).
+
+:::
+
 <LevelBadge level="beginner" />
 
 <TenMinute minutes={10}>

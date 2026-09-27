@@ -26,6 +26,31 @@ Organized as a lookup you can also read top-to-bottom.
 
 </TenMinute>
 
+:::tip How to use this page
+
+Each section starts with **In short** — one sentence you can remember — and
+then goes deeper. Sections 1–7 are the core language, 8–15 explain what
+happens under the hood, 16 is automation scripting, and 17 is interview
+practice. New to Python? Read the [Python cheat sheet](/cheatsheets/python)
+first, then come back here.
+
+:::
+
+### Words you'll meet on this page {#glossary}
+
+| Term | Plain meaning |
+|---|---|
+| **Mutable / immutable** | Can / can't be changed after it's created. `list` and `dict` are mutable; `str` and `tuple` aren't. |
+| **Hashable** | Can be a `dict` key or `set` item — in practice, a value that can't change (`str`, `int`, `tuple`). |
+| **O(1), O(n)** | How time grows with size. O(1): same speed however big the data is. O(n): slower as the data grows. |
+| **I/O-bound** | Slow because it's *waiting* — for the network, disk, or a database. |
+| **CPU-bound** | Slow because it's *calculating* — maths, parsing, image processing. |
+| **GIL** (Global Interpreter Lock) | A rule in standard Python: only one thread runs Python code at a time. See [section 9](#9-concurrency-the-gil-threading-multiprocessing-asyncio). |
+| **MRO** (Method Resolution Order) | The order Python searches parent classes to find a method. See [section 7](#method-resolution-order-mro--multiple-inheritance). |
+| **Garbage collection** | Python freeing memory for objects nothing uses any more — automatically. |
+| **Coroutine / event loop** | An `async def` function that can pause at `await`; the event loop is what switches between them. |
+| **Idempotent** | Safe to run twice: the second run changes nothing. |
+
 <KeyTakeaways title="After this guide you can">
 
 - Use Python's core types, comprehensions, and functions
@@ -90,11 +115,18 @@ Organized as a lookup you can also read top-to-bottom.
 
 ## 1. What Python Is, in Practical Terms
 
-Python is a **dynamically typed, interpreted, garbage-collected,
-multi-paradigm** language (procedural, object-oriented, functional). The
-reference implementation is **CPython**; alternatives include PyPy (JIT,
-faster for long-running pure-Python workloads), Jython (JVM), and IronPython
-(.NET).
+**In short:** Python is a readable, general-purpose language that checks types while running, not beforehand, and frees memory for you.
+
+Python is:
+
+- **Dynamically typed** — a variable's type is decided while the program runs, and can change.
+- **Interpreted** — you run the source file directly; there's no separate compile step.
+- **Garbage-collected** — memory is freed for you automatically.
+- **Multi-paradigm** — you can write step-by-step, object-oriented, or functional code.
+
+The standard Python you download from python.org is called **CPython**
+(it's written in C). Alternatives include PyPy (often faster for long-running
+programs), Jython (runs on Java), and IronPython (runs on .NET).
 
 Key design philosophy — "The Zen of Python" (`import this`): readability
 counts, explicit is better than implicit, there should be one obvious way to
@@ -104,17 +136,19 @@ do it. This shows up everywhere in idiomatic code style.
 
 ## 2. Core Data Types
 
+**In short:** know which built-in types can change (`list`, `dict`, `set`) and which can't (`str`, `tuple`, numbers) — most beginner bugs come from mixing this up.
+
 | Type | Mutable? | Ordered? | Notes |
 |---|---|---|---|
-| `int`, `float`, `complex` | — | — | `int` has arbitrary precision (no overflow) |
+| `int`, `float`, `complex` | — | — | `int` can be as big as you like — it never overflows |
 | `bool` | — | — | Subclass of `int` (`True == 1`) |
 | `str` | No (immutable) | Yes | Unicode by default |
 | `bytes` / `bytearray` | No / Yes | Yes | Raw binary data |
-| `list` | Yes | Yes | General-purpose dynamic array |
+| `list` | Yes | Yes | General-purpose, growable sequence |
 | `tuple` | No | Yes | Immutable sequence; hashable if contents are |
-| `dict` | Yes | Insertion-ordered (3.7+) | Hash map |
-| `set` / `frozenset` | Yes / No | No | Hash-based uniqueness, O(1) membership |
-| `NoneType` | — | — | Python's null — singleton `None` |
+| `dict` | Yes | Keeps the order keys were added (3.7+) | Fast lookup by key |
+| `set` / `frozenset` | Yes / No | No | Unique items; `x in s` is instant (O(1)) |
+| `NoneType` | — | — | "No value" — there is exactly one `None` |
 
 ### Mutability gotcha (classic interview trap)
 
@@ -150,11 +184,15 @@ work on them — never rely on that.
 
 ## 3. Data Structures & Comprehensions
 
+**In short:** build collections in one line with comprehensions, and reach for the `collections` module for counting, grouping, and queues.
+
 ```python
-squares = [x**2 for x in range(10) if x % 2 == 0]         # list comprehension
-squares_gen = (x**2 for x in range(10))                    # generator expression — lazy
-word_lengths = {w: len(w) for w in words}                  # dict comprehension
-unique_lens = {len(w) for w in words}                       # set comprehension
+words = ["hi", "hello", "hey"]                             # list of str
+
+squares = [x**2 for x in range(10) if x % 2 == 0]         # list: [0, 4, 16, 36, 64]
+squares_gen = (x**2 for x in range(10))                    # generator — makes values on demand
+word_lengths = {w: len(w) for w in words}                  # dict: {'hi': 2, 'hello': 5, 'hey': 3}
+unique_lens = {len(w) for w in words}                      # set: {2, 3, 5}
 ```
 
 - **List comprehensions** are generally faster than equivalent `for` loops with `.append()` — the loop is implemented in C.
@@ -163,7 +201,7 @@ unique_lens = {len(w) for w in words}                       # set comprehension
 
 ### Why tuples can be dict keys/set members and lists can't
 
-Immutability is what makes something hashable (if its elements are also hashable): `hash((1, 2))` is stable for the tuple's lifetime because it can never change, so a dict/set can safely use it as a bucket key. A `list` is mutable — if it were hashable, mutating it after insertion would silently corrupt the hash table's internal bucketing. `frozenset` is `set`'s equivalent immutable/hashable counterpart, same relationship.
+A dict or set finds items by a *hash* — a number computed from the value. Only values that can't change keep the same hash, so only they can be keys (a tuple qualifies if everything inside it can't change too): `hash((1, 2))` is stable for the tuple's lifetime because it can never change, so a dict/set can safely use it as a bucket key. A `list` is mutable — if it were hashable, mutating it after insertion would silently corrupt the hash table's internal bucketing. `frozenset` is `set`'s equivalent immutable/hashable counterpart, same relationship.
 
 ```python
 cache = {}
@@ -191,10 +229,10 @@ for key in list(d.keys()):
 ```python
 from collections import defaultdict, Counter, deque, namedtuple, OrderedDict
 
-counts = Counter(['a', 'b', 'a', 'c', 'a'])       # Counter({'a': 3, 'b': 1, 'c': 1})
-groups = defaultdict(list)                          # auto-creates missing keys
-q = deque(maxlen=100)                                # O(1) append/pop both ends — use for queues, not list
-Point = namedtuple('Point', ['x', 'y'])              # lightweight immutable record
+counts = Counter(['a', 'b', 'a', 'c', 'a'])       # Counter (a dict of counts): {'a': 3, 'b': 1, 'c': 1}
+groups = defaultdict(list)                          # dict whose missing keys start as []
+q = deque(maxlen=100)                                # deque (double-ended queue): fast add/remove at both ends
+Point = namedtuple('Point', ['x', 'y'])              # tuple with named fields: Point(1, 2).x == 1
 ```
 
 ### `dataclasses` (modern struct-like classes)
@@ -216,9 +254,15 @@ data-holding classes.
 
 ## 4. Functions, Scope, and Closures
 
+**In short:** functions are values you can pass around; an inner function can remember variables from the function that made it.
+
 ### LEGB scope resolution
-Python resolves names in order: **L**ocal → **E**nclosing → **G**lobal →
-**B**uilt-in.
+When you use a name, Python looks for it in this order and stops at the first match ("LEGB" for short):
+
+1. **Local** — inside the current function
+2. **Enclosing** — inside any function wrapping it
+3. **Global** — at the top level of the file
+4. **Built-in** — Python's own names like `len`
 
 ```python
 def outer():
@@ -281,6 +325,8 @@ Avoid multi-line logic in lambdas — use a named `def` instead for readability.
 
 ## 5. Decorators
 
+**In short:** a decorator wraps a function to add behaviour — timing, retries, logging — without editing the function itself.
+
 A decorator wraps a function to add behavior without modifying its body —
 Python's core mechanism for cross-cutting concerns (logging, timing, caching,
 auth checks, retries).
@@ -332,6 +378,8 @@ def flaky_call(): ...
 ---
 
 ## 6. Iterators & Generators
+
+**In short:** generators produce values one at a time with `yield`, so they can handle huge data using very little memory.
 
 An **iterable** implements `__iter__`; an **iterator** implements
 `__iter__` and `__next__` and maintains state between calls. Every iterator
@@ -405,7 +453,7 @@ for row in pipeline:
 ```python
 gen = (x * 2 for x in range(5))
 total = sum(gen)
-maximum = max(gen)   # 0 or ValueError — gen is already exhausted after sum() consumed it
+maximum = max(gen)   # ValueError: max() arg is an empty sequence — sum() already used every value
 ```
 
 Generators can't be restarted or rewound. If you need to iterate more than
@@ -415,6 +463,8 @@ materialize it into a list a single time: `values = list(gen)`.
 ---
 
 ## 7. OOP in Python
+
+**In short:** classes bundle data with behaviour; `@property` adds checks to attributes, and inheritance reuses code from parent classes.
 
 ```python
 class Animal:
@@ -486,6 +536,9 @@ validates, which a bare `@dataclass` field can't express on its own.
 
 ### Method Resolution Order (MRO) & multiple inheritance
 
+When a class has more than one parent, Python needs a fixed order to search
+them for a method. That order is the **MRO** (method resolution order).
+
 ```python
 class A:
     def greet(self): return "A"
@@ -500,8 +553,10 @@ D().greet()          # "B" — resolved via C3 linearization
 D.__mro__             # (D, B, C, A, object)
 ```
 
-Python uses **C3 linearization** to compute a consistent MRO — resolves the
-"diamond problem" deterministically. `super()` follows this MRO chain, not
+Python builds the MRO with an algorithm called **C3 linearization**. The
+short version: children come before parents, and parents keep the order you
+listed them in `class D(B, C)`. This settles the "diamond problem" (two
+parents sharing one grandparent) the same way every time. `super()` follows this MRO chain, not
 just the immediate parent — critical for cooperative multiple inheritance
 (e.g., mixins).
 
@@ -536,11 +591,14 @@ inheritance required.
 
 ## 8. Memory Model & Garbage Collection
 
+**In short:** variables are labels pointing at objects — `b = a` doesn't copy anything — and Python frees objects automatically when nothing points at them.
+
 - Everything is an object; variables are **references** (names bound to
   objects), not the objects themselves — assignment copies the reference,
   not the data (`b = a` means both names point to the same list).
-- **Reference counting** is the primary GC mechanism — an object is freed the
-  instant its refcount hits zero (deterministic, unlike Java/Go's tracing
+- **Reference counting** is the main way Python frees memory ("garbage
+  collection", GC): each object counts how many names point at it, and is
+  freed the instant that count hits zero (deterministic, unlike Java/Go's tracing
   GCs).
 - A supplementary **generational cyclic garbage collector** (`gc` module)
   handles reference cycles (e.g., two objects referencing each other) that
@@ -561,16 +619,19 @@ original["items"]   # [1, 2, 3, 4]  <-- mutated! nested list was shared
 
 ## 9. Concurrency: the GIL, Threading, Multiprocessing, Asyncio
 
+**In short:** use threads or `asyncio` when your program is *waiting* (network, disk), and separate processes when it's *calculating*.
+
 ### The GIL (Global Interpreter Lock)
 
-CPython's GIL allows only **one thread to execute Python bytecode at a
-time**, even on a multi-core machine. This is the single most-asked Python
+Standard Python (CPython) has a lock called the GIL that lets only **one
+thread run Python code at a time**, even on a machine with many CPU cores.
+(*Bytecode* is the simplified form Python turns your code into before running it.) This is the single most-asked Python
 systems-design interview topic.
 
 | Workload type | Best concurrency tool | Why |
 |---|---|---|
-| **I/O-bound** (network calls, disk, DB queries) | `threading` or `asyncio` | Threads release the GIL during I/O waits — real concurrency for I/O even with the GIL |
-| **CPU-bound** (heavy computation) | `multiprocessing` | Separate processes = separate GILs = true parallelism across cores |
+| **I/O-bound** — waiting on network, disk, or database | `threading` or `asyncio` | Threads release the GIL during I/O waits — real concurrency for I/O even with the GIL |
+| **CPU-bound** — busy calculating | `multiprocessing` | Separate processes = separate GILs = true parallelism across cores |
 | **High-concurrency I/O** (thousands of connections) | `asyncio` | Single-threaded event loop avoids thread overhead/context-switch cost entirely |
 
 > Note: Python 3.13 introduced an experimental **free-threaded build** (PEP
@@ -607,7 +668,7 @@ with Pool(processes=4) as pool:
 ```
 
 Each process has its own interpreter and memory space (no GIL contention),
-but data passed between processes must be **pickled** — adds serialization
+but data passed between processes must be **pickled** (converted to bytes and back) — adds serialization
 overhead, and shared state requires explicit tools (`multiprocessing.Value`,
 `Manager`).
 
@@ -635,6 +696,8 @@ inside a coroutine blocks the *entire* event loop — offload it via
 ---
 
 ## 10. Error Handling
+
+**In short:** catch the specific errors you can deal with, let the rest surface, and use `with` so clean-up always happens.
 
 ```python
 class InsufficientFundsError(Exception):
@@ -752,6 +815,8 @@ with acquired_lock(lock):
 
 ## 11. Typing (Modern Python)
 
+**In short:** type hints describe what types your code expects; tools like mypy check them, but Python itself doesn't enforce them.
+
 Python remains dynamically typed at runtime, but **type hints** (checked by
 external tools like `mypy`/`pyright`, not enforced by the interpreter) are
 now standard for production code:
@@ -802,6 +867,8 @@ string and blow up downstream if `mypy`/`pyright` never actually ran in CI.
 
 ## 12. Standard Library Highlights
 
+**In short:** Python ships with modules for most everyday jobs — check here before installing a package.
+
 | Module | Use for |
 |---|---|
 | `itertools` | `chain`, `groupby`, `product`, `combinations` — composable iterator building blocks |
@@ -816,6 +883,8 @@ string and blow up downstream if `mypy`/`pyright` never actually ran in CI.
 ---
 
 ## 13. Testing with `pytest`
+
+**In short:** tests are plain functions with `assert`; fixtures provide shared setup and clean-up.
 
 ```python
 import pytest
@@ -852,6 +921,8 @@ def test_withdraw_parametrized(balance, amount, expected):
 
 ## 14. Packaging & Environments
 
+**In short:** give every project its own virtual environment, and describe it in `pyproject.toml`.
+
 - **Virtual environments** (`venv`, or faster tools like `uv`/`poetry`)
   isolate project dependencies from the system Python — always use one; never
   `pip install` into system Python for project work.
@@ -871,10 +942,12 @@ pip install -e .            # editable install for local development
 
 ## 15. Performance Notes
 
+**In short:** measure first, then fix the slow part — usually by choosing a better data structure, not by clever tricks.
+
 - **Profile before optimizing** — `cProfile`, `line_profiler`, or `py-spy`
   (sampling profiler, safe for production). Guessing at hot paths wastes
   effort.
-- **String concatenation in a loop** (`s += x`) is O(n²) — use
+- **String concatenation in a loop** (`s += x`) gets much slower as the text grows (O(n²): double the items, four times the work) — use
   `"".join(list_of_strings)` instead.
 - **`lru_cache`** memoizes pure functions trivially:
   ```python
@@ -893,6 +966,8 @@ pip install -e .            # editable install for local development
 ---
 
 ## 16. Python for Ops & Automation Scripting
+
+**In short:** scripts that run unattended must expect every outside call to fail or hang — so set timeouts, retry carefully, log clearly, and make re-runs safe.
 
 Everything above is about writing correct Python *programs*. Ops/DevOps
 automation is a different discipline layered on top: Python as **glue** that
@@ -1442,6 +1517,8 @@ and an unattended pipeline.
 ---
 
 ## 17. Interview-Ready Q&A
+
+**In short:** short, spoken-style answers to the Python questions interviewers ask most.
 
 **Q: What is the GIL and why does it exist?**
 A: The Global Interpreter Lock ensures only one thread executes Python

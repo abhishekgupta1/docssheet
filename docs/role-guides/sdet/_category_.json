@@ -1,0 +1,8 @@
+{
+  "label": "SDET",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Python, Java, and SQL for Software Development Engineers in Test."
+  }
+}

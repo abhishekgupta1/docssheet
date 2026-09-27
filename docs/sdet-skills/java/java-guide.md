@@ -15,6 +15,15 @@ Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/java">📋 Quick reference: Java →</a>
 
+:::tip How to use this page
+
+This guide explains the *why* — JVM internals, design trade-offs, interview
+questions. New to Java? Learn step by step with the [Java cheat sheet](/cheatsheets/java)
+and the [Java learning path](/docs/learning-path/java/implementation-roadmap)
+first, and look up syntax in the [Quick Reference](/docs/fundamentals/java/java-quick-reference).
+
+:::
+
 <LevelBadge level="beginner" />
 
 <TenMinute minutes={10}>

@@ -15,6 +15,16 @@ SRE interview. Organized as a lookup you can also read top-to-bottom.
 
 <a class="topic-crosslink" href="/cheatsheets/kubernetes">📋 Quick reference: Kubernetes →</a>
 
+:::tip How to use this page
+
+This guide explains *why* Kubernetes works the way it does — the architecture,
+the networking model, and the trade-offs behind each setting. New to
+Kubernetes? Learn the commands step by step with the [Kubernetes cheat sheet](/cheatsheets/kubernetes)
+and its practice cluster first, then practise with the
+[Kubernetes learning path](/docs/learning-path/kubernetes/kubernetes-learning-path).
+
+:::
+
 <LevelBadge level="intermediate" />
 
 **Prerequisites:** [Docker Basics](/docs/sde-skills/docker-basics/docker-basics-guide), [Networking Fundamentals](/docs/sre-skills/networking-fundamentals/networking-fundamentals-guide), [Linux Administration](/docs/sre-skills/linux-administration/linux-administration-guide)
@@ -75,6 +85,8 @@ SRE interview. Organized as a lookup you can also read top-to-bottom.
 
 ## 1. What Kubernetes Is and Why It Exists
 
+**In short:** Kubernetes keeps many containers running across many machines in the state you describe, so you stop starting, restarting, and placing them by hand.
+
 Kubernetes (K8s) is a **container orchestration platform** — it schedules
 containers onto machines, keeps the declared number running, restarts what
 fails, load-balances traffic to them, and rolls out changes with zero
@@ -90,6 +102,8 @@ almost every K8s object works this way.
 ---
 
 ## 2. Architecture
+
+**In short:** a control plane (API server, etcd, scheduler, controllers) decides what should run; the kubelet on each node makes it happen and reports back.
 
 ```
 ┌───────────────────────── Control Plane ─────────────────────────┐
@@ -131,9 +145,13 @@ almost every K8s object works this way.
 | **kube-proxy** | Maintains network rules (iptables/IPVS) on each node implementing the Service abstraction — routes traffic to the right Pod backends |
 | **Container runtime** | Actually runs containers (containerd, CRI-O — Docker Engine itself was deprecated as a runtime; the **CRI**, Container Runtime Interface, is the standard) |
 
+**Try it:** on the [practice cluster](/cheatsheets/kubernetes#practice-cluster), run `kubectl get pods -n kube-system` and match each pod to a component in the tables above.
+
 ---
 
 ## 3. Core Objects
+
+**In short:** pods run containers; Deployments, StatefulSets, DaemonSets, and Jobs manage pods for different kinds of work; Services and Ingress route traffic; ConfigMaps and Secrets hold settings.
 
 ### Pod
 
@@ -286,6 +304,8 @@ standard cron syntax — for periodic tasks (nightly reports, cleanup jobs).
 
 ## 4. The Networking Model
 
+**In short:** every pod gets its own IP and can reach every other pod; Services give groups of pods a stable name and address on top of that.
+
 Kubernetes networking rests on a small set of hard requirements every CNI
 plugin (Calico, Cilium, Flannel, AWS VPC CNI) must satisfy:
 
@@ -316,9 +336,13 @@ By default, **all Pod-to-Pod traffic is allowed** — Network Policies are
 allow-list/deny-by-selection, and once any policy selects a Pod, only
 explicitly allowed traffic gets through to it.
 
+**Try it:** start two pods and `wget` one from the other by its pod IP, then by a Service name. Delete and recreate the target pod — which of the two still works?
+
 ---
 
 ## 5. Scheduling
+
+**In short:** requests decide where a pod fits, limits cap what it can use, and affinity and taints steer pods towards or away from nodes.
 
 ### Resource requests and limits
 
@@ -370,9 +394,13 @@ tolerations:
   Taints keep Pods *out*; tolerations let specific Pods back *in* — they
   don't force placement (use node affinity for that).
 
+**Try it:** give a pod a CPU request larger than your node has (`cpu: "64"`) and read the reason in `kubectl describe pod`.
+
 ---
 
 ## 6. Health Checks: Probes
+
+**In short:** readiness decides whether a pod gets traffic, liveness decides whether it's restarted, and startup gives slow apps time to boot.
 
 | Probe | Purpose | Failure action |
 |---|---|---|
@@ -403,9 +431,13 @@ readiness concern (stop routing traffic), not a liveness one (the process
 itself is fine). Liveness should only check "is my own process alive/not
 deadlocked," not "are my dependencies healthy."
 
+**Try it:** break a readiness probe on purpose and watch the pod disappear from `kubectl get endpointslices` while staying `Running`.
+
 ---
 
 ## 7. Rolling Updates and Rollbacks
+
+**In short:** Deployments replace pods gradually, only moving on when new pods are ready — and keep old versions so you can roll back in one command.
 
 Deployments default to `RollingUpdate` strategy — replace old Pods with new
 ones incrementally, controlled by `maxSurge` (extra Pods allowed above
@@ -440,9 +472,13 @@ kubectl rollout resume deployment/checkout-service
   the app can't tolerate old and new versions running simultaneously (rare;
   causes a downtime window).
 
+**Try it:** roll out an image tag that doesn't exist, confirm the old pods keep serving, then `kubectl rollout undo`.
+
 ---
 
 ## 8. kubectl Essentials
+
+**In short:** the commands, contexts, selectors, and QoS classes you'll use every day, ending with a complete, production-shaped example.
 
 ```bash
 # Inspect
@@ -547,7 +583,8 @@ kubectl debug -it checkout-service-6d9f8c7b9-xk2lp -n checkout \
   --image=busybox:1.36 --target=app
 
 # Node-level triage when many pods are Pending/Evicted at once
-kubectl describe node <node>            # check Conditions: MemoryPressure, DiskPressure
+NODE=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')   # or pick one from kubectl get nodes
+kubectl describe node "$NODE"           # check Conditions: MemoryPressure, DiskPressure
 kubectl top nodes                       # requires metrics-server
 kubectl top pods -n checkout --sort-by=memory
 ```
@@ -634,14 +671,17 @@ the current replica count — it adds one new Pod, waits for it to pass
 
 ## 9. Troubleshooting
 
+**In short:** read the status, then `describe` for events, then the logs — most problems are a bad image, a failing app, a probe, or not enough resources.
+
 ### CrashLoopBackOff
 
 The container starts, exits (crashes or the process itself exits), and
 Kubernetes restarts it with exponential backoff, repeating.
 
 ```bash
-kubectl describe pod <pod>          # check Last State: Terminated, Reason/Exit Code
-kubectl logs <pod> --previous       # logs from the crashed instance, not the new restart attempt
+POD=checkout-service-6d9f8c7b9-xk2lp   # the failing pod's name, from kubectl get pods
+kubectl describe pod "$POD"         # check Last State: Terminated, Reason/Exit Code
+kubectl logs "$POD" --previous      # logs from the crashed instance, not the new restart attempt
 ```
 
 | Exit code / symptom | Likely cause |
@@ -730,9 +770,13 @@ top to bottom before going deeper on any single branch:
     manifest repo, recent `kubectl apply` — most incidents trace to a
     recent, identifiable change.
 
+**Try it:** create each broken pod from the [cheat sheet's troubleshooting section](/cheatsheets/kubernetes#troubleshooting) and diagnose it using only `get`, `describe`, and `logs`.
+
 ---
 
 ## 10. Interview-Ready Q&A
+
+**In short:** the questions interviewers ask most. Try answering each aloud before reading the answer.
 
 **Q: Walk me through what happens when you run `kubectl apply` on a
 Deployment manifest.**
@@ -902,6 +946,8 @@ A rolling update is zero-downtime only if the readiness probe is accurate. Make 
 ---
 
 ## 11. One-Line Summary
+
+**In short:** the whole guide in one sentence.
 
 **Kubernetes is a declarative reconciliation engine — describe desired
 state, let controllers continuously converge reality to match it, and lean
