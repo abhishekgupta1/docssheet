@@ -1,0 +1,8 @@
+{
+  "label": "Security Testing",
+  "position": 11,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered security testing learning path: authorised practice on OWASP Juice Shop, from headers and scanners to access control and a findings report."
+  }
+}

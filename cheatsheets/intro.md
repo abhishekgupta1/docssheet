@@ -33,6 +33,14 @@ New here? [Pick your focus →](/start) · Already browsing? [Track your progres
 <a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/testng">🔧 TestNG</a>
 <a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/sql">🗄️ SQL</a>
 <a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/test-automation-tooling-landscape">🗺️ Tooling Landscape</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/manual-testing">📝 Manual Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/test-automation">🤖 Test Automation</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/api-testing">🔗 API Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/performance-testing">🚀 Performance Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/security-testing">🔒 Security Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/mobile-testing">📲 Mobile Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/accessibility-testing">♿ Accessibility Testing</a>
+<a class="cheat-tile cheat-tile--sdet" href="/cheatsheets/ai-llm-testing">🧪 AI & LLM Testing</a>
 
 </div>
 

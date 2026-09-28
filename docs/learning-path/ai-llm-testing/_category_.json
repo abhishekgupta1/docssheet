@@ -1,0 +1,8 @@
+{
+  "label": "AI & LLM Testing",
+  "position": 14,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered AI and LLM testing learning path: golden datasets, hallucination and injection tests, RAG and agent checks, and an evaluation pipeline."
+  }
+}

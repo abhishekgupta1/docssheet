@@ -1,0 +1,8 @@
+{
+  "label": "Mobile Testing",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "description": "A mobile testing quick reference — device matrix, adb and simctl, Appium capabilities and locators, mobile web emulation, store checks — and mobile testing best practices."
+  }
+}

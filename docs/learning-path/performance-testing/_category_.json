@@ -1,0 +1,8 @@
+{
+  "label": "Performance Testing",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered performance testing learning path: load, stress, spike and soak tests on a local practice app with deliberate bottlenecks, with answer keys."
+  }
+}

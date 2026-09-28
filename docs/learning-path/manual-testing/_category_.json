@@ -1,0 +1,8 @@
+{
+  "label": "Manual Testing",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered manual testing learning path: a roadmap with what to learn in each milestone, and a practice project with an answer key for each one."
+  }
+}

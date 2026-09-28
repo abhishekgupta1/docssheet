@@ -1,0 +1,8 @@
+{
+  "label": "Mobile Testing",
+  "position": 13,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered mobile testing learning path: device matrices, mobile web emulation, real-device thinking, Appium automation and store readiness."
+  }
+}

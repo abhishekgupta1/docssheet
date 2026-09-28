@@ -1,0 +1,8 @@
+{
+  "label": "Test Automation",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "A test automation quick reference — commands, locators, assertions, config, CI snippets and tool equivalents — and automation best practices."
+  }
+}
