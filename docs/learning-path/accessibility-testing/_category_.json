@@ -1,0 +1,8 @@
+{
+  "label": "Accessibility Testing",
+  "position": 12,
+  "link": {
+    "type": "generated-index",
+    "description": "The ordered accessibility testing learning path: audit a deliberately inaccessible page, fix it, automate checks and write a WCAG report."
+  }
+}

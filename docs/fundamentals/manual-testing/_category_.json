@@ -1,0 +1,8 @@
+{
+  "label": "Manual Testing",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "A manual testing quick reference for looking things up — templates, techniques, heuristics — and testing best practices."
+  }
+}

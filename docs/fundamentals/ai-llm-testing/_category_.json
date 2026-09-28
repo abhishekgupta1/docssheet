@@ -1,0 +1,8 @@
+{
+  "label": "AI & LLM Testing",
+  "position": 11,
+  "link": {
+    "type": "generated-index",
+    "description": "An AI and LLM testing quick reference — evaluation methods, metrics, attack prompts, OWASP LLM risks, tools — and AI testing best practices."
+  }
+}

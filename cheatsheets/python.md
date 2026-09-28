@@ -28,7 +28,6 @@ walks through it in more depth.
   <a class="button button--primary" href="/docs/role-guides">Role Guides</a>
   <a class="button button--primary" href="/docs/learning-path">Learning Path</a>
   <a class="button button--primary" href="/docs/fundamentals">Fundamentals</a>
-  <a class="button button--primary" href="/docs/planning-research">Planning &amp; Research</a>
 </nav>
 
 :::tip How to use this page

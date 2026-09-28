@@ -48,9 +48,11 @@
   border-color: var(--ifm-color-primary);
 }
 
+/* Hover inverts the colors: white background, purple text */
 .button--primary:hover {
-  background-color: var(--ifm-color-primary-dark);
-  border-color: var(--ifm-color-primary-dark);
+  background-color: #ffffff;
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
 }
 
 .button--outline {
@@ -1160,4 +1162,24 @@ a:hover {
   border-color: var(--ifm-color-primary);
   background: var(--ifm-color-primary);
   color: #fff;
+}
+
+/* ============================================
+   Focus mode — toggled by FocusModeButton (class on <html>)
+   Hides the side navs so only the page text is left.
+   ============================================ */
+@media (min-width: 997px) {
+  /* Docs + cheat sheets: left sidebar and right table of contents */
+  html.focus-mode .theme-doc-sidebar-container,
+  html.focus-mode .col--3:has(> .theme-doc-toc-desktop) {
+    display: none !important;
+  }
+
+  html.focus-mode [class*='docMainContainer'] {
+    max-width: 100% !important;
+  }
+
+  html.focus-mode [class*='docItemCol'] {
+    max-width: 100% !important;
+  }
 }

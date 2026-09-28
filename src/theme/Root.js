@@ -2,11 +2,13 @@ import React from 'react';
 import Head from '@docusaurus/Head';
 import {SITE_URL, PERSON} from '@site/src/data/site';
 import ConsentBanner from '@site/src/components/ConsentBanner';
+import FocusModeButton from '@site/src/components/FocusModeButton';
 
 /**
- * Wraps the entire app and persists across route changes. Two jobs:
+ * Wraps the entire app and persists across route changes. Three jobs:
  *  - inject the site-wide JSON-LD (WebSite + Person) once
  *  - mount the cookie-consent banner (self-hides unless ads are enabled)
+ *  - mount the site-wide focus-mode toggle
  * Per-page schema (BlogPosting, BreadcrumbList, Credential) lives in the
  * relevant swizzles / page <Head> blocks.
  */
@@ -48,6 +50,7 @@ export default function Root({children}) {
       </Head>
       {children}
       <ConsentBanner />
+      <FocusModeButton />
     </>
   );
 }

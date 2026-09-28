@@ -1,0 +1,8 @@
+{
+  "label": "Accessibility Testing",
+  "position": 9,
+  "link": {
+    "type": "generated-index",
+    "description": "An accessibility testing quick reference — WCAG criteria, ARIA, contrast, keyboard and screen-reader commands, axe rules — and accessibility best practices."
+  }
+}

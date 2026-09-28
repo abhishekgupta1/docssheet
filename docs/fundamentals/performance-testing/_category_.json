@@ -1,0 +1,8 @@
+{
+  "label": "Performance Testing",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "A performance testing quick reference — test types, metrics, k6 options and executors, thresholds, workload maths, bottleneck signs — and performance testing best practices."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "label": "Security Testing",
+  "position": 8,
+  "link": {
+    "type": "generated-index",
+    "description": "A security testing quick reference — OWASP risks, payloads for authorised testing, headers, scanners, CVSS, reporting — and security testing best practices."
+  }
+}
